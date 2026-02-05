@@ -1,0 +1,13 @@
+Optional,Date,DepartTime,From,To,Miles,Station,Address,City,State,PricePerGallon,GallonsToBuy,EstCost,Notes
+Yes,2026-02-09,08:00,Morristown/Wittmann (Rolling Rock Dr),"Wickenburg, AZ (Top-off)",15,Maverik #600,784 W Wickenburg Way,Wickenburg,AZ,2.99,8.0,23.92,Optional morning fill so you leave Gambit Trail with a near-full tank.
+No,2026-02-09,17:15,"22033 W Gambit Trail, Wittmann, AZ","Cordes Lakes / Mayer, AZ",65,Pilot or Love’s (choose at arrival),14905 S Stagecoach Trl or 14414 S Cross L Rd,Mayer,AZ,2.95,10.0,29.5,First fuel after AZ-74 to I-17: Pilot or Love’s at Cordes Lakes (Exit 262/263).
+No,2026-02-09,—,"Cordes Lakes, AZ","Holbrook, AZ",170,Speedy’s Super Fuels,850 Navajo Blvd,Holbrook,AZ,2.95,5.67,16.72,Short refill or push through to Winslow if you feel fresh.
+No,2026-02-10,08:00,"Holbrook, AZ","Tucumcari, NM",406,Conoco,4000 E Tucumcari Blvd,Tucumcari,NM,2.44,13.53,33.02,Top-off to keep a healthy buffer across the Plains.
+No,2026-02-10,—,"Tucumcari, NM","Liberal, KS",207,Love’s Travel Stop #632,1000 E Pancake Blvd,Liberal,KS,2.37,6.9,16.35,Overnight option; easy ingress/egress.
+No,2026-02-11,08:00,"Liberal, KS","Emporia, KS",301,Casey’s,1402 E 6th Ave,Emporia,KS,2.74,10.03,27.49,Shower/lunch/snooze optional depending on pace.
+No,2026-02-11,—,"Emporia, KS","Altoona, IA (DSM metro)",313.5,Flying J #913,3231 Adventureland Dr,Altoona,IA,2.86,10.45,29.89,Fuel before the final hop to Cedar Rapids the same day.
+No,2026-02-16,17:15,"Cedar Rapids, IA (full tank)","Emporia, KS",419,Casey’s,1402 E 6th Ave,Emporia,KS,2.74,13.97,38.27,Plan to arrive late; shower + sleep.
+No,2026-02-17,08:00,"Emporia, KS","Liberal, KS",301,Love’s Travel Stop #632,1000 E Pancake Blvd,Liberal,KS,2.37,10.03,23.78,Coffee + quick fuel.
+No,2026-02-17,—,"Liberal, KS","Tucumcari, NM",207,Conoco,4000 E Tucumcari Blvd,Tucumcari,NM,2.44,6.9,16.84,Top-off before I‑40 westbound.
+No,2026-02-17,—,"Tucumcari, NM","Holbrook, AZ",406,Speedy’s Super Fuels,850 Navajo Blvd,Holbrook,AZ,2.95,13.53,39.92,Rest point if needed; otherwise continue.
+Yes,2026-02-17,—,"Holbrook, AZ","Cordes Lakes / Mayer, AZ",170,Pilot or Love’s,14905 S Stagecoach Trl or 14414 S Cross L Rd,Mayer,AZ,2.95,8.0,23.6,Optional top-off before PHX metro and the CA leg.

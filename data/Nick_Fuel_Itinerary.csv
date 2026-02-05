@@ -1,0 +1,14 @@
+Date,DepartTime,From,To,Miles,Station,Address,City,State,PricePerGallon,GallonsToBuy,EstCost,Notes
+2026-02-07,04:00,"Irvine, CA","Wickenburg, AZ",329,Maverik #600,784 W Wickenburg Way,Wickenburg,AZ,2.99,10.97,32.8,Arrive ~10:00; refuel after first leg; layover until 2/9 5:00 PM.
+2026-02-09,17:00,"Wickenburg, AZ","Holbrook, AZ",222,Speedy’s Super Fuels,850 Navajo Blvd,Holbrook,AZ,2.95,7.4,21.83,Evening drive ~3.5 hrs; optional dinner then rest or continue to Gallup/Winslow.
+2026-02-10,08:00,"Holbrook, AZ","Tucumcari, NM",406,Conoco,4000 E Tucumcari Blvd,Tucumcari,NM,2.44,13.53,33.02,Top‑off to avoid long stretch across the Plains.
+2026-02-10,—,"Tucumcari, NM","Liberal, KS",207,Love’s Travel Stop #632,1000 E Pancake Blvd,Liberal,KS,2.37,6.9,16.35,Good overnight option if needed; hotels nearby.
+2026-02-11,08:00,"Liberal, KS","Emporia, KS",301,Casey’s,1402 E 6th Ave,Emporia,KS,2.74,10.03,27.49,Mid‑day fuel + lunch; continue to Des Moines metro or Cedar Rapids the same day.
+2026-02-11,—,"Emporia, KS","Altoona, IA (Des Moines metro)",313.5,Flying J #913,3231 Adventureland Dr,Altoona,IA,2.86,10.45,29.89,Refuel near Des Moines; short hop remains to Cedar Rapids.
+2026-02-16,17:15,"Cedar Rapids, IA","Altoona, IA",106,— (starting full),—,Altoona,IA,0.0,0.0,0.0,Evening start; optional short fuel/coffee stop only.
+2026-02-16,—,"Altoona, IA","Emporia, KS",313.5,Casey’s,1402 E 6th Ave,Emporia,KS,2.74,10.45,28.63,Good overnight option if departing late 2/16; hotels nearby.
+2026-02-17,08:00,"Emporia, KS","Liberal, KS",301,Love’s Travel Stop #632,1000 E Pancake Blvd,Liberal,KS,2.37,10.03,23.78,Fuel + quick break.
+2026-02-17,—,"Liberal, KS","Tucumcari, NM",207,Conoco,4000 E Tucumcari Blvd,Tucumcari,NM,2.44,6.9,16.84,Top‑off before I‑40 westbound stretch.
+2026-02-17,—,"Tucumcari, NM","Holbrook, AZ",406,Speedy’s Super Fuels,850 Navajo Blvd,Holbrook,AZ,2.95,13.53,39.92,Good rest point if splitting the day.
+2026-02-17,—,"Holbrook, AZ","Wickenburg, AZ",222,Maverik #600,784 W Wickenburg Way,Wickenburg,AZ,2.99,7.4,22.13,Optional stop if not heading straight through PHX metro.
+2026-02-17,—,"Wickenburg, AZ","Irvine, CA",329,—,—,Irvine,CA,0.0,0.0,0.0,Final leg home; refuel at your usual local station after arrival.

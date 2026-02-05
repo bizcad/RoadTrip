@@ -1,0 +1,20 @@
+Date,DepartTime,From,To,Miles,Kind,Name,Address,City,State,Lat,Lng,PricePerGallon,GallonsToBuy,EstCost,Notes,Status
+2026-02-09,08:00,Morristown/Wittmann (Rolling Rock Dr),"Wickenburg, AZ (Top‑off)",15,Fuel,Maverik #600,784 W Wickenburg Way,Wickenburg,AZ,,,2.99,8.00,23.92,Optional morning fill so you leave Gambit Trail near‑full.,Backup
+2026-02-09,17:15,"22033 W Gambit Trail, Wittmann, AZ","Cordes Lakes / Mayer, AZ",65,Fuel,Love’s Travel Stop (Pilot alt.),14414 S Cross L Rd,Mayer,AZ,,,2.95,10.00,29.50,First fuel after AZ‑74→I‑17N (Exits 262–263).,Planned
+2026-02-09,—,"Cordes Lakes, AZ","Holbrook, AZ",170,Fuel,Speedy’s Super Fuels,850 Navajo Blvd,Holbrook,AZ,,,2.95,5.67,16.71,Short refill or push to Winslow if fresh.,Planned
+2026-02-10,08:00,"Holbrook, AZ","Tucumcari, NM",406,Fuel,Conoco,4000 E Tucumcari Blvd,Tucumcari,NM,,,2.44,13.53,33.01,Top‑off before Plains cross‑winds.,Planned
+2026-02-10,—,"Tucumcari, NM","Liberal, KS",207,Fuel,Love’s Travel Stop #632,1000 E Pancake Blvd,Liberal,KS,,,2.37,6.90,16.35,Good overnight node.,Planned
+2026-02-11,08:00,"Liberal, KS","Emporia, KS",301,Fuel,Casey’s,1402 E 6th Ave,Emporia,KS,,,2.74,10.03,27.48,Lunch/shower/snooze optional.,Planned
+2026-02-11,—,"Emporia, KS","Altoona, IA (DSM metro)",313.5,Fuel,Flying J #913,3231 Adventureland Dr,Altoona,IA,,,2.86,10.45,29.88,Fuel before short final hop to Cedar Rapids.,Planned
+2026-02-09,—,I‑17 NB Grade,Black Canyon → Cordes Lakes,—,Risk,Grade & Temps,—,Black Canyon City,AZ,,,,,,"If temp<32°F or freezing rain forecast, delay departure; fuel at Cordes Lakes if <1/2 tank.",Planned
+2026-02-10,—,I‑40 Plateau,Holbrook → Tucumcari,406,Risk,Wind & Black‑Ice,—,Holbrook/Tucumcari,AZ/NM,,,,,,"If wind>20 mph (N/W) or wet‑bulb freezing, avoid night driving; consider Holbrook or Tucumcari stop.",Planned
+2026-02-10,—,US‑54/US‑50 Plains,TX Panhandle / KS,207+,Risk,Cross‑winds & Drifts,—,Dalhart/Liberal,TX/KS,,,,,,"If cross‑winds>25 mph or blowing snow, fuel early at Liberal; reduce cruise; watch slush ridges.",Planned
+2026-02-10,—,"Tucumcari, NM","Tucumcari, NM",—,Hotel,Comfortable,—,Tucumcari,NM,,,,,,Shower + quiet; late check‑in preferred.,Planned
+2026-02-10,—,"Tucumcari, NM","Tucumcari, NM",—,Hotel,Family/Pet‑Friendly,—,Tucumcari,NM,,,,,,Easy parking; pet‑friendly policies.,Backup
+2026-02-10,—,"Tucumcari, NM","Tucumcari, NM",—,Hotel,Jack Reacher,—,Tucumcari,NM,,,,,,"No‑frills, park‑at‑door, fast exit.",Backup
+2026-02-10,—,"Liberal, KS","Liberal, KS",—,Hotel,Comfortable,—,Liberal,KS,,,,,,Shower + quiet; late check‑in preferred.,Planned
+2026-02-10,—,"Liberal, KS","Liberal, KS",—,Hotel,Family/Pet‑Friendly,—,Liberal,KS,,,,,,Easy parking; pet‑friendly policies.,Backup
+2026-02-10,—,"Liberal, KS","Liberal, KS",—,Hotel,Jack Reacher,—,Liberal,KS,,,,,,"No‑frills, park‑at‑door, fast exit.",Backup
+2026-02-11,—,"Emporia, KS","Emporia, KS",—,Hotel,Comfortable,—,Emporia,KS,,,,,,Shower + quiet; late check‑in preferred.,Planned
+2026-02-11,—,"Emporia, KS","Emporia, KS",—,Hotel,Family/Pet‑Friendly,—,Emporia,KS,,,,,,Easy parking; pet‑friendly policies.,Backup
+2026-02-11,—,"Emporia, KS","Emporia, KS",—,Hotel,Jack Reacher,—,Emporia,KS,,,,,,"No‑frills, park‑at‑door, fast exit.",Backup
