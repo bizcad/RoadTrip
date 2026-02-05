@@ -1,0 +1,31 @@
+{
+    "folders": [
+        {
+            "name": "RoadTrip",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "terminal.integrated.profiles.windows": {
+            "RoadTrip PowerShell": {
+                "source": "PowerShell",
+                "args": [
+                    "-NoExit",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    "G:\\repos\\AI\\RoadTrip\\infra\\RoadTrip_profile.ps1"
+                ]
+            }
+        },
+        "terminal.integrated.defaultProfile.windows": "RoadTrip PowerShell",
+        "chat.tools.terminal.autoApprove": {
+            ".\\scripts\\git_push.ps1": true,
+            "/^git --version$/": {
+                "approve": true,
+                "matchCommandLine": true
+            },
+            "Test-Path": true
+        }
+    }
+}

@@ -1,0 +1,54 @@
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+env/
+venv/
+.venv/
+pip-wheel-metadata/
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environment and env files
+.env
+.env.local
+.env.*
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets and local config
+ProjectSecrets/
+PromptTracking/
+*.secret
+*.key
+*.pem
+
+# Logs and session files
+*.log
+*.session
+Session Log*
+session-log.ps1
+load-session-logging.ps1

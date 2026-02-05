@@ -26,3 +26,7 @@
 - `Agent.Skills.Sheets`, `Agent.Skills.Maps`, `Agent.Skills.Weather`
 - Secrets: UserSecrets (dev) → Key Vault (prod)
 - Allow‑list outbound: Sheets, Maps, Weather only; no email, no purchasing.
+
+## Workspace convenience
+
+- This workspace adds a `RoadTrip PowerShell` integrated terminal profile that automatically runs `infra\RoadTrip_profile.ps1` when a new terminal is opened. It sets project defaults (paths, environment variables, helpers). If you prefer not to run the script automatically, open the terminal dropdown and choose a different profile.
