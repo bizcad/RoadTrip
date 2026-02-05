@@ -61,6 +61,7 @@
 
 #>
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectUsageOfRedirectionOperator', '')]
 [CmdletBinding()]
 param(
     [Parameter(Position=0, HelpMessage = 'Commit message. If omitted, a descriptive message is auto-generated from staged changes (or working-tree when -DryRun).')]
@@ -79,11 +80,11 @@ param(
 
 function Fail([string]$msg, [int]$code = 1) {
     Write-Host $msg -ForegroundColor Red
-    Log-Event "ERROR: $msg (exit $code)"
+    Write-SessionLog "ERROR: $msg (exit $code)"
     exit $code
 }
 
-function Log-Event([string]$msg) {
+function Write-SessionLog([string]$msg) {
     if ([string]::IsNullOrWhiteSpace($LogFile)) { return }
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     "[$timestamp] $msg" | Add-Content -Path $LogFile -Encoding UTF8 -ErrorAction SilentlyContinue
@@ -213,13 +214,13 @@ if (-not $repoRoot) {
 Set-Location $repoRoot.Trim()
 
 Write-Verbose "Repository root: $repoRoot"
-Log-Event "Starting push workflow in $(Get-Location)"
+Write-SessionLog "Starting push workflow in $(Get-Location)"
 
 # Check for any changes in the working tree
 $status = git status --porcelain
 if ([string]::IsNullOrWhiteSpace($status)) {
     Write-Host 'No changes to commit.' -ForegroundColor Yellow
-    Log-Event 'No changes to commit; exiting.'
+    Write-SessionLog 'No changes to commit; exiting.'
     exit 0
 }
 
@@ -236,7 +237,7 @@ if ($DryRun) {
     Write-Host "`n--- Dry Run: Generated commit message ---" -ForegroundColor Cyan
     Write-Host $gen
     Write-Host "--- End generated message ---`n" -ForegroundColor Cyan
-    Log-Event "DryRun: generated message without performing git operations."
+    Write-SessionLog "DryRun: generated message without performing git operations."
     exit 0
 }
 
@@ -250,7 +251,7 @@ Write-Verbose "Running: git add -A"
 git add -A
 if ($LASTEXITCODE -ne 0) { Fail 'git add failed.' 4 }
 Write-Verbose "✓ Staging complete"
-Log-Event 'Staged all changes with git add -A'
+Write-SessionLog 'Staged all changes with git add -A'
 
 # Generate commit message if not provided
 if (-not $Message) {
@@ -271,7 +272,7 @@ try {
     Set-Content -Path $tempFile -Value $Message -Encoding UTF8
     Write-Verbose "Running: git commit -F <temp-file>"
     Write-Host "Committing: $($Message.Split("`n")[0])"
-    Log-Event "Committing with message: $($Message.Split("`n")[0])"
+    Write-SessionLog "Committing with message: $($Message.Split("`n")[0])"
     git commit -F $tempFile
     if ($LASTEXITCODE -ne 0) { Fail 'git commit failed (no changes staged or commit aborted).' 5 }
     Write-Verbose "✓ Commit successful"
@@ -283,7 +284,7 @@ try {
             Write-Verbose "✓ Temporary commit message file cleaned up"
         } catch {
             Write-Host "  ⚠ Warning: Could not delete temporary file: $tempFile" -ForegroundColor Yellow
-            Log-Event "Warning: temp file cleanup failed: $_"
+            Write-SessionLog "Warning: temp file cleanup failed: $_"
         }
     }
 }
@@ -307,16 +308,16 @@ if (-not (git remote get-url origin 2>$null)) {
     Fail 'origin remote does not exist or is not accessible.' 7
 }
 Write-Verbose "✓ origin remote found"
-Log-Event "Validated origin remote exists."
+Write-SessionLog "Validated origin remote exists."
 
 # Push to origin
 Write-Host "Pushing to origin/$branch..."
 Write-Verbose "Running: git push origin $branch (with 5s connection timeout)"
-Log-Event "Pushing to origin/$branch..."
+Write-SessionLog "Pushing to origin/$branch..."
 git -c http.connectTimeout=5 push origin $branch --quiet
 if ($LASTEXITCODE -ne 0) { Fail 'git push failed.' 6 }
 Write-Verbose "✓ Push successful"
 
 Write-Host 'Push complete.' -ForegroundColor Green
-Log-Event 'Push complete successfully.'
+Write-SessionLog 'Push complete successfully.'
 exit 0

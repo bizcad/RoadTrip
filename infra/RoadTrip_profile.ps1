@@ -128,26 +128,29 @@ function gpush {
         [switch]$Log
     )
     
-    $scriptPath = Join-Path $ProjectRoot "scripts\git_push.ps1"
-    if (-not (Test-Path $scriptPath)) {
-        Write-Host "Error: git_push.ps1 not found at $scriptPath" -ForegroundColor Red
-        return
+    Push-Location $ProjectRoot
+    try {
+        $invokeArgs = @()
+        if ($Message) { $invokeArgs += $Message }
+        if ($DryRun) { $invokeArgs += "-DryRun" }
+        if ($Log) { $invokeArgs += "-LogFile"; $invokeArgs += (Join-Path $ProjectRoot "logs\push.log") }
+        if ($VerbosePreference -eq "Continue") { $invokeArgs += "-Verbose" }
+        
+        & ".\scripts\git_push.ps1" @invokeArgs
     }
-    
-    $args = @("-DryRun:$DryRun")
-    if ($Message) { $args += "-Message", $Message }
-    if ($Log) { $args += "-LogFile", (Join-Path $ProjectRoot "logs\push.log") }
-    if ($VerbosePreference -eq "Continue") { $args += "-Verbose" }
-    
-    & $scriptPath @args
+    finally {
+        Pop-Location
+    }
 }
 
 # Convenience alias: dry-run with verbose output
+# Note: 'dry' is intentional user-friendly naming, not an approved verb
 function gpush-dry {
     gpush -DryRun -Verbose
 }
 
 # Convenience alias: push with logging enabled
+# Note: 'log' verb usage is intentional for this convenience wrapper
 function gpush-log {
     gpush -Log -Verbose
 }

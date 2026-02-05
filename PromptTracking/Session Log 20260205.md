@@ -585,3 +585,72 @@ Your RoadTrip repository at https://github.com/bizcad/RoadTrip now contains:
 All files respect your .gitignore settings, so only tracked files are stored.
 <!--End Response-->
 
+
+# Prompt: (2026-02-05 15:09:38)
+<!--Start Prompt-->
+I mistyped. It should have been CLAUDE.md so that you load it.  I have renamed it. Should it be in the root directory. What does Claudes docs have to say about where it should be placed in the repo?
+<!--End Prompt-->
+
+
+# Response: (2026-02-05 15:09:48)
+<!--Start Response-->
+Absolutely! These transcripts are **highly relevant** to your RoadTrip setup. They validate and expand on what you're already doing:
+
+## Key Alignments
+
+**1. CLAUDE.md as workspace guidance**
+The first transcript explicitly describes creating a CLAUDE.md file as the guidance layer for your AI workspace—exactly what we just set up.
+
+**2. Folder as the source of truth**
+Your project structure (data/, docs/, scripts/, infra/, PromptTracking/) is the "hold the folder as really the source of truth" approach from the first transcript.
+
+**3. Session logging / context files**
+Your PromptTracking directory with session logs aligns with externalizing memory instead of relying on chat history.
+
+## How They Enhance Your Setup
+
+From **"AI Techniques Distilled..."**:
+- **Plan verification**: Validate that complex projects meet all requirements (you could add this to your workflow)
+- **Clear context at feature boundaries**: Start fresh conversations per feature/task (useful for RoadTrip development)
+- **Autonomous but traceable**: Build systems that run independently but you can see what changed and why
+
+From **"Nobody Gets 10x..."**:
+- Use **Claude's project-specific memory** to separate road trip planning from code work
+- Use **style feature** to upload samples of your RoadTrip documentation style so Claude matches it
+- Configure **tools/MCP servers** intentionally for your specific workflows
+
+## Suggestion
+
+Consider adding a section to CLAUDE.md about:
+- When to start fresh conversations (feature-level)
+- Your documentation style preferences
+- Required plan validation before implementation
+
+These would operationalize the transcript insights into your workflow.
+<!--End Response-->
+
+
+[2026-02-05 15:32:09]
+. $PROFILE
+gpush "docs: enhance CLAUDE.md with conversation strategy, style guide, and plan validation"
+
+
+[2026-02-05 15:32:10]
+. $PROFILE
+gpush "docs: enhance CLAUDE.md with conversation strategy, style guide, and plan validation"
+
+
+[2026-02-05 15:32:10]
+. $PROFILE
+gpush "docs: enhance CLAUDE.md with conversation strategy, style guide, and plan validation"
+
+
+[2026-02-05 15:32:10]
+. $PROFILE
+gpush "docs: enhance CLAUDE.md with conversation strategy, style guide, and plan validation"
+
+
+[2026-02-05 15:32:10]
+. $PROFILE
+gpush "docs: enhance CLAUDE.md with conversation strategy, style guide, and plan validation"
+
