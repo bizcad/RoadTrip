@@ -1,6 +1,15 @@
 
 # Road Trip – POC Workspace
 
+- A proof of concept for planning and tracking a road trip using Google Sheets and My Maps. 
+1. Start with a google maps and add a starting location and destination to visualize the route.
+2. Describe your car and fuel assumptions.
+3. Let AI Plan the route and stops based on your preferences.
+4. It will generate a CSV for Google Sheets and a CSV for Google My Maps, and compute your gasoline cost.
+5. As you proceed, it will check for weather risks and update the plan accordingly.
+6. As you proceed, you can update the Sheet and My Maps will be updated automagically with new information.
+7. Review the plan and make adjustments as needed.
+
 ## Files in this drop
 - `RoadTrip_TripPlan_SheetsTemplate.csv` – master plan for Google Sheets
 - `RoadTrip_MyMaps_Import.csv` – quick import to Google My Maps
