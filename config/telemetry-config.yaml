@@ -1,0 +1,62 @@
+# Telemetry Configuration
+# Defines how git-push-autonomous decisions are logged and stored
+# Used by: telemetry-logger skill, git-push-autonomous orchestrator
+
+# Log file location
+log_directory: "logs"
+log_file_pattern: "decisions.jsonl"  # JSONL format (one JSON object per line)
+
+# Full path becomes: logs/decisions.jsonl
+
+# Log format: JSON (fully structured)
+log_format: "json"
+
+# What to log
+logging_enabled: true
+
+# Log rotation (Phase 2 feature)
+rotation:
+  enabled: false  # Phase 1: Keep all logs
+  max_file_size_mb: 100
+  max_age_days: 90
+  keep_backups: 5
+
+# What fields to include in every log entry
+required_fields:
+  - timestamp        # ISO8601 timestamp
+  - log_id           # UUID unique identifier
+  - orchestrator     # Name of calling skill (git-push-autonomous)
+  - decision         # Final decision: APPROVED|BLOCKED|ERROR
+  - confidence       # Confidence score (0.0-1.0)
+  - steps            # Array of decision steps with status/confidence
+  - context          # File list, branch, repo info
+  - result           # Outcome: success|failure, commit hash, error message
+
+# Fields NOT to log (security)
+do_not_log:
+  - git_credentials
+  - git_tokens
+  - aws_keys
+  - api_passwords
+  - file_contents     # Only log file paths, not content
+
+# Phase 1: Local-only logging
+local_storage:
+  enabled: true
+  path: "logs/"
+
+# Phase 2: Integration with QuestionManager (future)
+remote_storage:
+  enabled: false
+  endpoint: ""  # Will be configured in Phase 2
+  method: "POST"
+  url_path: "/logs/telemetry"
+  retry_on_failure: true
+  max_retries: 3
+
+# Metadata
+version: "1.0"
+last_updated: "2026-02-05"
+owner: "project-lead"
+status: "ready-for-phase-1"
+phase_2_features: ["rotation", "remote_storage", "alerting"]

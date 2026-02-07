@@ -1,0 +1,2 @@
+# This directory stores telemetry logs from autonomous git-push operations.
+# Git treats this as a placeholder to keep the directory in version control.

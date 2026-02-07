@@ -1,0 +1,113 @@
+# Safety Rules Configuration
+# Defines what files are blocked from autonomous git pushes
+# Used by: rules-engine skill, git-push-autonomous orchestrator
+
+# Blocked files (explicit list)
+# These files will always be blocked, regardless of content
+blocked_files:
+  # Credentials & Secrets
+  - .env
+  - .env.local
+  - .env.development.local
+  - .env.test.local
+  - .env.production.local
+  - .secrets
+  - credentials.json
+  - aws-credentials
+  - .private_key
+  
+  # IDE & Local Configuration
+  - .vscode/settings.json
+  - .idea
+  - .DS_Store
+  - Thumbs.db
+  
+  # Lock files (project-local, not git-checked)
+  - .eslintcache
+  - .prettierignore
+
+# Blocked patterns (regex)
+# Files matching these patterns will be blocked
+blocked_patterns:
+  # Hidden files (usually OS/IDE config)
+  - '^\.'
+  
+  # Credential directories
+  - '^credentials/.*'
+  - '^secrets/.*'
+  
+  # Key and certificate files
+  - '.*\.key$'
+  - '.*\.pem$'
+  - '.*\.pkcs12$'
+  - '.*\.p12$'
+  
+  # Temporary log files
+  - 'tmp.*\.log$'
+  - '.*\.tmp$'
+  
+  # Package artifacts & build output
+  - '^node_modules/.*'
+  - '^\.npm/.*'
+  - '^dist/.*'
+  - '^build/.*'
+  - '^bin/.*'
+  - '^obj/.*'
+  - '^target/.*'
+  - '^venv/.*'
+  - '^__pycache__/.*'
+  - '^\.venv/.*'
+  
+  # Development databases
+  - '.*\.db$'
+  - '.*\.sqlite$'
+  - '.*\.sqlite3$'
+  - '.*\.dump$'
+  
+  # Cache & coverage
+  - '^\.cache/.*'
+  - '^\.temp/.*'
+  - '^tmp/.*'
+  - '^temp/.*'
+  - '^coverage/.*'
+  - '^\..nyc_output/.*'
+
+# Size limits (in MB)
+max_file_size_mb: 50
+
+# Allow operators to override these rules (Phase 2 feature)
+allow_override: false
+
+# Test cases for validation
+test_cases:
+  - name: "Allow normal source files"
+    files: ["src/main.rs", "lib/utils.js"]
+    expected: "APPROVE"
+  
+  - name: "Block .env files"
+    files: [".env"]
+    expected: "BLOCK"
+  
+  - name: "Block credentials directory"
+    files: ["credentials/api.key"]
+    expected: "BLOCK"
+  
+  - name: "Block build artifacts"
+    files: ["dist/bundle.js"]
+    expected: "BLOCK"
+  
+  - name: "Warn on large files but allow"
+    files: ["video.mp4"]
+    file_size_mb: 100
+    expected: "APPROVE_WITH_WARNING"
+  
+  - name: "Allow .gitignore"
+    files: [".gitignore"]
+    expected: "APPROVE"
+
+# Metadata
+version: "1.0"
+last_updated: "2026-02-05"
+owner: "project-lead"
+review_cycle: "monthly"
+status: "ready-for-phase-1"

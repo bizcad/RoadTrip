@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(where:*)",
+      "Bash(/c/Users/bizca/AppData/Local/Programs/Python/Python313/python.exe:*)"
+    ]
+  }
+}

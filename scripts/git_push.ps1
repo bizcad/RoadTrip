@@ -227,17 +227,43 @@ if ([string]::IsNullOrWhiteSpace($status)) {
 Write-Verbose "Found changes to commit"
 
 # ============================================================================
-# Dry-Run Mode: Print message without staging/committing
+# Dry-Run Mode: Stage, preview message, then reset (Option B)
 # ============================================================================
 
 if ($DryRun) {
-    Write-Verbose "DryRun mode: analyzing working-tree changes without staging"
-    $statusLines = $status -split "`n"
-    $gen = if ($Message) { $Message } else { GenerateCommitMessage $statusLines -useNameStatus $false }
+    Write-Verbose "DryRun mode: staging, analyzing, then resetting (working tree unchanged)"
+    
+    # Stage all changes (guarantees preview matches normal mode behavior)
+    Write-Verbose "Running: git add -A"
+    git add -A
+    if ($LASTEXITCODE -ne 0) { Fail 'git add failed during DryRun.' 4 }
+    Write-Verbose "✓ Staging complete"
+    
+    # Get staged changes from index
+    Write-Verbose "Getting staged changes from index..."
+    $stagedRaw = git diff --cached --name-status
+    
+    # Reset immediately (unstage everything; working tree unchanged)
+    Write-Verbose "Running: git reset --quiet (unstaging)"
+    git reset --quiet
+    Write-Verbose "✓ Reset complete; working tree unchanged"
+    
+    # Handle empty staged state
+    if (-not $stagedRaw) {
+        Write-Host 'No changes to commit.' -ForegroundColor Yellow
+        Write-SessionLog 'DryRun: no changes found.'
+        exit 0
+    }
+    
+    # Generate message from staged state (same logic as normal mode)
+    $stagedLines = $stagedRaw -split "`n"
+    $gen = if ($Message) { $Message } else { GenerateCommitMessage $stagedLines -useNameStatus $true }
+    
+    # Display preview
     Write-Host "`n--- Dry Run: Generated commit message ---" -ForegroundColor Cyan
     Write-Host $gen
     Write-Host "--- End generated message ---`n" -ForegroundColor Cyan
-    Write-SessionLog "DryRun: generated message without performing git operations."
+    Write-SessionLog "DryRun: staged, previewed, and reset. Working tree unchanged."
     exit 0
 }
 

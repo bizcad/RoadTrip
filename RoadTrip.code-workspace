@@ -25,7 +25,9 @@
                 "approve": true,
                 "matchCommandLine": true
             },
-            "Test-Path": true
+            "Test-Path": true,
+            "ForEach-Object": true,
+            "Get-Item": true
         }
     }
 }
