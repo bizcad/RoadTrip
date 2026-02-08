@@ -151,29 +151,28 @@ function Invoke-GitPush([string]$token, [string]$message) {
     # GitHub's git credential helpers check GIT_TOKEN or similar
     $env:GITHUB_TOKEN = $token
     
-    # Also set GIT_TRACE for debugging if verbose
-    if ($VerbosePreference -eq "Continue") {
-        $env:GIT_TRACE = "1"
-    }
-    
     try {
-        # Build arguments for git_push.ps1
-        $args = @()
-        if ($Message) {
-            $args += '-Message'
-            $args += $Message
-        }
-        if ($DryRun) {
-            $args += '-DryRun'
-        }
-        if ($LogFile) {
-            $args += '-LogFile'
-            $args += $LogFile
-        }
-        
-        # Invoke git_push.ps1
+        # Invoke git_push.ps1 with explicit parameter passing
+        # Build the command carefully to avoid positional parameter confusion
         Write-Log "Invoking git_push.ps1..."
-        & $GitPushScript @args
+        
+        if ($Message) {
+            if ($DryRun) {
+                & $GitPushScript -Message $Message -DryRun
+            } elseif ($LogFile) {
+                & $GitPushScript -Message $Message -LogFile $LogFile
+            } else {
+                & $GitPushScript -Message $Message
+            }
+        } else {
+            if ($DryRun) {
+                & $GitPushScript -DryRun
+            } elseif ($LogFile) {
+                & $GitPushScript -LogFile $LogFile
+            } else {
+                & $GitPushScript
+            }
+        }
         
         $exitCode = $LASTEXITCODE
         return $exitCode
