@@ -69,7 +69,7 @@ param(
 # Configuration
 # ============================================================================
 
-$SkillsDir = Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) "src\skills"
+$SkillsDir = Join-Path (Split-Path -Parent $PSScriptRoot) "src\skills"
 $TokenResolverScript = Join-Path $SkillsDir "token_resolver.py"
 $GitPushScript = Join-Path $PSScriptRoot "git_push.ps1"
 $TokenName = "github_pat"
