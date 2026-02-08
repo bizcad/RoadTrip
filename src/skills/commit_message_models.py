@@ -29,8 +29,9 @@ class Tier1Score:
     categories: List[str]                   # e.g., ["src", "tests"]
     single_category: bool                   # All files in one category?
     pattern_match: str                      # Pattern matched, e.g., "feat: {action}"
+    message: str                            # The generated message
     confidence: float                       # 0.0-1.0 confidence in this message
-    reason: str = ""                        # Human explanation
+    reasoning: str = ""                     # Human explanation
     
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

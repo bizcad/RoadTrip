@@ -92,10 +92,7 @@ param(
     [switch]$DryRun,
     
     [Parameter(HelpMessage='Output as JSON')]
-    [switch]$AsJson,
-    
-    [Parameter(HelpMessage='Verbose output')]
-    [switch]$Verbose
+    [switch]$AsJson
 )
 
 # ============================================================================
@@ -108,13 +105,21 @@ if (@($StagedFiles).Count -eq 0 -and [string]::IsNullOrWhiteSpace($UserMessage))
     Write-Host "Usage:"
     Write-Host "  .\invoke-commit-message.ps1 -StagedFiles src/*.py"
     Write-Host "  .\invoke-commit-message.ps1 -UserMessage 'feat: custom message'"
-    Write-Host "  .\invoke-commit-message.ps1 -StagedFiles src/ -DryRun -Verbose"
+    Write-Host "  .\invoke-commit-message.ps1 -StagedFiles src/ -DryRun"
     exit 1
 }
 
-# Check Python installed
+# Get repo root (parent of scripts directory)
+$repoRoot = Split-Path -Path $PSScriptRoot -Parent
+
+# Check skill file exists
+$skillPath = Join-Path $repoRoot 'src' 'skills' 'commit_message.py'
+if (-not (Test-Path $skillPath)) {
+    Write-Host "Error: Skill not found at $skillPath" -ForegroundColor Red
+    exit 1
+}
 $pythonCmd = $null
-foreach ($py in @('python3', 'python')) {
+foreach ($py in @('py', 'python3', 'python', 'python.exe')) {
     try {
         $version = & $py --version 2>$null
         if ($version) {
@@ -128,13 +133,6 @@ foreach ($py in @('python3', 'python')) {
 if ([string]::IsNullOrWhiteSpace($pythonCmd)) {
     Write-Host "Error: Python not found on PATH" -ForegroundColor Red
     Write-Host "Install Python 3.8+ from https://www.python.org/"
-    exit 1
-}
-
-# Check skill file exists
-$skillPath = Join-Path $PSScriptRoot 'src' 'skills' 'commit_message.py'
-if (-not (Test-Path $skillPath)) {
-    Write-Host "Error: Skill not found at $skillPath" -ForegroundColor Red
     exit 1
 }
 
@@ -167,10 +165,6 @@ if ($DryRun) {
 
 if ($AsJson) {
     $pythonArgs += '--json'
-}
-
-if ($Verbose) {
-    $pythonArgs += '--verbose'
 }
 
 # ============================================================================

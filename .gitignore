@@ -50,6 +50,11 @@ PromptTracking/
 # Initiative and strategy (separate private repos)
 workflows/003-signed-agentic-work/
 
+# Tests and test artifacts (metadata, not deliverable)
+tests/test_*.ps1
+tests/results/
+tests/*.log
+
 # Logs and session files
 *.log
 *.session
