@@ -170,9 +170,6 @@ function Invoke-GitPush([string]$token, [string]$message) {
             $args += '-LogFile'
             $args += $LogFile
         }
-        if ($VerbosePreference -eq "Continue") {
-            $args += '-Verbose'
-        }
         
         # Invoke git_push.ps1
         Write-Log "Invoking git_push.ps1..."
