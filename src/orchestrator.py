@@ -3,14 +3,30 @@ Orchestrator: Dynamically load and chain skills
 
 Core architecture: Agents don't hardcode skill calls. 
 Orchestrator discovers, validates, and chains skills based on workflow definition.
+
+Skills Registry: Instead of scanning fs every run, loads metadata from skills-registry.yaml
+"Ready" skills (status=ready) can be executed immediately.
+"Discovered" skills (status=discovered) exist but need execute() wrapper.
 """
 
 import sys
 import importlib
 import importlib.util
+import yaml
 from pathlib import Path
 from typing import Any, Dict, List
 from dataclasses import dataclass
+
+
+@dataclass
+class SkillMetadata:
+    """Metadata about a skill from the registry"""
+    name: str
+    version: str
+    description: str
+    interface: str
+    status: str  # "ready" or "discovered"
+    file: str = None
 
 
 @dataclass
@@ -27,6 +43,9 @@ class Orchestrator:
     """
     Simple orchestrator: Load skills, chain them, pass outputs through pipeline.
     
+    Skills are loaded from skills-registry.yaml for fast lookup.
+    Only "ready" skills (with execute() interface) can be run directly.
+    
     Usage:
         orch = Orchestrator()
         result = orch.run_workflow([
@@ -35,42 +54,84 @@ class Orchestrator:
         ])
     """
     
-    def __init__(self, skills_dir: str = None):
-        """Initialize orchestrator with skills directory"""
+    def __init__(self, skills_dir: str = None, registry_file: str = None):
+        """Initialize orchestrator with skills directory and registry"""
         if skills_dir is None:
             skills_dir = str(Path(__file__).parent / "skills")
+        if registry_file is None:
+            registry_file = str(Path(__file__).parent.parent / "config" / "skills-registry.yaml")
         
         self.skills_dir = Path(skills_dir)
+        self.registry_file = Path(registry_file)
         self.loaded_skills = {}  # {skill_name: module}
-        self._discover_skills()
+        self.skills_registry = {}  # {skill_name: SkillMetadata}
+        
+        # Load registry first (fast lookup)
+        self._load_registry()
+        
+        # Then load ready skills
+        self._load_ready_skills()
     
-    def _discover_skills(self):
-        """Scan skills_dir and register all available skills"""
-        if not self.skills_dir.exists():
-            print(f"[WARN] Skills directory not found: {self.skills_dir}")
+    def _load_registry(self):
+        """Load skills-registry.yaml for metadata"""
+        if not self.registry_file.exists():
+            print(f"[WARN] Registry not found: {self.registry_file}")
+            print(f"       Run: python src/registry_builder.py")
             return
         
-        for py_file in self.skills_dir.glob("*.py"):
-            if py_file.name.startswith("_"):
-                continue  # Skip __init__.py, etc.
+        try:
+            with open(self.registry_file, 'r') as f:
+                registry_data = yaml.safe_load(f)
             
-            # Skip complex skills that don't have simple execute() function yet
-            if py_file.name in ["commit_message.py", "config_loader.py", "token_resolver.py", "rules_engine.py", "models.py", "auth_validator_models.py", "commit_message_models.py"]:
+            for skill_name, metadata in registry_data.get("skills", {}).items():
+                self.skills_registry[skill_name] = SkillMetadata(
+                    name=skill_name,
+                    version=metadata.get("version", "unknown"),
+                    description=metadata.get("description", ""),
+                    interface=metadata.get("interface", ""),
+                    status=metadata.get("status", "unknown"),
+                    file=metadata.get("file", "")
+                )
+            
+            meta = registry_data.get("metadata", {})
+            print(f"[OK] Registry loaded: {len(self.skills_registry)} total skills")
+            print(f"     Ready: {meta.get('ready_skills', 0)}, Discovered: {meta.get('discovered_skills', 0)}")
+        except Exception as e:
+            print(f"[FAIL] Failed to load registry: {e}")
+    
+    def _load_ready_skills(self):
+        """Load only 'ready' skills (those with execute() interface)"""
+        for skill_name, metadata in self.skills_registry.items():
+            if metadata.status != "ready":
+                continue  # Skip discovered skills
+            
+            skill_file = self.skills_dir / metadata.file
+            if not skill_file.exists():
+                print(f"[WARN] Skill file not found: {skill_file}")
                 continue
             
-            skill_name = py_file.stem
             try:
-                # Dynamically import skill module
-                spec = importlib.util.spec_from_file_location(skill_name, py_file)
+                spec = importlib.util.spec_from_file_location(skill_name, skill_file)
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 
-                # Verify skill has required functions
                 if hasattr(module, "execute"):
                     self.loaded_skills[skill_name] = module
                     print(f"[OK] Loaded skill: {skill_name}")
             except Exception as e:
                 print(f"[FAIL] Failed to load skill {skill_name}: {e}")
+    
+    def get_skill_info(self, skill_name: str) -> SkillMetadata:
+        """Get metadata for a skill"""
+        return self.skills_registry.get(skill_name)
+    
+    def list_ready_skills(self) -> List[SkillMetadata]:
+        """Get list of all ready skills"""
+        return [m for m in self.skills_registry.values() if m.status == "ready"]
+    
+    def list_all_skills(self) -> List[SkillMetadata]:
+        """Get list of all discovered skills (ready + discovered)"""
+        return list(self.skills_registry.values())
     
     def list_skills(self) -> Dict[str, str]:
         """Get dictionary of all discovered skills and their versions"""
