@@ -1,0 +1,174 @@
+# Authorization Policy Configuration
+# Used by auth-validator skill to make authorization decisions
+# Updated: 2026-02-07
+
+---
+
+# Layer 1 & 2: Skill and Role Definitions
+roles:
+  Developer:
+    rank: 1
+    description: "Software engineer"
+    skills:
+      - "git-push-autonomous"
+      - "read-logs"
+  
+  Senior-Engineer:
+    rank: 2
+    description: "Senior software engineer"
+    skills:
+      - "git-push-autonomous"
+      - "read-logs"
+      - "deploy-staging"
+  
+  Staff-Engineer:
+    rank: 3
+    description: "Staff engineer"
+    skills:
+      - "git-push-autonomous"
+      - "read-logs"
+      - "deploy-staging"
+      - "deploy-production"
+
+# Layer 1: Skill visibility based on group membership
+skills:
+  git-push-autonomous:
+    policy_version: "1.0"
+    allowed_groups:
+      - "engineering-team"
+      - "platform-engineering"
+    minimum_role_rank: 1
+    requires_mfa: true
+    accepted_mfa_methods:
+      - "totp"
+      - "webauthn"
+    description: "Autonomous git push with deterministic commit messages"
+
+# Layer 2: MFA requirements (can be skill-specific or role-specific)
+mfa_policy:
+  git-push-autonomous:
+    required: true
+    accepted_methods: ["totp", "webauthn"]
+    grace_period_minutes: 0  # Require MFA every time for Phase 1b
+
+# Layer 3: Tool-level permissions
+tools:
+  git-add:
+    allowed_paths:
+      - "src/**"
+      - "docs/**"
+      - "tests/**"
+      - "config/**"
+      - "CLAUDE.md"
+      - "pyproject.toml"
+      - "LICENSE"
+    blocked_paths:
+      - "secrets/**"
+      - "ProjectSecrets/**"
+      - ".env"
+      - ".env.local"
+      - ".env.*.local"
+      - "credentials/**"
+      - "**/*.key"
+      - "**/*.pem"
+    description: "Git add command path restrictions"
+  
+  git-commit:
+    allowed_actions:
+      - "create"
+      - "amend"
+    max_message_length: 500
+    description: "Git commit command restrictions"
+  
+  git-push:
+    allowed_branches:
+      - "feature/*"
+      - "develop"
+      - "bugfix/*"
+      - "hotfix/*"
+    blocked_branches:
+      - "main"        # Protected: releases and hotfixes via PR only
+      - "production"  # Never direct push
+    description: "Git push branch restrictions"
+
+# Layer 4: Resource-level access control
+resources:
+  git:
+    repository: "RoadTrip"
+    branches:
+      main:
+        allowed_roles: []  # Protected: no direct pushes
+        allowed_operations: ["read", "list"]
+        description: "Production branch - use PR process"
+        min_approvals: 2
+      
+      develop:
+        allowed_roles: [1, 2]  # Developer and above
+        allowed_operations: ["read", "write", "list"]
+        description: "Development branch"
+      
+      "feature/*":
+        allowed_roles: [1, 2, 3]  # Everyone
+        allowed_operations: ["read", "write", "create"]
+        description: "Feature branches - free for all"
+      
+      "bugfix/*":
+        allowed_roles: [1, 2, 3]
+        allowed_operations: ["read", "write", "create"]
+        description: "Bug fix branches"
+      
+      "hotfix/*":
+        allowed_roles: [2, 3]  # Senior-Engineer and above
+        allowed_operations: ["read", "write", "create"]
+        description: "Emergency fixes - restricted to senior engineers"
+
+# User-to-Group Mapping (Phase 1b development setup)
+# Phase 2: Replace with Entra AD query
+users:
+  bizcad:
+    name: "bizcad"
+    email: "bizcad@example.com"
+    role: "Senior-Engineer"
+    groups:
+      - "engineering-team"
+      - "project-omega"
+    mfa_validated: true
+    mfa_method: "totp"
+    session_id: "dev-session-001"
+    # Phase 2: Remove these local credentials, use Entra tokens
+    github_user: "bizcad"
+    github_pat_env: "GITHUB_TOKEN"  # Env var reference
+
+# Error Messages & Recovery Actions (Customizable per layer)
+error_messages:
+  INSUFFICIENT_GROUP:
+    message: "You are not in a group authorized for this skill"
+    recovery: "Contact your manager or admin to be added to one of: {required_groups}"
+  
+  INSUFFICIENT_ROLE:
+    message: "Your role '{user_role}' is below the minimum required role '{minimum_role}'"
+    recovery: "Request a role promotion in your next review, or contact admin"
+  
+  MFA_REQUIRED:
+    message: "This skill requires multi-factor authentication"
+    recovery: "Re-authenticate with MFA (TOTP or security key) and try again"
+  
+  INSUFFICIENT_ROLE_FOR_BRANCH:
+    message: "Your role '{user_role}' cannot directly push to branch '{branch}'"
+    recovery: "Switch branches or request a role promotion: {suggested_branch}"
+  
+  PATH_BLOCKED:
+    message: "File '{path}' is blocked from being committed"
+    recovery: "Remove file from git: git reset {path}"
+  
+  RESOURCE_PROTECTED:
+    message: "Resource '{resource}' is protected and no roles are currently authorized"
+    recovery: "Use the alternative workflow: {suggested_alternative}"
+
+---
+
+# Config version
+version: "1.0"
+last_updated: "2026-02-07"
+phase: "Phase 1b MVP"
+note: "Users section will be replaced with Entra AD integration in Phase 2"

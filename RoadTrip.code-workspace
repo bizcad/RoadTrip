@@ -3,6 +3,10 @@
         {
             "name": "RoadTrip",
             "path": "."
+        },
+        {
+            "name": "DotNetSkills",
+            "path": "..\\DotNetSkills"
         }
     ],
     "settings": {

@@ -47,6 +47,9 @@ PromptTracking/
 *.key
 *.pem
 
+# Initiative and strategy (separate private repos)
+workflows/003-signed-agentic-work/
+
 # Logs and session files
 *.log
 *.session

@@ -1,0 +1,75 @@
+commit_message:
+  strategy: "hybrid"                   # hybrid|deterministic|ai
+  cost_tracking: true
+  
+  # Tier 1→2 Switch
+  confidence_threshold: 0.85           # If Tier 1 confidence < 0.85, use Tier 2
+  min_confidence_accept: 0.75          # If Tier 2 < 0.75, request user input
+  
+  # Tier 1 Patterns (deterministic)
+  tier1_rules:
+    documentation:
+      extensions: [".md", ".txt"]
+      pattern: "docs: {action}"
+      confidence: 0.95
+    
+    yaml_config:
+      extensions: [".yml", ".yaml", ".json"]
+      pattern: "chore: {action}"
+      confidence: 0.93
+    
+    src_code:
+      paths: ["src/**"]
+      pattern: "feat: {action}"
+      confidence: 0.90
+    
+    test_code:
+      paths: ["tests/**"]
+      pattern: "test: {action}"
+      confidence: 0.92
+    
+    skills:
+      paths: ["skills/**"]
+      pattern: "feat: {action}"
+      confidence: 0.88
+    
+    multiple_files_same_category:
+      min_files: 2
+      max_files: 10
+      pattern: "{category}: {action}"
+      confidence: 0.88
+    
+    bulk_changes:
+      min_files: 11
+      pattern: "chore: bulk update"
+      confidence: 0.70
+  
+  # Tier 2 LLM Config
+  tier2:
+    enabled: true
+    model: "claude-3-5-sonnet-20241022"
+    max_tokens: 500
+    temperature: 0.0              # Deterministic (no randomness)
+    api_timeout_seconds: 30
+  
+  # Tier 3 Override
+  allow_user_override: true            # -Message parameter accepted
+
+# Cost tracking & reporting
+cost_tracking:
+  enabled: true
+  track_per_call: true                # Log each Tier 2 call
+  report_frequency: "daily"
+  alert_threshold_usd: 10.0           # Alert if daily > $10
+
+# Conventional Commits (for message formatting)
+conventional_commits:
+  types: ["feat", "fix", "refactor", "docs", "test", "chore", "perf", "ci"]
+  breaking_change_prefix: "BREAKING CHANGE:"
+  footer_tokens: ["Co-authored-by:", "Fixes:", "Refs:"]
+
+# Pricing (Claude 3.5 Sonnet, as of Feb 2026)
+pricing:
+  tier2_model: "claude-3-5-sonnet-20241022"
+  input_cost_per_1m_tokens: 0.003
+  output_cost_per_1m_tokens: 0.015
