@@ -32,7 +32,9 @@
             "Test-Path": true,
             "ForEach-Object": true,
             "Get-Item": true,
-            ".\\tests\\test-agent-autonomous-push.ps1": true
+            ".\\tests\\test-agent-autonomous-push.ps1": true,
+            "&": true,
+            ".\\scripts\\push-with-token.ps1": true
         }
     }
 }
