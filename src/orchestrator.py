@@ -68,9 +68,31 @@ class Orchestrator:
                 # Verify skill has required functions
                 if hasattr(module, "execute"):
                     self.loaded_skills[skill_name] = module
-                    print(f"✅ Loaded skill: {skill_name}")
+                    print(f"[OK] Loaded skill: {skill_name}")
             except Exception as e:
-                print(f"❌ Failed to load skill {skill_name}: {e}")
+                print(f"[FAIL] Failed to load skill {skill_name}: {e}")
+    
+    def list_skills(self) -> Dict[str, str]:
+        """Get dictionary of all discovered skills and their versions"""
+        skills_info = {}
+        for skill_name, module in self.loaded_skills.items():
+            version = getattr(module, "__version__", "unknown")
+            skills_info[skill_name] = version
+        return skills_info
+    
+    def print_skills(self) -> None:
+        """Pretty-print available skills"""
+        if not self.loaded_skills:
+            print("\n[WARN] No skills discovered")
+            return
+        
+        print(f"\nAvailable Skills ({len(self.loaded_skills)}):")
+        print("-" * 50)
+        for skill_name, module in sorted(self.loaded_skills.items()):
+            version = getattr(module, "__version__", "unknown")
+            docstring = (module.__doc__ or "").split('\n')[0].strip()
+            print(f"  - {skill_name:<20} v{version:<6} {docstring}")
+        print("-" * 50)
     
     def run_skill(self, skill_name: str, input_data: Dict[str, Any]) -> SkillResult:
         """
@@ -159,7 +181,8 @@ def main():
     
     orch = Orchestrator()
     
-    print(f"\nLoaded {len(orch.loaded_skills)} skills: {list(orch.loaded_skills.keys())}")
+    # Show available skills
+    orch.print_skills()
     
     # Demo workflow: validator -> committer
     workflow = [
@@ -174,11 +197,11 @@ def main():
     print("Workflow Summary")
     print("=" * 60)
     for i, result in enumerate(results, 1):
-        status_icon = "✅" if result.status == "SUCCESS" else "❌"
+        status_icon = "[OK]" if result.status == "SUCCESS" else "[FAIL]"
         print(f"{i}. {status_icon} {result.skill_name}: {result.status}")
     
     all_passed = all(r.status == "SUCCESS" for r in results)
-    print(f"\nOverall: {'✅ SUCCESS' if all_passed else '❌ FAILED'}")
+    print(f"\nOverall: {'[OK] SUCCESS' if all_passed else '[FAIL] FAILED'}")
 
 
 if __name__ == "__main__":
