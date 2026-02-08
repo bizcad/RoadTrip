@@ -31,7 +31,8 @@
             },
             "Test-Path": true,
             "ForEach-Object": true,
-            "Get-Item": true
+            "Get-Item": true,
+            ".\\tests\\test-agent-autonomous-push.ps1": true
         }
     }
 }
