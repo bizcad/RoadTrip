@@ -1,0 +1,58 @@
+# Blog Publisher Configuration
+# 
+# This configuration file controls all aspects of the blog publisher skill.
+# See skills/blog-publisher/SKILL.md for specification details.
+
+blog:
+  
+  # Repository configuration
+  repo:
+    url: "https://github.com/bizcad/roadtrip-blog.git"
+    branch: "main"
+    local_path: null  # Will be auto-detected or cloned if needed
+    posts_folder: "_posts"  # Relative path to posts directory
+  
+  # Vercel deployment configuration
+  vercel:
+    domain: "roadtrip-blog-ten.vercel.app"
+    build_check_enabled: false  # Phase 3: TODO - enable Vercel API checks
+    estimated_build_time_sec: 30  # From Phase 2 observation
+  
+  # Git commit configuration
+  git:
+    author_name: "RoadTrip Orchestrator"
+    author_email: "workflow@roadtrip.local"
+    commit_prefix: "blog"  # Semantic commit prefix
+  
+  # Input validation configuration
+  validation:
+    min_content_length: 50  # Minimum characters for blog content
+    min_excerpt_length: 50  # SEO minimum
+    max_excerpt_length: 160  # SEO maximum
+    max_file_size_mb: 1  # Maximum file size
+    check_for_secrets: true  # Use rules-engine validation
+  
+  # Default values (used when optional fields are missing)
+  defaults:
+    author_name: "RoadTrip"
+    author_picture: "/assets/blog/authors/roadtrip.jpeg"
+    coverImage: "/assets/blog/default-cover.jpg"
+    timezone: "UTC"
+
+
+# Example Usage
+# =============
+#
+# In Python:
+#   config = load_config("config/blog-config.yaml")
+#   skill = BlogPublisherSkill(config)
+#   result = skill.publish(post)
+#
+# The skill will:
+# 1. Validate against config.blog.validation rules
+# 2. Format post with YAML frontmatter
+# 3. Clone blog repo if needed (local_path=null)
+# 4. Write post to config.blog.repo.posts_folder
+# 5. Commit with author from config.blog.git
+# 6. Push to config.blog.repo.branch
+# 7. Return result with live URL from config.blog.vercel.domain

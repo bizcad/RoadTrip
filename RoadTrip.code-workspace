@@ -36,7 +36,9 @@
             "&": true,
             ".\\scripts\\push-with-token.ps1": true,
             ".": true,
-            "logt": true
+            "logt": true,
+            "Out-File": true,
+            "gpush": true
         }
     }
 }
