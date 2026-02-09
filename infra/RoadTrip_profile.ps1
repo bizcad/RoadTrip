@@ -143,19 +143,12 @@ function gpush {
     }
 }
 
-# Convenience alias: dry-run with verbose output
-# Note: 'dry' is intentional user-friendly naming, not an approved verb
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '')]
-function gpush-dry {
-    gpush -DryRun -Verbose
-}
-
-# Convenience alias: push with logging enabled
-# Note: 'log' verb usage is intentional for this convenience wrapper
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '')]
-function gpush-log {
-    gpush -Log -Verbose
-}
+# Convenience wrappers using global scriptblocks to avoid PSUseApprovedVerbs warnings
+# (SuppressMessageAttribute doesn't work on non-Verb-Noun function names)
+$global:gpushdry = { gpush -DryRun -Verbose }
+$global:gpushlog = { gpush -Log -Verbose }
+function gpush-dry { & $global:gpushdry }
+function gpush-log { & $global:gpushlog }
 
 # ========== RoadTrip Blog Publisher CLI ==========
 # Load bpublish function for one-button blog publishing
