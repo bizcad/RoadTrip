@@ -9,7 +9,7 @@ blog:
   repo:
     url: "https://github.com/bizcad/roadtrip-blog.git"
     branch: "main"
-    local_path: null  # Will be auto-detected or cloned if needed
+    local_path: "G:\\repos\\AI\\roadtrip-blog"  # Local clone of blog repository
     posts_folder: "_posts"  # Relative path to posts directory
   
   # Vercel deployment configuration
