@@ -11,10 +11,10 @@
 
 ## Pre-Test Setup
 
-- [ ] Python environment ready (`python --version` → 3.10+)
+- [ ] Python environment ready (`py --version` → 3.10+)
 - [ ] Dependencies installed:
   ```powershell
-  pip install pyyaml
+  py -m pip install pyyaml
   ```
 - [ ] Blog repo available locally
 - [ ] Configuration file `config/blog-config.yaml` is readable
@@ -26,7 +26,7 @@
 ### Test 1.1: Simple Post (All Fields)
 ```powershell
 cd G:\repos\AI\RoadTrip
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -60,7 +60,7 @@ Warnings: []
 
 ### Test 1.2: Minimal Input (Defaults Applied)
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -93,7 +93,7 @@ Warnings: [...author_picture..., ...coverImage...]
 
 ### Test 2.1: Empty Title
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -119,7 +119,7 @@ Errors: ['title is required...']
 
 ### Test 2.2: Content Too Short
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -139,7 +139,7 @@ print(f'Errors: {result.errors}')
 
 ### Test 2.3: Secrets Detected
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -163,7 +163,7 @@ print(f'Has secret errors: {any(\"secret\" in e.lower() for e in result.errors)}
 
 ### Test 3.1: Slug Generation
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -189,7 +189,7 @@ for title, expected in test_cases:
 
 ### Test 3.2: Frontmatter YAML
 ```powershell
-python -c "
+py -c "
 import yaml
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
@@ -229,7 +229,7 @@ Has date: True
 
 ### Test 3.3: Filename Generation
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 from datetime import datetime
 config = load_config('config/blog-config.yaml')
@@ -269,7 +269,7 @@ print(f'Starts with today: {filename2.startswith(today)}')
 
 ### Test 4.1: Live URL Creation
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -304,7 +304,7 @@ URL: https://roadtrip-blog-ten.vercel.app/blog/rest-api-best-practices
 
 ### Test 5.1: Same Input → Same Output
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -342,7 +342,7 @@ All error counts same: True
 
 ### Test 6.1: Full Pipeline (Validation + Formatting)
 ```powershell
-python -c "
+py -c "
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')
 skill = BlogPublisherSkill(config)
@@ -416,7 +416,7 @@ ogImage:
 Now verify our implementation generates the same structure:
 
 ```powershell
-python -c "
+py -c "
 import yaml
 from src.skills.blog_publisher import BlogPost, BlogPublisherSkill, load_config
 config = load_config('config/blog-config.yaml')

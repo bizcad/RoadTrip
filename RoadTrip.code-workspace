@@ -38,7 +38,8 @@
             ".": true,
             "logt": true,
             "Out-File": true,
-            "gpush": true
+            "gpush": true,
+            "py": true
         }
     }
 }
