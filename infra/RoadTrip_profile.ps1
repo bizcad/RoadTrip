@@ -145,12 +145,14 @@ function gpush {
 
 # Convenience alias: dry-run with verbose output
 # Note: 'dry' is intentional user-friendly naming, not an approved verb
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '')]
 function gpush-dry {
     gpush -DryRun -Verbose
 }
 
 # Convenience alias: push with logging enabled
 # Note: 'log' verb usage is intentional for this convenience wrapper
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '')]
 function gpush-log {
     gpush -Log -Verbose
 }
