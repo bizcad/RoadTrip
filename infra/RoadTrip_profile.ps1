@@ -155,9 +155,16 @@ function gpush-log {
     gpush -Log -Verbose
 }
 
+# ========== RoadTrip Blog Publisher CLI ==========
+# Load bpublish function for one-button blog publishing
+$bpublishPath = Join-Path $ProjectRoot "scripts\bpublish-function.ps1"
+if (Test-Path $bpublishPath) {
+    . $bpublishPath
+}
+
 # Write confirmation message
 Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
-Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log" -ForegroundColor Cyan
+Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp)" -ForegroundColor Cyan
 
 # Load session logging
 # Only load if we're in the ProjectRoot directory
