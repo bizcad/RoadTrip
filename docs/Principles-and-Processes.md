@@ -1,7 +1,7 @@
 # RoadTrip Skills Framework: Principles and Processes
 
-**Version**: 1.1
-**Last Updated**: 2026-02-06  
+**Version**: 1.2
+**Last Updated**: 2026-02-09  
 **Status**: Active (Living Document)
 
 ---
@@ -167,6 +167,52 @@ def my_function(x: str, y: int = 0) -> str:
 - **No external service calls**: All deterministic; stdout/stderr only
 
 *See [Code Organization](#code-organization) section for full directory structure.*
+
+### PowerShell & CLI Wrapper Standards
+
+**CRITICAL: Never declare `-Verbose` or `-Confirm` parameters explicitly.**
+
+PowerShell has built-in common parameters (`-Verbose`, `-Debug`, `-Confirm`, `-WhatIf`, `-ErrorAction`, `-WarningAction`, `-Verbose`, `-Verbose`, `-WarningVariable`, `-ErrorVariable`, `-OutVariable`, `-OutBuffer`). These are automatically added to every function—declaring them again causes a "duplicate parameter" error.
+
+**❌ WRONG:**
+```powershell
+function bpublish {
+    param(
+        [string]$Title,
+        [switch]$DryRun,
+        [switch]$Verbose  # ❌ PowerShell already provides this!
+    )
+    # Error: "A parameter with the name 'Verbose' was defined multiple times for the command."
+}
+```
+
+**✅ CORRECT:**
+```powershell
+function bpublish {
+    param(
+        [string]$Title,
+        [switch]$DryRun
+        # Don't declare -Verbose; PowerShell provides it automatically
+    )
+    
+    # Check verbose state using automatic variable
+    if ($VerbosePreference -eq "Continue") {
+        Write-Host "Verbose output..."
+    }
+}
+```
+
+**Why this matters**: Users call functions with `-Verbose` by default; we must accept it transparently. Declaring it explicitly breaks the function entirely.
+
+**Additional CLI wrapper rules:**
+1. **Use dot-sourcing** (`. .\script.ps1`) not `Import-Module` for function loading
+2. **Never use `Export-ModuleMember`** outside of actual modules (`.psm1` files)
+3. **Prefer `$PSCmdlet.ShouldProcess()`** for dry-run / `-WhatIf` support
+4. **Use Set-Alias** AFTER function definition, not before
+5. **Color output** with `Write-Host -ForegroundColor` for user feedback
+6. **Avoid PowerShell automatic variable names** in loops: use `$item` not `$error`, `$_`, or `$args`
+
+*See [Phase 5 - CLI Integration](../workflows/PHASE-5-COMPLETION.md) for implementation examples.*
 
 ---
 
