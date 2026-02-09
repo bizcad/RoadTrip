@@ -34,7 +34,9 @@
             "Get-Item": true,
             ".\\tests\\test-agent-autonomous-push.ps1": true,
             "&": true,
-            ".\\scripts\\push-with-token.ps1": true
+            ".\\scripts\\push-with-token.ps1": true,
+            ".": true,
+            "logt": true
         }
     }
 }
