@@ -1,7 +1,7 @@
 # RoadTrip Skills Framework: Principles and Processes
 
-**Version**: 1.2
-**Last Updated**: 2026-02-09  
+**Version**: 1.3
+**Last Updated**: 2026-02-10  
 **Status**: Active (Living Document)
 
 ---
@@ -454,10 +454,43 @@ The `workflows/` directory captures **reproducible process artifacts** — plans
 
 Then: `git_push_autonomous.py` (Orchestrator + CLI)
 
-**Phase 2 (Future)**: Enhanced Capabilities
-- Content scanning for secrets
-- Override mechanisms with audit trail
-- Learning loops based on telemetry
+**Phase 2 (Next): Fingerprinting + Skill Discovery**
+
+**Why Phase 2 Exists**: Phase 1b skills are deterministic and tested, but once deployed, how do we ensure they haven't been modified? How can we discover skills dynamically? How do we verify the skills we find are trustworthy?
+
+**Strategic Context**: Validated by DyTopo research (Peking University / Georgia Tech, Feb 2026), which demonstrates that AI orchestration via semantic skill discovery achieves 8-billion-parameter model performance equivalent to 120-billion-parameter models. See [DyTopo_Analysis_And_SKILLS_Implications.md](./DyTopo_Analysis_And_SKILLS_Implications.md) for full analysis.
+
+**Phase 2a (Q1 2026): Fingerprinting Infrastructure**
+- ✅ **Objective**: Cryptographic attestation for Phase 1b skills (prevent tampering)
+- ✅ **Deliverables**:
+  - `SkillFingerprint` dataclass: `skill_id`, `version`, `code_hash` (SHA256), `capabilities_hash`, `max_execution_time_ms`, `allowed_external_calls`, `baseline_latency_avg_ms`, `baseline_success_rate`, `fingerprint_hash` (composite), `attestor_signature`  
+  - Fingerprint generation logic (runs post-vetting)
+  - Fingerprint verification check (runs pre-execution)
+  - Vetting pipeline template: (1) static analysis (bandit, secret detection), (2) sandbox test, (3) fingerprint signature, (4) capability assertion
+- 🎯 **Success Criteria**: All Phase 1b skills have signed fingerprints; runtime verification never fails on unmodified skills
+
+**Phase 2b (Q2 2026): Skill Registry + Discovery**
+- ✅ **Objective**: Enable dynamic skill discovery via semantic matching + trust scoring
+- ✅ **Deliverables**:
+  - `SkillContract` dataclass: `skill_id`, `version`, `query` (DyTopo descriptor: what I need), `key` (what I offer), `supported_operations`, `input_schema`, `output_schema`, `required_permissions`, `max_execution_time_ms`, `slo_latency_p99_ms`, `slo_success_rate`, `trust_score`, `known_limitations`
+  - Skill registry backend (YAML/JSON storage; can upgrade to database later)
+  - `find_nearest_skills(query, min_trust_score)` function (semantic search via embeddings + cosine similarity)
+  - Trust scoring engine: `trust_score = f(test_pass_rate, fingerprint_match, production_success_rate)`
+  - Capability introspection API (MCP-style: "What can this skill do?")
+- 🎯 **Success Criteria**: Registry achieves >95% recall (Skill finds correct skills for queries); trust scores predict reliability (Pearson correlation > 0.7 with actual success); operator surveys show "discovery saves time vs manual mapping"
+
+**Phase 2c (Optional - Q3 2026): Dynamic Topology Routing**
+- ✅ **Objective**: Full semantic routing per DyTopo paper (ONLY if Phase 2b proves sufficient value)
+- ✅ **Implementation**: Five-phase pipeline from DyTopo paper (descriptor generation → semantic graph induction → topological sequencing → routing → memory update)
+- ✅ **Cost/Benefit**: Only pursue if Phase 2b discovery validation shows operational benefit exceeds implementation cost
+- 🎯 **Decision Gate**: Before Phase 2c, evaluate:
+  - Discovery success rate > 95% AND
+  - Trust scores correlate with actual reliability > 0.7 AND  
+  - Operator feedback is positive AND  
+  - Cost of Phase 2c implementation justified by time savings
+  - If any gate fails: **STOP**. Deterministic pyramid (Phase 2b) is sufficient for autonomous workflows.
+
+**Key Principle**: "Finish what we started." Complete Phase 1b before moving to Phase 2a. Establish fingerprinting and discovery infrastructure in Phase 2a/2b. Only invest in full dynamic routing (Phase 2c) if operational metrics validate it.
 
 ---
 
@@ -542,5 +575,5 @@ Versions are tracked **by layer**, not per-file. Bump the layer version when any
 ---
 
 **Maintained by**: LLM code agents (currently Claude Code + GitHub Copilot)
-**Last Review**: 2026-02-06
-**Next Review**: 2026-03-06
+**Last Review**: 2026-02-10
+**Next Review**: 2026-03-10

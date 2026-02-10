@@ -21,7 +21,7 @@ blog:
   # Git commit configuration
   git:
     author_name: "RoadTrip Orchestrator"
-    author_email: "workflow@roadtrip.local"
+    author_email: "nstein@bizcadsystems.com"
     commit_prefix: "blog"  # Semantic commit prefix
   
   # Input validation configuration

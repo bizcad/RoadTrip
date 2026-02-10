@@ -489,7 +489,7 @@ if __name__ == "__main__":
         excerpt="This is a test blog post for demonstration purposes.",
         content="# Test Blog Post\n\nThis is the content of the test post. It demonstrates the blog publisher skill.",
         author_name="Nicholas Stein",
-        author_picture="/assets/blog/authors/ns.jpeg",
+        author_picture="/assets/blog/authors/ns.jpg",
         coverImage="/assets/blog/test/cover.jpg"
     )
     
