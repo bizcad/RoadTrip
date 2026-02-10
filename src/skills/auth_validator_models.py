@@ -9,7 +9,25 @@ from dataclasses import dataclass, field, asdict
 from typing import Optional, List, Dict, Any
 from enum import Enum
 import json
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+# Phase 1b: Simple auth status/method enums
+class AuthStatus(str, Enum):
+    """Result of authentication validation."""
+    VALID = "valid"              # Auth credentials valid and authorized
+    INVALID = "invalid"          # Credentials missing or incorrect
+    EXPIRED = "expired"          # Token expired or key revoked
+    PERMISSION_DENIED = "denied" # Valid creds but not permitted for operation
+    UNREACHABLE = "unreachable"  # Can't reach auth service (network error)
+
+
+class AuthMethod(str, Enum):
+    """Authentication method used."""
+    TOKEN = "token"              # GitHub personal access token
+    SSH_KEY = "ssh_key"          # SSH key authentication
+    HTTPS_CREDENTIALS = "https"  # HTTPS username/password
+    UNKNOWN = "unknown"
 
 
 class AuthzDecision(str, Enum):
