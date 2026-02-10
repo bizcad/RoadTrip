@@ -36,7 +36,8 @@
             "Out-File": true,
             "gpush": true,
             "py": true,
-            "pytest": true
+            "pytest": true,
+            "git push": true
         }
     }
 }

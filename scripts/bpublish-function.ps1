@@ -283,7 +283,7 @@ except Exception as e:
         Write-Status "❌ Error: $_" "Error"
         return $false
     }
-
+    
     return $true
 }
 
