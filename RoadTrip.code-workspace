@@ -39,7 +39,8 @@
             "logt": true,
             "Out-File": true,
             "gpush": true,
-            "py": true
+            "py": true,
+            "pytest": true
         }
     }
 }

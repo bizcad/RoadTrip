@@ -126,7 +126,7 @@ class TestTier1SingleFile:
         )
         assert result.approach_used == CommitApproach.TIER_1
         assert result.confidence >= 0.85
-        assert "main.py" in result.message.lower() or "Add" in result.message
+        assert "feat:" in result.message and "main" in result.message.lower()
         assert result.cost_estimate == 0.0
 
     def test_single_doc_file(self, commit_skill):
@@ -239,7 +239,7 @@ class TestTier2DryRun:
         config_file = config_dir / "commit-strategy.yaml"
         config_file.write_text("""
 commit_message:
-  confidence_threshold: 0.85
+  confidence_threshold: 0.95
   
   tier2:
     enabled: true

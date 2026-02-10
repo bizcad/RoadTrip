@@ -9,7 +9,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Optional, List, Dict, Any
 from enum import Enum
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class CommitApproach(str, Enum):
@@ -71,7 +71,7 @@ class CommitMessageResult:
     cost_tracking: Optional[CostTracking] = None
     
     # Timestamps for auditing
-    timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     
     # Context for logging
     context: Dict[str, Any] = field(default_factory=dict)

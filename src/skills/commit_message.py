@@ -26,7 +26,7 @@ from datetime import datetime
 
 # Import models from same package
 try:
-    from commit_message_models import (
+    from .commit_message_models import (
         CommitApproach,
         Tier1Score,
         CostTracking,
@@ -34,8 +34,18 @@ try:
         CommitMessageInput,
     )
 except ImportError:
-    sys.stderr.write("Error: commit_message_models.py not found. Must be in same directory.\n")
-    sys.exit(1)
+    # Fallback for direct execution
+    try:
+        from commit_message_models import (
+            CommitApproach,
+            Tier1Score,
+            CostTracking,
+            CommitMessageResult,
+            CommitMessageInput,
+        )
+    except ImportError:
+        sys.stderr.write("Error: commit_message_models.py not found. Must be in same directory.\n")
+        sys.exit(1)
 
 try:
     import yaml
