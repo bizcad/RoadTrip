@@ -6,6 +6,27 @@ This file documents the custom commands, aliases, and project-specific setup for
 - **Repository**: `G:\repos\AI\RoadTrip`
 - **GitHub**: https://github.com/bizcad/RoadTrip
 
+## GitHub Authentication
+
+**Environment Variable**: `GITHUB_TOKEN`  
+**Storage**: Windows Credential Manager (encrypted per-user)  
+**Token Name**: "1-Button Push Automation Skill"  
+**Token Type**: Fine-grained Personal Access Token  
+**Repository Scope**: All repositories (all current and future repos owned by bizcad)  
+**Permissions**:
+- Deployments (read + write)
+- Issues (read + write)
+- Pull requests (read + write)
+- Secrets (read + write)
+- Metadata (read-only, required)
+
+**Expiration**: 90 days (expires May 09, 2026 - rotate quarterly)  
+**Setup**: Stored in `ProjectSecrets/PAT.txt` for agent setup during CI/CD initialization
+
+This enables silent `git push` operations without interactive authentication prompts.
+
+---
+
 ## Custom PowerShell Aliases & Commands
 
 ### Git Push Workflow
