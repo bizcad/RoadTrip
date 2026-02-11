@@ -1,22 +1,43 @@
-# ProjectRoot PowerShell Profile
-# This automatically loads when PowerShell starts in this workspace
+# RoadTrip Workspace-Aware PowerShell Profile
+# Dynamically detects when you're in the RoadTrip repo and loads workspace-specific functions
+# Safe to include in your global $PROFILE - gracefully skips if not in RoadTrip repo
 
-$ProjectRoot = "G:\repos\AI\RoadTrip"
+# Try to detect project root dynamically
+$ProjectRoot = if ((Test-Path ".\RoadTrip.code-workspace") -and (Test-Path ".\scripts\git_push.ps1")) {
+    (Get-Item .).FullName  # Current directory is RoadTrip root
+} elseif ((Test-Path "..\RoadTrip.code-workspace") -and (Test-Path "..\scripts\git_push.ps1")) {
+    (Get-Item ..).FullName  # Parent directory is RoadTrip root
+} else {
+    $null  # Not in RoadTrip workspace
+}
 
-# Optional PowerShell Profile Configuration for ProjectRoot Development
-# Add these aliases and functions to your PowerShell profile to enable Unix-style commands
+# Optional PowerShell Profile Configuration for RoadTrip Development
+# 
+# **IMPORTANT:** Add this to your global $PROFILE file:
+#   $roadTripProfile = "G:\repos\AI\RoadTrip\infra\RoadTrip_profile.ps1"
+#   if (Test-Path $roadTripProfile) { . $roadTripProfile }
+#
+# This is SAFE to include in your global profile because:
+# - It automatically detects when you're in the RoadTrip workspace
+# - It gracefully disables RoadTrip-specific functions in other workspaces
+# - Unix-style commands (head, tail, wc, grep) always load
 #
 # To use:
 # 1. Open PowerShell
 # 2. Run: $PROFILE (shows path to your profile file)
-# 3. Open that file in your editor (create it if it doesn't exist)
-# 4. Add the contents of this file to your profile
+# 3. Open that file in your editor (create it if it doesn't exist, usually:
+#    E:\OneDrive - Personal\OneDrive\Documents\PowerShell\Microsoft.VSCode_profile.ps1)
+# 4. Add the code block above
 # 5. Reload: . $PROFILE
 #
 # Then you can use Unix-style commands like:
 #   dotnet test ... | head -30
 #   dotnet test ... | tail -20
 #   (Get-Content file) | wc -l
+#   ls | grep pattern
+#
+# And RoadTrip-specific commands when in RoadTrip workspace:
+#   gpush, gpush-dry, gpush-log, bpublish (bp)
 
 # ========== Shell Command Functions ==========
 # Equivalent to Unix 'head' command - shows first 10 lines
@@ -117,53 +138,54 @@ function test-build {
     dotnet build ProjectRoot.slnx -clp:Summary
 }
 
-# ========== RoadTrip Git Push Wrapper ==========
-# Comprehensive git push script with auto-generated commit messages
-function gpush {
-    param(
-        [Parameter(Position=0)]
-        [string]$Message = $null,
+# ========== RoadTrip-Specific Functions (only if in RoadTrip workspace) ==========
+if ($ProjectRoot) {
+    # Comprehensive git push script with auto-generated commit messages
+    function gpush {
+        param(
+            [Parameter(Position=0)]
+            [string]$Message = $null,
+            
+            [switch]$DryRun,
+            [switch]$Log
+        )
         
-        [switch]$DryRun,
-        [switch]$Log
-    )
-    
-    Push-Location $ProjectRoot
-    try {
-        $invokeArgs = @()
-        if ($Message) { $invokeArgs += $Message }
-        if ($DryRun) { $invokeArgs += "-DryRun" }
-        if ($Log) { $invokeArgs += "-LogFile"; $invokeArgs += (Join-Path $ProjectRoot "logs\push.log") }
-        if ($VerbosePreference -eq "Continue") { $invokeArgs += "-Verbose" }
-        
-        & ".\scripts\git_push.ps1" @invokeArgs
+        Push-Location $ProjectRoot
+        try {
+            $invokeArgs = @()
+            if ($Message) { $invokeArgs += $Message }
+            if ($DryRun) { $invokeArgs += "-DryRun" }
+            if ($Log) { $invokeArgs += "-LogFile"; $invokeArgs += (Join-Path $ProjectRoot "logs\push.log") }
+            if ($VerbosePreference -eq "Continue") { $invokeArgs += "-Verbose" }
+            
+            & ".\scripts\git_push.ps1" @invokeArgs
+        }
+        finally {
+            Pop-Location
+        }
     }
-    finally {
-        Pop-Location
+
+    # Convenience wrappers using global scriptblocks to avoid PSUseApprovedVerbs warnings
+    # (SuppressMessageAttribute doesn't work on non-Verb-Noun function names)
+    $global:gpushdry = { gpush -DryRun -Verbose }
+    $global:gpushlog = { gpush -Log -Verbose }
+    function gpush-dry { & $global:gpushdry }
+    function gpush-log { & $global:gpushlog }
+
+    # Load bpublish function for one-button blog publishing
+    $bpublishPath = Join-Path $ProjectRoot "scripts\bpublish-function.ps1"
+    if (Test-Path $bpublishPath) {
+        . $bpublishPath
     }
+
+    Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
+    Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp)" -ForegroundColor Cyan
+} else {
+    Write-Host "ℹ Not in RoadTrip workspace - RoadTrip-specific commands disabled" -ForegroundColor Gray
 }
 
-# Convenience wrappers using global scriptblocks to avoid PSUseApprovedVerbs warnings
-# (SuppressMessageAttribute doesn't work on non-Verb-Noun function names)
-$global:gpushdry = { gpush -DryRun -Verbose }
-$global:gpushlog = { gpush -Log -Verbose }
-function gpush-dry { & $global:gpushdry }
-function gpush-log { & $global:gpushlog }
-
-# ========== RoadTrip Blog Publisher CLI ==========
-# Load bpublish function for one-button blog publishing
-$bpublishPath = Join-Path $ProjectRoot "scripts\bpublish-function.ps1"
-if (Test-Path $bpublishPath) {
-    . $bpublishPath
-}
-
-# Write confirmation message
-Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
-Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp)" -ForegroundColor Cyan
-
-# Load session logging
-# Only load if we're in the ProjectRoot directory
-if ((Get-Location).Path -like "*RoadTrip*") {
+# Load session logging (workspace-aware)
+if ($ProjectRoot) {
     try {
         Push-Location $ProjectRoot
         

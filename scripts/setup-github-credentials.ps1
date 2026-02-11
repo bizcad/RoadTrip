@@ -1,278 +1,239 @@
 <#
 .SYNOPSIS
-    One-time setup: Store GitHub PAT in Windows Credential Manager.
+    One-time setup: Store GitHub PAT securely in Windows Credential Manager.
 
 .DESCRIPTION
-    Securely stores your GitHub Personal Access Token (PAT) in Windows Credential Manager
-    so that future git operations can authenticate silently without prompting.
-
-    This script must be run once per machine before using git_push with token-based auth.
-
-    The token is stored securely by Windows and can only be accessed by the current user.
-
-.PARAMETER GitHubToken
-    Your GitHub Personal Access Token (PAT).
-    - Fine-grained tokens (recommended): Start with "ghp_"
-    - Classic tokens: Start with "github_pat_"
+    This script prompts for a GitHub Personal Access Token (PAT) and stores it
+    securely in Windows Credential Manager using native Windows APIs.
     
-    You can generate one here: https://github.com/settings/tokens
-    Required scopes: repo (full control), at minimum.
+    The token is stored as a generic credential under the target name:
+      git:github.com:roadtrip-pat
+    
+    This target name is shared with token_resolver.py, so the silent git push
+    workflow can retrieve the token automatically without user interaction.
 
-.PARAMETER Interactive
-    If specified, prompt for the token interactively (masked input).
-    Default: Use -GitHubToken parameter.
+    Security:
+    - Token is never echoed to console or logs.
+    - Token is cleared from memory after storage.
+    - Only the fingerprint (SHA-256 hash, first 16 hex chars) is logged.
+    - Storage is encrypted by Windows Credential Manager (DPAPI).
 
-.PARAMETER Verify
-    If specified, verify that the token was stored and retrieve metadata.
-
-.PARAMETER List
-    If specified, list all stored Git-related credentials in Windows Credential Manager.
-
-.EXAMPLE
-    .\setup-github-credentials.ps1 -GitHubToken "ghp_your_token_here"
-    Stores the token in Windows Credential Manager.
-
-.EXAMPLE
-    .\setup-github-credentials.ps1 -Interactive
-    Prompts for the token securely (input will be masked).
+.PARAMETER TargetName
+    Credential Manager target name (default: git:github.com:roadtrip-pat).
+    Change this if you need separate tokens for different repos/orgs.
 
 .EXAMPLE
-    .\setup-github-credentials.ps1 -Verify
-    Verifies the token is stored and shows metadata (without exposing the token).
+    .\setup-github-credentials.ps1
+    Prompts for PAT and stores it in Windows Credential Manager.
+
+.EXAMPLE
+    .\setup-github-credentials.ps1 -TargetName "git:github.com:my-org-pat"
+    Uses a custom target name for org-specific automation.
 
 .NOTES
-    Requires Windows Credential Manager (Windows 7 or later).
-    Requires git to be installed and accessible on the system PATH.
-    The token is encrypted by Windows and stored securely.
-    The script never logs or displays the actual token (only metadata).
+    Requirements:
+      - Windows 10 or later
+      - PowerShell 5.1+
+      - Administrator privileges (recommended, for DPAPI encryption)
 
+    The GitHub PAT should have at minimum:
+      - Contents: Read & Write (if pushing to repos)
+      - Metadata: Read (always needed)
+      
+    For fine-grained PATs, we recommend:
+      - Scope: Single repository (if possible)
+      - Permissions: Contents only (read+write)
+      - Expiration: 90 days (rotate regularly)
 #>
 
-[CmdletBinding(DefaultParameterSetName='Token')]
 param(
-    [Parameter(ParameterSetName='Token', Position=0, HelpMessage='GitHub Personal Access Token (ghp_... or github_pat_...)')]
-    [string]$GitHubToken = $null
-    ,
-    [Parameter(ParameterSetName='Interactive', HelpMessage='Prompt for token interactively (masked)')]
-    [switch]$Interactive
-    ,
-    [Parameter(HelpMessage='Verify token storage without exposing the token')]
-    [switch]$Verify
-    ,
-    [Parameter(HelpMessage='List all Git-related credentials in Windows Credential Manager')]
-    [switch]$List
+    [string]$TargetName = "git:github.com:roadtrip-pat"
 )
 
+$ErrorActionPreference = 'Stop'
+
 # ============================================================================
-# Configuration
+# Helpers
 # ============================================================================
 
-$WCM_Entry = "github_pat"  # Windows Credential Manager entry name
-$TokenPattern = '^(ghp_|github_pat_).{32,}$'  # GitHub PAT format
-
-function Write-Banner([string]$msg) {
-    Write-Host "`n=== $msg ===" -ForegroundColor Cyan
+function Write-Log {
+    param(
+        [string]$Message,
+        [string]$Level = 'INFO'
+    )
+    $ts = Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'
+    Write-Host "[$ts][$Level] $Message"
 }
 
-function Write-Success([string]$msg) {
-    Write-Host "✓ $msg" -ForegroundColor Green
-}
+function Get-PlainTextFromSecureString {
+    param([Security.SecureString]$SecureString)
 
-function Write-Error-Custom([string]$msg) {
-    Write-Host "✗ $msg" -ForegroundColor Red
-}
-
-function Write-Info([string]$msg) {
-    Write-Host "ℹ $msg" -ForegroundColor Yellow
-}
-
-function Validate-GithubPAT([string]$token) {
-    <#
-    .SYNOPSIS
-      Validate GitHub PAT format (basic checks).
-    #>
-    if ([string]::IsNullOrWhiteSpace($token)) {
-        return $false
-    }
-    
-    if ($token -notmatch $TokenPattern) {
-        Write-Error-Custom "Invalid GitHub PAT format"
-        Write-Info "GitHub PATs must start with 'ghp_' (fine-grained) or 'github_pat_' (classic) and be at least 36 characters"
-        return $false
-    }
-    
-    return $true
-}
-
-function Store-Token-WCM([string]$token) {
-    <#
-    .SYNOPSIS
-      Store token in Windows Credential Manager using cmdkey.
-    #>
-    if (-not (Validate-GithubPAT -token $token)) {
-        return $false
-    }
-    
+    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
     try {
-        # Use cmdkey to store the credential
-        # Format: cmdkey /add:target /user:username /pass:password
-        # Note: cmdkey /add overwrites if already exists
-        $output = Write-Host "Storing in Windows Credential Manager..." -ForegroundColor Gray
-        
-        # For GitHub, we use the token as both username and password (GitHub auth method)
-        # This is a common pattern; actual git credential helpers use the token as password
-        $result = & cmdkey /add:$WCM_Entry /user:$WCM_Entry /pass:$token 2>&1
-        
-        # cmdkey doesn't set LASTEXITCODE reliably; check for success message
-        $success = ($LASTEXITCODE -eq 0) -or ($result -like '*successfully*')
-        
-        if ($success) {
-            Write-Success "Token stored in Windows Credential Manager"
-            return $true
-        } else {
-            Write-Error-Custom "Failed to store token in Windows Credential Manager"
-            Write-Info "You may need to run this script as Administrator"
-            Write-Info "Error details: $result"
-            return $false
+        return [Runtime.InteropServices.Marshal]::PtrToStringUni($bstr)
+    }
+    finally {
+        if ($bstr -ne [IntPtr]::Zero) {
+            [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
         }
-    } catch {
-        Write-Error-Custom "Exception while storing token: $_"
-        return $false
     }
 }
 
-function List-Git-Credentials {
-    <#
-    .SYNOPSIS
-      List all Git-related credentials stored in Windows Credential Manager.
-    #>
-    Write-Banner "Git Credentials in Windows Credential Manager"
-    
-    try {
-        $result = & cmdkey /list 2>&1 | Select-String -Pattern 'git|github' -AllMatches
-        
-        if ($result) {
-            Write-Host $result
-        } else {
-            Write-Info "No Git-related credentials found"
-        }
-    } catch {
-        Write-Error-Custom "Failed to list credentials: $_"
-    }
+function Get-TokenFingerprint {
+    param([string]$Token)
+
+    $bytes = [Text.Encoding]::UTF8.GetBytes($Token)
+    $hash  = [System.Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
+    $hex   = [Convert]::ToHexString($hash)
+    return $hex.Substring(0, 16)
 }
 
-function Verify-Token {
-    <#
-    .SYNOPSIS
-      Verify that token is stored and show metadata (without exposing the token).
-    #>
-    Write-Banner "Verifying GitHub Token Storage"
-    
-    try {
-        # Use cmdkey /list to check if entry exists (doesn't expose the token)
-        $result = & cmdkey /list:$WCM_Entry 2>&1
-        
-        if ($LASTEXITCODE -eq 0 -and $result) {
-            Write-Success "GitHub token is stored and available"
-            Write-Info "Location: Windows Credential Manager"
-            Write-Info "Entry name: $WCM_Entry"
-            Write-Host "`nCredential details (token contents hidden):" -ForegroundColor Cyan
-            Write-Host $result
-            
-            # Try to retrieve and validate token via Python skill
-            Write-Info "To validate token freshness, you can test with: python src/skills/token_resolver.py --token-name github_pat --validate"
-            
-            return $true
-        } else {
-            Write-Error-Custom "GitHub token not found in Windows Credential Manager"
-            Write-Info "Run this script with a token or --Interactive to set it up"
-            return $false
-        }
-    } catch {
-        Write-Error-Custom "Failed to verify token: $_"
-        return $false
-    }
+# ============================================================================
+# Credential Manager Native Interop
+# ============================================================================
+
+$CRED_TYPE_GENERIC = 1
+$CRED_PERSIST_LOCAL_MACHINE = 2
+
+# Define the CREDENTIAL struct for P/Invoke
+$CredentialDefinition = @"
+using System;
+using System.Runtime.InteropServices;
+
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct CREDENTIAL
+{
+    public int Flags;
+    public int Type;
+    public string TargetName;
+    public string Comment;
+    public long LastWritten;
+    public int CredentialBlobSize;
+    public IntPtr CredentialBlob;
+    public int Persist;
+    public int AttributeCount;
+    public IntPtr Attributes;
+    public string TargetAlias;
+    public string UserName;
 }
 
-function Show-Setup-Instructions {
-    <#
-    .SYNOPSIS
-      Show instructions for GitHub PAT creation.
-    #>
-    Write-Banner "GitHub Personal Access Token Setup"
-    Write-Host @"
-To create a GitHub Personal Access Token (PAT):
-
-1. Go to: https://github.com/settings/tokens/new
-2. Select token type:
-   → Fine-grained (recommended): More secure, scoped permissions
-   → Classic: Broader access, simpler
-3. Set required permissions:
-   ✓ Repository access (read & write)
-   ✓ Commit status (if needed)
-4. Generate and copy the token
-5. Store it using this script:
-   .\setup-github-credentials.ps1 -GitHubToken "ghp_..."
-   or
-   .\setup-github-credentials.ps1 -Interactive
-
-IMPORTANT:
-  - Treat the token like a password
-  - Never commit it to git
-  - Regenerate if compromised
-  - Use minimal scopes needed
-
+public class CredentialManager
+{
+    [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool CredWrite(ref CREDENTIAL userCredential, uint flags);
+}
 "@
+
+Add-Type -TypeDefinition $CredentialDefinition -Language CSharp -ErrorAction Stop
+
+function Set-GenericCredential {
+    param(
+        [string]$TargetName,
+        [string]$Secret,
+        [string]$UserName = "git"
+    )
+
+    $bytes = [Text.Encoding]::Unicode.GetBytes($Secret)
+    $size  = $bytes.Length
+
+    $ptr = [Runtime.InteropServices.Marshal]::AllocHGlobal($size)
+    try {
+        [Runtime.InteropServices.Marshal]::Copy($bytes, 0, $ptr, $size)
+
+        $cred = New-Object CREDENTIAL
+        $cred.Flags = 0
+        $cred.Type  = $script:CRED_TYPE_GENERIC
+        $cred.TargetName = $TargetName
+        $cred.Comment    = "GitHub PAT for RoadTrip silent Git push"
+        $cred.CredentialBlobSize = $size
+        $cred.CredentialBlob     = $ptr
+        $cred.Persist            = $script:CRED_PERSIST_LOCAL_MACHINE
+        $cred.AttributeCount     = 0
+        $cred.Attributes         = [IntPtr]::Zero
+        $cred.TargetAlias        = $null
+        $cred.UserName           = $UserName
+
+        $ok = [CredentialManager]::CredWrite([ref]$cred, 0)
+        if (-not $ok) {
+            $err = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
+            throw "CredWrite failed with Win32 error $err"
+        }
+    }
+    finally {
+        if ($ptr -ne [IntPtr]::Zero) {
+            [Runtime.InteropServices.Marshal]::ZeroFreeHGlobal($ptr)
+        }
+    }
 }
 
 
 # ============================================================================
-# Main Flow
+# Main
 # ============================================================================
 
-# Show help if no parameters
-if (-not $GitHubToken -and -not $Interactive -and -not $Verify -and -not $List) {
-    Show-Setup-Instructions
-    exit 0
-}
+Write-Host ""
+Write-Log "GitHub PAT Setup for Windows Credential Manager"
+Write-Host ""
 
-# List credentials
-if ($List) {
-    List-Git-Credentials
-    exit 0
-}
+Write-Log "Target: $TargetName"
+Write-Host ""
 
-# Verify storage
-if ($Verify) {
-    Verify-Token
-    exit 0
-}
+Write-Host "This script will:"
+Write-Host "  1. Prompt you for your GitHub PAT (securely, input hidden)"
+Write-Host "  2. Store it in Windows Credential Manager (encrypted)"
+Write-Host "  3. Log only the fingerprint (SHA-256 hash, never the token)"
+Write-Host ""
+Write-Host "PAT should have appropriate scopes:"
+Write-Host "  - For private repos: 'repo' scope"
+Write-Host "  - For fine-grained PATs: Minimum 'Contents: Read & Write'"
+Write-Host ""
 
-# Collect token interactively
-if ($Interactive) {
-    Write-Banner "GitHub Personal Access Token Setup"
-    Write-Info "You will be prompted for your GitHub PAT"
-    Write-Info "Your input will be masked and not logged"
-    
-    $SecureToken = Read-Host "Enter GitHub Personal Access Token (ghp_... or github_pat_...)" -AsSecureString
-    $GitHubToken = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($SecureToken))
-    
-    # Clear secure string from memory
-    $SecureToken.Dispose()
-}
+# Prompt for PAT (hidden input)
+$secure1 = Read-Host "Enter GitHub PAT (input hidden)" -AsSecureString
+$secure2 = Read-Host "Confirm GitHub PAT (input hidden)" -AsSecureString
 
-# Validate token format
-if (-not (Validate-GithubPAT -token $GitHubToken)) {
+$plain1 = Get-PlainTextFromSecureString -SecureString $secure1
+$plain2 = Get-PlainTextFromSecureString -SecureString $secure2
+
+# Validation
+if ([string]::IsNullOrWhiteSpace($plain1) -or [string]::IsNullOrWhiteSpace($plain2)) {
+    Write-Log "PAT cannot be empty." 'ERROR'
     exit 1
 }
 
-# Store token in Windows Credential Manager
-Write-Banner "Storing GitHub Token"
-if (Store-Token-WCM -token $GitHubToken) {
-    Write-Host "`nSetup complete! You can now use:" -ForegroundColor Green
-    Write-Host "  .\invoke-git-push-with-token.ps1`n" -ForegroundColor Cyan
-    Write-Host "This will perform git operations without prompting for authentication." -ForegroundColor Gray
-    exit 0
-} else {
+if ($plain1 -ne $plain2) {
+    Write-Log "PAT entries do not match." 'ERROR'
     exit 1
+}
+
+if ($plain1.Length -lt 20) {
+    Write-Log "PAT looks suspiciously short. Please verify you pasted the full token." 'WARN'
+    $confirm = Read-Host "Continue anyway? (y/n)"
+    if ($confirm -ine 'y') {
+        Write-Log "Aborted." 'INFO'
+        exit 0
+    }
+}
+
+$fingerprint = Get-TokenFingerprint -Token $plain1
+
+try {
+    Set-GenericCredential -TargetName $TargetName -Secret $plain1
+    Write-Log "✓ Stored GitHub PAT in Windows Credential Manager."
+    Write-Log "  Token fingerprint (SHA-256, first 16 hex chars): $fingerprint"
+    Write-Host ""
+    Write-Log "✓ Setup complete. Silent Git pushes can now use token_resolver.py."
+    Write-Log "  Run: .\invoke-git-push-with-token.ps1 -DryRun"
+    Write-Host ""
+}
+catch {
+    Write-Log "Failed to store credential: $_" 'ERROR'
+    exit 1
+}
+finally {
+    # Clear plaintext from memory as much as we reasonably can
+    $plain1 = $null
+    $plain2 = $null
+    $secure1.Dispose()
+    $secure2.Dispose()
 }

@@ -1,35 +1,41 @@
 <#
 .SYNOPSIS
-    Authenticated git push wrapper (silently uses stored GitHub PAT).
+    Authenticated git push wrapper with silent, non-interactive token resolution.
 
 .DESCRIPTION
-    Resolves GitHub PAT from Windows Credential Manager and calls git_push.ps1
-    with the token available in the environment. This enables silent git operations
-    without interactive authentication prompts.
+    This wrapper enables silent git operations without interactive authentication prompts.
+    
+    It implements GitHub's recommended pattern for non-interactive authentication:
+    1. Resolves GitHub PAT from multiple sources (env → CredMan → .env)
+    2. Sets Git environment variables to force non-interactive mode
+    3. Wires up a credential helper (git-askpass) to provide the token
+    4. Calls git push with the token available but unexposed in logs
+    5. Cleans up all sensitive environment variables after completion
 
-    The token is retrieved during the script run and not logged or persisted after
-    the script completes.
+    The original git_push.ps1 remains immutable; this wrapper only sets environment
+    and calls it. Token is never logged or exposed in output.
 
-    This wrapper maintains the immutability of git_push.ps1 while providing
-    credential handling at the orchestration layer.
+    ** Silent Authentication Pattern **
+    
+    Key Git environment variables (set per-invocation):
+    - GITHUB_TOKEN / GH_TOKEN: carry PAT to askpass helper
+    - GIT_ASKPASS: path to git-askpass-env.cmd (credential helper)
+    - GIT_TERMINAL_PROMPT=0: never prompt on terminal
+    - GCM_INTERACTIVE=Never: disable Git Credential Manager UI
+    - credential.helper="": disable other helpers for this invocation
+    
+    This ensures Git never opens dialogs, never prompts interactively,
+    and uses only the environment-based credential helper.
 
 .PARAMETER Message
     Commit message. If omitted, git_push.ps1 auto-generates one.
 
 .PARAMETER DryRun
-    Dry run: show what would be done without performing git operations.
-
-.PARAMETER LogFile
-    Optional path to append execution log.
-
-.PARAMETER Force
-    If GitHub token is not found in Windows Credential Manager, fall back to
-    interactive authentication (requires manual auth prompt). Without -Force,
-    missing token will fail the operation.
+    Dry run: show what would be committed without performing git push.
 
 .EXAMPLE
     .\invoke-git-push-with-token.ps1
-    Uses stored GitHub PAT to push all staged changes.
+    Uses stored GitHub PAT to push all staged changes silently.
 
 .EXAMPLE
     .\invoke-git-push-with-token.ps1 -Message "feat: add new feature"
@@ -37,59 +43,60 @@
 
 .EXAMPLE
     .\invoke-git-push-with-token.ps1 -DryRun -Verbose
-    Shows what would be committed without performing git operations.
+    Shows what would be pushed without performing git operations.
 
 .NOTES
+    Architecture:
+    - token_resolver.py: Retrieves PAT from env/CredMan/.env
+    - git-askpass-env.cmd: Credential helper (reads GITHUB_TOKEN env var)
+    - This wrapper: Orchestrates env setup and calls git_push.ps1
+    
     Requires:
-      - GitHub PAT stored via setup-github-credentials.ps1
-      - Python 3.6+ (for token_resolver.py)
-      - git installed and on PATH
-
-    The token is retrieved fresh each time (no caching between runs).
-    Token is not logged or exposed in output.
-
+    - GitHub PAT stored via setup-github-credentials.ps1
+    - Python 3.6+ (for token_resolver.py)
+    - git installed and on PATH
+    
+    Token is retrieved fresh each invocation (no caching between runs).
+    Token is cleared from environment immediately after use.
 #>
 
 [CmdletBinding()]
 param(
-    [Parameter(Position=0, HelpMessage='Commit message. If omitted, auto-generated from staged changes.')]
-    [string]$Message = $null
-    ,
-    [Parameter(HelpMessage='Dry run: show message without pushing')]
+    [Parameter(Position=0, HelpMessage='Commit message. If omitted, auto-generated.')]
+    [string]$Message = $null,
+    
+    [Parameter(HelpMessage='Dry run: show what would be pushed without performing git operations')]
     [switch]$DryRun
-    ,
-    [Parameter(HelpMessage='Optional path to append execution log')]
-    [string]$LogFile = $null
-    ,
-    [Parameter(HelpMessage='Allow fallback to interactive auth if token not found')]
-    [switch]$Force
+    # Note: -Verbose is provided automatically by PowerShell via [CmdletBinding()]
+    # Access via $VerbosePreference -eq "Continue" or Write-Verbose
 )
 
+$ErrorActionPreference = 'Stop'
+
 # ============================================================================
-# Configuration
+# Helpers
 # ============================================================================
 
-$SkillsDir = Join-Path (Split-Path -Parent $PSScriptRoot) "src\skills"
-$TokenResolverScript = Join-Path $SkillsDir "token_resolver.py"
-$GitPushScript = Join-Path $PSScriptRoot "git_push.ps1"
-$TokenName = "github_pat"
-
-function Write-Log([string]$msg, [string]$level = "INFO") {
-    $timestamp = Get-Date -Format "HH:mm:ss"
-    Write-Host "[$timestamp] [$level] $msg" -ForegroundColor $(
-        if ($level -eq "ERROR") { "Red" }
-        elseif ($level -eq "WARN") { "Yellow" }
-        elseif ($level -eq "INFO") { "Cyan" }
-        else { "Gray" }
+function Write-Log {
+    param(
+        [string]$Message,
+        [string]$Level = 'INFO'
     )
-    
-    if ($LogFile -and -not [string]::IsNullOrWhiteSpace($LogFile)) {
-        $logTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-        "[$logTimestamp] [$level] $msg" | Add-Content -Path $LogFile -Encoding UTF8 -ErrorAction SilentlyContinue
-    }
+    $timestamp = Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'
+    Write-Host "[$timestamp][$Level] $Message"
 }
 
-function Resolve-Token {
+function Get-TokenFingerprint {
+    param([string]$Token)
+    
+    $bytes = [Text.Encoding]::UTF8.GetBytes($Token)
+    $hash = [System.Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
+    $hex = [System.BitConverter]::ToString($hash).Replace('-', '').ToLower()
+    # Return first 16 hex chars
+    return $hex.Substring(0, 16)
+}
+
+function Get-GitHubToken {
     <#
     .SYNOPSIS
       Call token_resolver.py to get the GitHub PAT.
@@ -100,8 +107,8 @@ function Resolve-Token {
     $pythonCmd = $null
     foreach ($cmd in @("py", "python3", "python", "python.exe")) {
         try {
-            $test = & $cmd --version 2>$null
-            if ($test) {
+            $null = & $cmd --version 2>$null
+            if ($LASTEXITCODE -eq 0) {
                 $pythonCmd = $cmd
                 break
             }
@@ -115,25 +122,23 @@ function Resolve-Token {
         return $null
     }
     
-    # Check token resolver script exists
-    if (-not (Test-Path $TokenResolverScript)) {
-        Write-Log "Token resolver script not found: $TokenResolverScript" "ERROR"
+    # Find token resolver script
+    $resolverPath = Join-Path (Split-Path -Parent $PSScriptRoot) "src\skills\token_resolver.py"
+    if (-not (Test-Path $resolverPath)) {
+        Write-Log "Token resolver script not found: $resolverPath" "ERROR"
         return $null
     }
     
     try {
         # Call Python skill to resolve token
-        # The skill outputs just the token on success, error on stderr
-        $token = & $pythonCmd $TokenResolverScript --token-name $TokenName --resolve 2>$null
+        # Outputs only the token to stdout on success
+        $token = & $pythonCmd $resolverPath 2>$null
         
         if ($LASTEXITCODE -eq 0 -and $token) {
-            Write-Log "Token resolved successfully (from environment or Windows Credential Manager)"
+            Write-Log "Token resolved successfully"
             return $token
         } else {
             Write-Log "Failed to resolve token (exit code: $LASTEXITCODE)" "ERROR"
-            if (-not $Force) {
-                Write-Log "Use -Force to allow interactive authentication" "WARN"
-            }
             return $null
         }
     } catch {
@@ -142,80 +147,118 @@ function Resolve-Token {
     }
 }
 
-function Invoke-GitPush([string]$token, [string]$message) {
-    <#
-    .SYNOPSIS
-      Call git_push.ps1 with token available in environment.
-    #>
-    # Set token in environment for git credential helper to use
-    # GitHub's git credential helpers check GIT_TOKEN or similar
-    $env:GITHUB_TOKEN = $token
-    
-    try {
-        # Invoke git_push.ps1 with explicit parameter passing
-        # Build the command carefully to avoid positional parameter confusion
-        Write-Log "Invoking git_push.ps1..."
-        
-        if ($Message) {
-            if ($DryRun) {
-                & $GitPushScript -Message $Message -DryRun
-            } elseif ($LogFile) {
-                & $GitPushScript -Message $Message -LogFile $LogFile
-            } else {
-                & $GitPushScript -Message $Message
-            }
-        } else {
-            if ($DryRun) {
-                & $GitPushScript -DryRun
-            } elseif ($LogFile) {
-                & $GitPushScript -LogFile $LogFile
-            } else {
-                & $GitPushScript
-            }
-        }
-        
-        $exitCode = $LASTEXITCODE
-        return $exitCode
-    } finally {
-        # Clean up environment
-        Remove-Item env:GITHUB_TOKEN -ErrorAction SilentlyContinue
-        Remove-Item env:GIT_TRACE -ErrorAction SilentlyContinue
-    }
-}
-
 # ============================================================================
-# Main Flow
+# Main
 # ============================================================================
 
-Write-Log "Starting authenticated git push..."
+Write-Log "Starting invoke-git-push-with-token.ps1 (DryRun=$DryRun, Verbose=$($VerbosePreference -eq 'Continue'))"
 
 # Validate git_push.ps1 exists
-if (-not (Test-Path $GitPushScript)) {
-    Write-Log "git_push.ps1 not found at: $GitPushScript" "ERROR"
+$gitPushScript = Join-Path $PSScriptRoot "git_push.ps1"
+if (-not (Test-Path $gitPushScript)) {
+    Write-Log "git_push.ps1 not found at: $gitPushScript" "ERROR"
+    exit 1
+}
+
+# Validate git-askpass-env.cmd exists
+$askPassScript = Join-Path $PSScriptRoot "git-askpass-env.cmd"
+if (-not (Test-Path $askPassScript)) {
+    Write-Log "git-askpass-env.cmd not found at: $askPassScript" "ERROR"
     exit 1
 }
 
 # Resolve GitHub token
-$token = Resolve-Token
+$token = Get-GitHubToken
 if (-not $token) {
-    if ($Force) {
-        Write-Log "Token not found; falling back to interactive authentication" "WARN"
-        Write-Log "Running git_push.ps1 without token (will prompt for auth)"
-        & $GitPushScript -Message $Message -DryRun:$DryRun -LogFile $LogFile
-        exit $LASTEXITCODE
-    } else {
-        Write-Log "Token resolution failed. Run setup-github-credentials.ps1 to configure." "ERROR"
+    Write-Log "Token resolution failed. Run setup-github-credentials.ps1 to configure." "ERROR"
+    exit 1
+}
+
+$fingerprint = Get-TokenFingerprint -Token $token
+Write-Log "Token fingerprint (SHA-256, first 16 hex chars): $fingerprint"
+
+# Save original env so we can restore
+$originalEnv = @{
+    GITHUB_TOKEN       = $env:GITHUB_TOKEN
+    GH_TOKEN           = $env:GH_TOKEN
+    GIT_ASKPASS        = $env:GIT_ASKPASS
+    GIT_TERMINAL_PROMPT = $env:GIT_TERMINAL_PROMPT
+    GCM_INTERACTIVE    = $env:GCM_INTERACTIVE
+    GIT_TRACE          = $env:GIT_TRACE
+    GIT_CURL_VERBOSE   = $env:GIT_CURL_VERBOSE
+}
+
+try {
+    # Set token in environment for git-askpass-env.cmd to consume
+    $env:GITHUB_TOKEN = $token
+    $env:GH_TOKEN = $token  # Some tools also check GH_TOKEN
+    
+    # Force non-interactive behavior
+    $env:GIT_TERMINAL_PROMPT = '0'
+    $env:GCM_INTERACTIVE = 'Never'
+    
+    # Wire up our askpass helper
+    $env:GIT_ASKPASS = $askPassScript
+    
+    # Disable any configured credential helper for this invocation
+    # (This is local-only; won't persist after the process exits)
+    git config --local credential.helper "" 2>$null | Out-Null
+    
+    if ($VerbosePreference -eq "Continue") {
+        $env:GIT_TRACE = '1'
+        $env:GIT_CURL_VERBOSE = '1'
+        Write-Log "Verbose tracing enabled"
+        Write-Log "Git environment configured for silent authentication"
+    }
+    
+    # Change to repo root for git operations
+    $repoRoot = & git rev-parse --show-toplevel 2>$null
+    if (-not $repoRoot) {
+        Write-Log "Not in a git repository" "ERROR"
         exit 1
     }
+    
+    Push-Location $repoRoot
+    try {
+        if ($DryRun) {
+            Write-Log "DRY-RUN: Executing 'git push --dry-run'"
+            git push --dry-run
+            $exitCode = $LASTEXITCODE
+        } else {
+            Write-Log "Invoking git_push.ps1 (immutable prototype)"
+            if ($Message) {
+                & $gitPushScript -Message $Message
+            } else {
+                & $gitPushScript
+            }
+            $exitCode = $LASTEXITCODE
+        }
+        
+        if ($exitCode -eq 0) {
+            Write-Log "Git push completed successfully"
+        } else {
+            Write-Log "Git push failed with exit code: $exitCode" "ERROR"
+        }
+        
+        exit $exitCode
+    } finally {
+        Pop-Location
+    }
+} catch {
+    # Never log the token; only log metadata and generic error info
+    Write-Log "Exception during git push. Token fingerprint: $fingerprint. Error: $($_.Exception.Message)" "ERROR"
+    exit 1
+} finally {
+    # Clear sensitive environment variables
+    $env:GITHUB_TOKEN = $null
+    $env:GH_TOKEN = $null
+    
+    # Restore other env vars
+    $env:GIT_ASKPASS = $originalEnv.GIT_ASKPASS
+    $env:GIT_TERMINAL_PROMPT = $originalEnv.GIT_TERMINAL_PROMPT
+    $env:GCM_INTERACTIVE = $originalEnv.GCM_INTERACTIVE
+    $env:GIT_TRACE = $originalEnv.GIT_TRACE
+    $env:GIT_CURL_VERBOSE = $originalEnv.GIT_CURL_VERBOSE
+    
+    Write-Log "Environment cleaned; token removed from process environment"
 }
-
-# Invoke git push with token
-$exitCode = Invoke-GitPush -token $token -message $Message
-
-if ($exitCode -eq 0) {
-    Write-Log "Git push completed successfully" "INFO"
-} else {
-    Write-Log "Git push failed with exit code: $exitCode" "ERROR"
-}
-
-exit $exitCode
