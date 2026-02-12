@@ -31,6 +31,9 @@ def get_token() -> Optional[str]:
         print("[ERROR] No GitHub token found in GITHUB_TOKEN or GITHUB_PAT")
         return None
     
+    # Strip any whitespace (including newlines from env vars)
+    token = token.strip()
+    
     print(f"[OK] Token found (length: {len(token)})")
     return token
 
