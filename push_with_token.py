@@ -93,47 +93,87 @@ def git_push(token: str, message: str, dry_run: bool = False) -> bool:
         print(f"  3. git push (with token)")
         return True
     
-    # Step 1: git add
+    # Step 1: git add (already done in main, but safe to re-run)
     print("[STEP 1] git add .")
     result = subprocess.run(["git", "add", "."], capture_output=True, text=True)
     if result.returncode != 0:
         print(f"[ERROR] git add failed: {result.stderr}")
         return False
     
-    # Step 2: git commit
+    # Step 2: git commit (already done, will fail with "nothing to commit", that's OK)
     print(f"[STEP 2] git commit -m '{message}'")
     result = subprocess.run(
         ["git", "commit", "-m", message],
         capture_output=True,
         text=True,
     )
-    if result.returncode != 0:
+    if result.returncode != 0 and "nothing to commit" not in result.stderr.lower():
         print(f"[ERROR] git commit failed: {result.stderr}")
-        return False
+        # Don't fail here; might already be committed
+    elif result.returncode == 0:
+        print(f"[OK] Committed: {result.stdout.strip()}")
+    else:
+        print(f"[OK] Already committed (nothing to commit)")
     
-    print(f"[OK] Committed: {result.stdout.strip()}")
-    
-    # Step 3: git push with token
+    # Step 3: git push with token via credential protocol
     print("[STEP 3] git push (with token)")
     
-    # Construct URL with token for authentication
-    # git push https://<token>@github.com/bizcad/RoadTrip.git
-    result = subprocess.run(
-        ["git", "push"],
+    # Method: Use git credential helper to inject token
+    # This replaces the current credential helper temporarily
+    env = os.environ.copy()
+    
+    # For Windows, try using the simplest method: embed token in URL
+    # Get the current remote URL
+    remote_result = subprocess.run(
+        ["git", "config", "--get", "remote.origin.url"],
         capture_output=True,
         text=True,
-        env={**os.environ, "GIT_ASKPASS": "git_askpass_helper.py", "GIT_ASKPASS_RESULT": token},
     )
+    
+    if remote_result.returncode == 0:
+        remote_url = remote_result.stdout.strip()
+        print(f"[DEBUG] Remote: {remote_url}")
+        
+        # If HTTPS, inject token
+        if "https://" in remote_url and "@" not in remote_url:
+            # Insert token: https://github.com/owner/repo.git → https://github:TOKEN@github.com/owner/repo.git
+            remote_with_token = remote_url.replace(
+                "https://",
+                f"https://github:{token}@"
+            )
+            print(f"[DEBUG] Pushing with token-auth URL")
+            
+            result = subprocess.run(
+                ["git", "push", remote_with_token, "main"],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+        else:
+            # Already has token or is SSH, just push normally
+            result = subprocess.run(
+                ["git", "push"],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+    else:
+        # Fallback: just try normal push
+        result = subprocess.run(
+            ["git", "push"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
     
     if result.returncode != 0:
         print(f"[ERROR] git push failed: {result.stderr}")
-        # Try with HTTPS URL
-        print("[INFO] Trying HTTPS with token...")
-        # This is a fallback; modern git should use credential helper
         return False
     
     print(f"[OK] Pushed successfully")
-    print(result.stdout)
+    if result.stdout:
+        print(result.stdout)
+    
     return True
 
 
