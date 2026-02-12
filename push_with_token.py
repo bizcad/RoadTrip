@@ -14,6 +14,7 @@ import subprocess
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any
+from urllib.parse import quote
 
 # Add src to path
 repo_root = Path(__file__).parent
@@ -137,9 +138,11 @@ def git_push(token: str, message: str, dry_run: bool = False) -> bool:
         # If HTTPS, inject token
         if "https://" in remote_url and "@" not in remote_url:
             # Insert token: https://github.com/owner/repo.git → https://github:TOKEN@github.com/owner/repo.git
+            # URL-encode the token to handle special characters
+            encoded_token = quote(token, safe='')
             remote_with_token = remote_url.replace(
                 "https://",
-                f"https://github:{token}@"
+                f"https://github:{encoded_token}@"
             )
             print(f"[DEBUG] Pushing with token-auth URL")
             
