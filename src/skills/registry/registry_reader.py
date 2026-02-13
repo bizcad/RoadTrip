@@ -80,6 +80,8 @@ class RegistryReader(BaseAgent):
                     tests=skill_metadata.get("tests", 0),
                     test_coverage=skill_metadata.get("test_coverage", 0.0),
                     created=skill_metadata.get("created", ""),
+                    updated=skill_metadata.get("updated", skill_metadata.get("created", "")),
+                    entry_point=skill_metadata.get("entry_point", ""),
                     description=skill_metadata.get("description", ""),
                     source_files=skill_metadata.get("source_files", [])
                 )

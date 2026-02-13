@@ -79,6 +79,7 @@ class Registration(BaseAgent):
         test_count: int = 0,
         test_coverage: float = 0.0,
         description: str = "",
+        entry_point: str = "",
         source_files: Optional[List[str]] = None
     ) -> RegistrationResult:
         """
@@ -92,6 +93,7 @@ class Registration(BaseAgent):
             test_count: Number of tests
             test_coverage: Test coverage percentage
             description: Skill description
+            entry_point: Path to main .py file
             source_files: List of source file paths
         """
         # Step 1: Ask WS0 if already registered
@@ -114,6 +116,9 @@ class Registration(BaseAgent):
                 f"tests/test_{skill_name}.py"
             ]
         
+        if not entry_point:
+            entry_point = f"src/skills/{skill_name}.py"
+        
         metadata = SkillMetadata(
             name=skill_name,
             version=version,
@@ -124,6 +129,8 @@ class Registration(BaseAgent):
             test_coverage=test_coverage,
             status=SkillStatus.ACTIVE,
             created=datetime.now().isoformat(),
+            updated=datetime.now().isoformat(),
+            entry_point=entry_point,
             description=description,
             source_files=source_files
         )

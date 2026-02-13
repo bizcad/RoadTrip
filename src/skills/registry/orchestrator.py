@@ -17,6 +17,7 @@ from .fingerprint_verifier import FingerprintVerifier
 from .registration import Registration
 from .verification import Verification
 from .registry_models import SkillMetadata, AgentStatus
+from .storage_interface import StorageConfig, RegistryStore
 
 
 class RegistryOrchestrator:
@@ -25,17 +26,28 @@ class RegistryOrchestrator:
     def __init__(
         self,
         registry_path: str = "config/skills-registry.yaml",
-        use_mock: bool = True
+        use_mock: bool = True,
+        storage_config: Optional[StorageConfig] = None
     ):
         """
         Initialize orchestrator with all workstreams.
         
         Args:
-            registry_path: Path to skills registry
+            registry_path: Path to skills registry (used if storage_config not provided)
             use_mock: Use mock fingerprints (True) or real (False)
+            storage_config: Optional StorageConfig for pluggable backend
         """
         self.registry_path = registry_path
         self.use_mock = use_mock
+        
+        # Use provided storage config or default to YAML
+        if storage_config is None:
+            storage_config = StorageConfig(
+                backend_type="yaml",
+                location=registry_path
+            )
+        
+        self.storage_config = storage_config
         
         # Initialize workstreams
         self.ws0_reader = RegistryReader(registry_path, use_mock)
@@ -57,7 +69,8 @@ class RegistryOrchestrator:
         author: str,
         test_count: int = 0,
         test_coverage: float = 0.0,
-        description: str = ""
+        description: str = "",
+        entry_point: str = ""
     ) -> Dict[str, Any]:
         """
         Register a skill (WS3 flow).
@@ -70,6 +83,7 @@ class RegistryOrchestrator:
             test_count: Number of tests
             test_coverage: Test coverage percentage
             description: Skill description
+            entry_point: Path to main .py file
             
         Returns:
             Result dict with registration status
@@ -84,7 +98,8 @@ class RegistryOrchestrator:
                 author=author,
                 test_count=test_count,
                 test_coverage=test_coverage,
-                description=description
+                description=description,
+                entry_point=entry_point
             )
             
             self.logger.info(f"✅ Registration complete: {skill_name}")

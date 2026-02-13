@@ -1,166 +1,199 @@
 metadata:
-  last_scanned: '2026-02-08T21:31:49.438037Z'
-  total_skills: 9
-  ready_skills: 2
-  discovered_skills: 7
+  last_scanned: '2026-02-14T00:00:00.000000Z'
+  total_skills: 0
+  ready_skills: 0
+  discovered_skills: 0
   registry_version: '1.0'
 skills:
-  auth_validator_models:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+  auth_validator:
+    version: 1.0.0
+    fingerprint: 84aa97d2faed8596
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
-    description: Data models for auth-validator skill.
-    source_files: []
+    created: '2026-02-13T15:24:08.726280'
+    updated: '2026-02-13T15:24:08.726282'
+    entry_point: src/skills/auth_validator.py
+    description: auth_validator.py
+    source_files:
+    - src/skills/auth_validator.py
+    - src/skills/auth_validator_models.py
+    - tests/test_auth_validator.py
+  blog_publisher:
+    version: 1.0.0
+    fingerprint: b0ab276cf394d1e3
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T15:24:08.730303'
+    updated: '2026-02-13T15:24:08.730305'
+    entry_point: src/skills/blog_publisher.py
+    description: Blog Publisher Skill - Phase 3 Implementation
+    source_files:
+    - src/skills/blog_publisher.py
+    - src/skills/blog_publisher_models.py
+    - tests/test_blog_publisher.py
   commit_message:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: c6dee9e3f9847499
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.738671'
+    updated: '2026-02-13T15:24:08.738673'
+    entry_point: src/skills/commit_message.py
     description: commit_message.py
-    source_files: []
-  commit_message_models:
-    version: unknown
-    fingerprint: ''
-    author: unknown
-    capabilities: []
-    tests: 0
-    test_coverage: 0.0
-    status: active
-    created: ''
-    description: Data models for commit-message skill.
-    source_files: []
+    source_files:
+    - src/skills/commit_message.py
+    - src/skills/commit_message_models.py
+    - tests/test_commit_message.py
   config_loader:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: 327a9167d7f6064c
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.748178'
+    updated: '2026-02-13T15:24:08.748180'
+    entry_point: src/skills/config_loader.py
     description: Load and parse YAML configuration files for the skills framework.
-    source_files: []
+    source_files:
+    - src/skills/config_loader.py
+    - src/skills/config_loader_models.py
+    - tests/test_config_loader.py
+  git_push_autonomous:
+    version: 1.0.0
+    fingerprint: c74145152590cde5
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T15:24:08.758211'
+    updated: '2026-02-13T15:24:08.758213'
+    entry_point: src/skills/git_push_autonomous.py
+    description: git_push_autonomous.py - Git Push Skill
+    source_files:
+    - src/skills/git_push_autonomous.py
+    - src/skills/git_push_autonomous_models.py
+    - tests/test_git_push_autonomous.py
   mock_committer:
-    version: 0.1.0
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: 0fb70c2060d0cfab
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.769437'
+    updated: '2026-02-13T15:24:08.769439'
+    entry_point: src/skills/mock_committer.py
     description: Mock Committer Skill
-    source_files: []
+    source_files:
+    - src/skills/mock_committer.py
+    - src/skills/mock_committer_models.py
+    - tests/test_mock_committer.py
   mock_validator:
-    version: 0.1.0
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: 3af049ee3ad96bb7
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.781381'
+    updated: '2026-02-13T15:24:08.781383'
+    entry_point: src/skills/mock_validator.py
     description: Mock Validator Skill
-    source_files: []
+    source_files:
+    - src/skills/mock_validator.py
+    - src/skills/mock_validator_models.py
+    - tests/test_mock_validator.py
   models:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: 2fb5bb9bd53ebf81
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.793540'
+    updated: '2026-02-13T15:24:08.793542'
+    entry_point: src/skills/models.py
     description: Shared data models for the RoadTrip Skills Framework.
-    source_files: []
+    source_files:
+    - src/skills/models.py
+    - src/skills/models_models.py
+    - tests/test_models.py
   rules_engine:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: a09525ee93b21a1d
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
+    created: '2026-02-13T15:24:08.807417'
+    updated: '2026-02-13T15:24:08.807419'
+    entry_point: src/skills/rules_engine.py
     description: Rules Engine Skill - File safety validation.
-    source_files: []
+    source_files:
+    - src/skills/rules_engine.py
+    - src/skills/rules_engine_models.py
+    - tests/test_rules_engine.py
+  skill_orchestrator:
+    version: 1.0.0
+    fingerprint: c7ea8851eeb2200d
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T15:24:08.823032'
+    updated: '2026-02-13T15:24:08.823034'
+    entry_point: src/skills/skill_orchestrator.py
+    description: skill_orchestrator.py
+    source_files:
+    - src/skills/skill_orchestrator.py
+    - src/skills/skill_orchestrator_models.py
+    - tests/test_skill_orchestrator.py
+  telemetry_logger:
+    version: 1.0.0
+    fingerprint: e88ad789e2eabf11
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T15:24:08.840341'
+    updated: '2026-02-13T15:24:08.840343'
+    entry_point: src/skills/telemetry_logger.py
+    description: telemetry_logger.py
+    source_files:
+    - src/skills/telemetry_logger.py
+    - src/skills/telemetry_logger_models.py
+    - tests/test_telemetry_logger.py
   token_resolver:
-    version: unknown
-    fingerprint: ''
-    author: unknown
+    version: 1.0.0
+    fingerprint: 08a5edfd61e679c1
+    author: roadtrip_team
     capabilities: []
     tests: 0
     test_coverage: 0.0
     status: active
-    created: ''
-    description: 'Token Resolver Skill: Manages secure credential storage and retrieval.'
-    source_files: []
-  test_new_skill:
-    version: 1.0.0
-    fingerprint: f035115bfd80b7bb
-    author: test_author
-    capabilities:
-    - test
-    - capability
-    tests: 0
-    test_coverage: 0.0
-    status: active
-    created: '2026-02-13T13:33:35.412327'
-    description: Test skill for testing
+    created: '2026-02-13T15:24:08.859056'
+    updated: '2026-02-13T15:24:08.859058'
+    entry_point: src/skills/token_resolver.py
+    description: token_resolver.py
     source_files:
-    - src/skills/test_new_skill.py
-    - src/skills/test_new_skill_models.py
-    - tests/test_test_new_skill.py
-  tested_skill:
-    version: 2.0.0
-    fingerprint: 529f6eec0bde3e50
-    author: tester
-    capabilities:
-    - data
-    tests: 10
-    test_coverage: 85.5
-    status: active
-    created: '2026-02-13T13:33:35.435826'
-    description: Well-tested skill
-    source_files:
-    - src/skills/tested_skill.py
-    - src/skills/tested_skill_models.py
-    - tests/test_tested_skill.py
-  flow_test_skill:
-    version: 1.0.0
-    fingerprint: 7bc16bf1302c7956
-    author: test_runner
-    capabilities:
-    - flow_test
-    tests: 0
-    test_coverage: 0.0
-    status: active
-    created: '2026-02-13T13:33:35.527508'
-    description: ''
-    source_files:
-    - src/skills/flow_test_skill.py
-    - src/skills/flow_test_skill_models.py
-    - tests/test_flow_test_skill.py
-  minimal_skill:
-    version: 0.1.0
-    fingerprint: 4b3ad7cdb2094486
-    author: test
-    capabilities: []
-    tests: 0
-    test_coverage: 0.0
-    status: active
-    created: '2026-02-13T13:33:35.596127'
-    description: ''
-    source_files:
-    - src/skills/minimal_skill.py
-    - src/skills/minimal_skill_models.py
-    - tests/test_minimal_skill.py
+    - src/skills/token_resolver.py
+    - src/skills/token_resolver_models.py
+    - tests/test_token_resolver.py

@@ -43,6 +43,8 @@ class SkillMetadata:
     test_coverage: float = 0.0
     status: SkillStatus = SkillStatus.ACTIVE
     created: str = field(default_factory=lambda: datetime.now().isoformat())
+    updated: str = field(default_factory=lambda: datetime.now().isoformat())
+    entry_point: str = ""  # Path to main .py file (e.g., "src/skills/blog_publisher.py")
     description: str = ""
     source_files: List[str] = field(default_factory=list)
     
@@ -57,6 +59,8 @@ class SkillMetadata:
             "test_coverage": self.test_coverage,
             "status": self.status.value,
             "created": self.created,
+            "updated": self.updated,
+            "entry_point": self.entry_point,
             "description": self.description,
             "source_files": self.source_files
         }
