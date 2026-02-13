@@ -23,6 +23,10 @@ from .fingerprint_generator import FingerprintGenerator
 from .fingerprint_verifier import FingerprintVerifier
 from .registration import Registration
 from .verification import Verification
+from .orchestrator import RegistryOrchestrator
+from .storage_interface import RegistryStore, StorageConfig
+from .storage_yaml import YAMLStore
+from .storage_sqlite import SQLiteStore
 
 __all__ = [
     # Models
@@ -42,5 +46,12 @@ __all__ = [
     "FingerprintGenerator",
     "FingerprintVerifier",
     "Registration",
-    "Verification"
+    "Verification",
+    # Orchestrator
+    "RegistryOrchestrator",
+    # Storage
+    "RegistryStore",
+    "StorageConfig",
+    "YAMLStore",
+    "SQLiteStore"
 ]

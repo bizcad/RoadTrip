@@ -1,61 +1,166 @@
-skills:
-  auth_validator_models:
-    version: unknown
-    description: Data models for auth-validator skill.
-    interface: (utility function)
-    status: discovered
-    file: auth_validator_models.py
-  commit_message:
-    version: unknown
-    description: commit_message.py
-    interface: (utility function)
-    status: discovered
-    file: commit_message.py
-  commit_message_models:
-    version: unknown
-    description: Data models for commit-message skill.
-    interface: (utility function)
-    status: discovered
-    file: commit_message_models.py
-  config_loader:
-    version: unknown
-    description: Load and parse YAML configuration files for the skills framework.
-    interface: (utility function)
-    status: discovered
-    file: config_loader.py
-  mock_committer:
-    version: 0.1.0
-    description: Mock Committer Skill
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: mock_committer.py
-  mock_validator:
-    version: 0.1.0
-    description: Mock Validator Skill
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: mock_validator.py
-  models:
-    version: unknown
-    description: Shared data models for the RoadTrip Skills Framework.
-    interface: (utility function)
-    status: discovered
-    file: models.py
-  rules_engine:
-    version: unknown
-    description: Rules Engine Skill - File safety validation.
-    interface: (needs wrapper)
-    status: discovered
-    file: rules_engine.py
-  token_resolver:
-    version: unknown
-    description: 'Token Resolver Skill: Manages secure credential storage and retrieval.'
-    interface: (utility function)
-    status: discovered
-    file: token_resolver.py
 metadata:
   last_scanned: '2026-02-08T21:31:49.438037Z'
   total_skills: 9
   ready_skills: 2
   discovered_skills: 7
   registry_version: '1.0'
+skills:
+  auth_validator_models:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Data models for auth-validator skill.
+    source_files: []
+  commit_message:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: commit_message.py
+    source_files: []
+  commit_message_models:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Data models for commit-message skill.
+    source_files: []
+  config_loader:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Load and parse YAML configuration files for the skills framework.
+    source_files: []
+  mock_committer:
+    version: 0.1.0
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Mock Committer Skill
+    source_files: []
+  mock_validator:
+    version: 0.1.0
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Mock Validator Skill
+    source_files: []
+  models:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Shared data models for the RoadTrip Skills Framework.
+    source_files: []
+  rules_engine:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: Rules Engine Skill - File safety validation.
+    source_files: []
+  token_resolver:
+    version: unknown
+    fingerprint: ''
+    author: unknown
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: ''
+    description: 'Token Resolver Skill: Manages secure credential storage and retrieval.'
+    source_files: []
+  test_new_skill:
+    version: 1.0.0
+    fingerprint: f035115bfd80b7bb
+    author: test_author
+    capabilities:
+    - test
+    - capability
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T13:33:35.412327'
+    description: Test skill for testing
+    source_files:
+    - src/skills/test_new_skill.py
+    - src/skills/test_new_skill_models.py
+    - tests/test_test_new_skill.py
+  tested_skill:
+    version: 2.0.0
+    fingerprint: 529f6eec0bde3e50
+    author: tester
+    capabilities:
+    - data
+    tests: 10
+    test_coverage: 85.5
+    status: active
+    created: '2026-02-13T13:33:35.435826'
+    description: Well-tested skill
+    source_files:
+    - src/skills/tested_skill.py
+    - src/skills/tested_skill_models.py
+    - tests/test_tested_skill.py
+  flow_test_skill:
+    version: 1.0.0
+    fingerprint: 7bc16bf1302c7956
+    author: test_runner
+    capabilities:
+    - flow_test
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T13:33:35.527508'
+    description: ''
+    source_files:
+    - src/skills/flow_test_skill.py
+    - src/skills/flow_test_skill_models.py
+    - tests/test_flow_test_skill.py
+  minimal_skill:
+    version: 0.1.0
+    fingerprint: 4b3ad7cdb2094486
+    author: test
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-13T13:33:35.596127'
+    description: ''
+    source_files:
+    - src/skills/minimal_skill.py
+    - src/skills/minimal_skill_models.py
+    - tests/test_minimal_skill.py

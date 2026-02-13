@@ -1,0 +1,7 @@
+.............FF.....F...F...                                             [100%]
+=========================== short test summary info ===========================
+FAILED tests/test_registry_system.py::TestRegistration::test_register_skill
+FAILED tests/test_registry_system.py::TestRegistration::test_register_with_test_metadata
+FAILED tests/test_registry_system.py::TestOrchestrator::test_registration_to_execution_flow
+FAILED tests/test_registry_system.py::TestErrorHandling::test_register_with_missing_params
+4 failed, 24 passed in 0.35s
