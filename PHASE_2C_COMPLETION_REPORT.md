@@ -124,6 +124,12 @@ skills:
 
 ## Test Results
 
+### Overall Summary
+- **Phase 2c Integration**: 14/14 passing ✅
+- **Storage Backend Compatibility**: 3/3 passing ✅  
+- **SQLite Backward Compatibility**: 3/3 passing ✅
+- **Total**: 20/20 tests passing (100% success rate)
+
 ### Phase 2c Integration Test Suite (14 tests, 100% passing)
 
 **Discovery Tests** (3):
@@ -172,6 +178,7 @@ skills:
 ### New Files
 - `scripts/discover_skills.py` - Automatic skill discovery (127 lines)
 - `tests/test_phase_2c_integration.py` - Phase 2c test suite (351 lines)
+- `tests/test_phase_2c_storage_backends.py` - Storage backend compatibility tests (97 lines)
 - `logs/registry_snapshot.json` - Registry export snapshot
 - `verify_phase_2c.py` - Schema verification utility
 
@@ -180,10 +187,70 @@ skills:
 - `src/skills/registry/registry_models.py` - Added updated + entry_point fields
 - `src/skills/registry/registry_reader.py` - Parse new fields
 - `src/skills/registry/orchestrator.py` - Storage config support
-- `src/skills/registry/registration.py` - Set entry_point + updated timestamp
+- `src/skills/registry/registration.py` - Set entry_point + updated timestamp, null check on registry
+- `src/skills/registry/storage_sqlite.py` - Added entry_point column, updated field persistence
+- `src/skills/registry/storage_yaml.py` - No changes needed (schema agnostic)
 
 ### Build Artifacts
 - `logs/registry_snapshot.json` - JSON export of registry state
+
+---
+
+## Storage Backend Implementation
+
+### YAML Backend (Production Ready)
+- **Location**: `config/skills-registry.yaml`
+- **Phase 2c Fields**: ✅ Updated, ✅ Entry Point
+- **Test Status**: YAML-specific tests not required (database agnostic)
+- **Use Case**: Development, version control friendly format
+
+### SQLite Backend (Production Ready)
+- **Location**: `skills_registry.db` (configurable)
+- **Schema Updated**:
+  ```sql
+  CREATE TABLE skills (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    version TEXT NOT NULL,
+    fingerprint TEXT NOT NULL,
+    author TEXT,
+    capabilities TEXT,     -- JSON array
+    tests INTEGER,
+    test_coverage REAL,
+    status TEXT,
+    created TEXT,
+    description TEXT,
+    source_files TEXT,     -- JSON array
+    entry_point TEXT,      -- Path to .py file (NEW)
+    updated TEXT           -- ISO timestamp (NEW)
+  )
+  ```
+
+### Storage Backend Compatibility Tests
+**Test Suite**: `tests/test_phase_2c_storage_backends.py` (3 tests)
+
+- ✅ `test_yaml_stores_entry_point` - YAML preserves entry_point and updated fields
+- ✅ `test_sqlite_stores_entry_point` - SQLite stores and retrieves entry_point and updated
+- ✅ `test_both_backends_compatible` - YAML and SQLite handle identical skill data identically
+
+**Execution**: `py -m pytest tests/test_phase_2c_storage_backends.py -v`  
+**Result**: 3 passed in 0.13s (100% compatibility)
+
+### Existing SQLite Tests (Backward Compatibility)
+**Test Suite**: `tests/test_phase_2b_real_skills.py::TestSQLiteVsYAMLComparison` (3 tests)
+
+- ✅ `test_both_stores_save_and_retrieve` - Save/retrieve works on both backends
+- ✅ `test_both_stores_search_by_capability` - Search functionality preserved
+- ✅ `test_audit_logs_on_both_stores` - Audit logs work on both backends
+
+**Result**: 3 passed in 0.17s (100% backward compatible, no regressions)
+
+### Storage Decision Logic
+Both backends are fully integrated and tested:
+- **Choose YAML** for: Development, Git version control, CI testing
+- **Choose SQLite** for: Production deployments, High-frequency queries, Indexing needs
+
+Both support the complete Phase 2c schema (fingerprints, updated timestamps, entry_points).
 
 ---
 
@@ -295,6 +362,7 @@ Get-Content config/skills-registry.yaml | head -50
 
 ## Commit Summary
 
+### Phase 2c Core Implementation
 ```
 Phase 2c: Storage integration, skill discovery, and registry schema upgrade
 
@@ -319,6 +387,36 @@ Testing:
 - Schema: All 12 skills have fingerprint, updated, entry_point fields
 ```
 
+### SQLite Backend Integration
+```
+feat: Update SQLite backend for Phase 2c storage fields
+
+- Add entry_point column to skills table (for skill chaining/DAG)
+- Rename updated_at to updated for consistency with SkillMetadata schema
+- Update save_skill to persist entry_point and updated fields
+- Add storage backend compatibility tests (YAML vs SQLite)
+- Verify both backends handle Phase 2c fields identically
+
+Tests:
+- Phase 2c integration: 14/14 passing
+- Storage backend compatibility: 3/3 passing
+- SQLite comparison tests: 3/3 passing (backward compatible)
+
+No regressions detected. SQLite backend ready for Phase 3.
+```
+
+### Registration Module Fix
+```
+fix: Handle null registry in registration.py
+
+- Add null check after read_registry() call
+- Raise RuntimeError if registry cannot be read
+- Remove emoji from logger.info (Windows encoding compatibility)
+- Fixes type checking errors in registration.py
+
+Tests: Registration tests still passing (1/1)
+```
+
 ---
 
 ## Appendix: Schema Evolution
@@ -331,13 +429,15 @@ Testing:
 ### v1.0 (Phase 2c) - CURRENT
 - Added `updated` field (ISO 8601 timestamp)
 - Added `entry_point` field (path to .py file)
-- Full persistence integration
+- Full persistence integration (YAML + SQLite)
 - Automatic discovery
 - 12/12 skills catalogued
+- Both storage backends fully tested and compatible
 
 ### Future (Phase 3+)
 - Skill dependencies/DAG definition
 - Capability tagging for routing
+- Skill chaining via entry_point references
 - Performance metrics
 - Usage statistics
 
