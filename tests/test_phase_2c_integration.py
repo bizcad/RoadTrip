@@ -272,11 +272,18 @@ class TestPhase2cIntegration:
         with open(export_path, 'w') as f:
             json.dump(export_data, f, indent=2)
         
-        print(f"\n📤 Registry exported to: {export_path}")
+        print(f"\nRegistry exported to: {export_path}")
         print(f"   Skills in export: {len(export_data)}")
         
-        # Return for verification
-        return export_data
+        # Verify export
+        assert len(export_data) > 0, "Export data should not be empty"
+        assert export_path.exists(), "Export file should be created"
+        
+        # Validate each exported skill has required fields
+        for skill in export_data:
+            assert skill["name"], "Skill name required"
+            assert skill["fingerprint"], "Fingerprint required"
+            assert skill["entry_point"], "Entry point required"
 
 
 class TestPhase2cSuccessMetrics:
