@@ -138,10 +138,13 @@ class Registration(BaseAgent):
         # Step 4: Write to registry
         self.transition_state(AgentState.WRITING, f"Writing {skill_name} to registry")
         registry = self.registry_reader.read_registry()
+        if registry is None:
+            raise RuntimeError("Failed to read registry")
+        
         registry.skills[skill_name] = metadata
         self.registry_reader.write_registry(registry)
         
-        self.logger.info(f"✅ Registered {skill_name}:{version} with fingerprint {fingerprint}")
+        self.logger.info(f"Registered {skill_name}:{version} with fingerprint {fingerprint}")
         
         return RegistrationResult(
             skill_name=skill_name,
