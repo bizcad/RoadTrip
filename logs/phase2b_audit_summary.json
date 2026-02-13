@@ -1,0 +1,55 @@
+{
+  "export_timestamp": "2026-02-13T14:26:11.665231",
+  "total_events": 7,
+  "event_summary": {
+    "AUDIT_LOG_EXPORT": 1,
+    "CAPABILITY_SEARCH": 1,
+    "QUERY_BY_CAPABILITY": 2,
+    "SKILL_REGISTERED": 3
+  },
+  "skill_registrations": {
+    "blog_publisher": [
+      {
+        "version": "1.0.0",
+        "fingerprint": "b0ab276cf394d1e3",
+        "timestamp": "2025-02-14T10:30:00+00:00"
+      },
+      {
+        "version": "1.1.0",
+        "fingerprint": "117616de1d4de679",
+        "timestamp": "2025-02-14T10:31:00+00:00"
+      }
+    ],
+    "commit_message": [
+      {
+        "version": "1.0.0",
+        "fingerprint": "a1cd390ef285k2m4",
+        "timestamp": "2025-02-14T10:30:30+00:00"
+      }
+    ]
+  },
+  "capability_queries": {
+    "automation": [
+      {
+        "timestamp": "2025-02-14T10:31:15+00:00",
+        "results": 1
+      }
+    ],
+    "git": [
+      {
+        "timestamp": "2025-02-14T10:30:45+00:00",
+        "results": 1
+      }
+    ],
+    "publishing": [
+      {
+        "timestamp": "2025-02-14T10:30:15+00:00",
+        "results": 1
+      }
+    ]
+  },
+  "timestamp_range": {
+    "first_event": "2025-02-14T10:30:00+00:00",
+    "last_event": "2025-02-14T10:31:30+00:00"
+  }
+}
