@@ -20,8 +20,8 @@ blog:
   
   # Git commit configuration
   git:
-    author_name: "RoadTrip Orchestrator"
-    author_email: "nstein@bizcadsystems.com"
+    author_name: "Nicholas Stein"
+    author_email: "nicholasstein@cox.net"
     commit_prefix: "blog"  # Semantic commit prefix
   
   # Input validation configuration
@@ -35,7 +35,7 @@ blog:
   # Default values (used when optional fields are missing)
   defaults:
     author_name: "RoadTrip"
-    author_picture: "/assets/blog/authors/roadtrip.jpeg"
+    author_picture: "/assets/blog/authors/nick.jpeg"
     coverImage: "/assets/blog/default-cover.jpg"
     timezone: "UTC"
 

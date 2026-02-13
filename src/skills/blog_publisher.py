@@ -88,32 +88,25 @@ class BlogPublisherSkill:
         result.filename = filename
         
         # Phase 3: Prepare Git Commit
-        git_ready = self._prepare_git_commit(filename, formatted_content)
-        if not git_ready:
-            result.decision = "REJECT"
-            result.confidence = 0.95
-            result.errors.append("Failed to stage git changes")
-            return result
-        
-        # Phase 4: Push to Blog Repo
-        commit_hash, push_success = self._push_to_blog_repo(filename, post)
+        commit_hash, commit_success = self._prepare_and_commit(filename, formatted_content, post)
         result.commit_hash = commit_hash
-        result.git_push_confirmed = push_success
         
-        if not push_success:
+        if not commit_success:
             result.decision = "REJECT"
             result.success = False
             result.confidence = 0.0
-            result.errors.append("Git push failed")
+            result.errors.append("Git commit failed")
             return result
         
-        # Phase 5: Return Result
+        # Phase 4: Return Result (Push deferred to orchestrator)
         result.decision = "APPROVE"
         result.success = True
-        result.confidence = 0.99  # Push succeeded; Vercel build TBD
+        result.confidence = 0.95  # Commit succeeded; push & Vercel build deferred
         result.url = self._generate_live_url(filename)
+        result.git_push_confirmed = False  # Not pushed yet; orchestrator will handle
         result.metadata["build_time_estimate_sec"] = self.vercel_config.get("estimated_build_time_sec", 30)
         result.metadata["vercel_domain"] = self.vercel_config.get("domain", "")
+        result.metadata["repo_path"] = str(self.repo_config.get("local_path", ""))
         
         return result
     
@@ -155,10 +148,9 @@ class BlogPublisherSkill:
             return result
         
         if len(post.excerpt) > max_excerpt:
-            result.decision = "REJECT"
-            result.confidence = 1.0
-            result.errors.append(f"excerpt too long ({len(post.excerpt)} > {max_excerpt} chars)")
-            return result
+            # Auto-truncate at 155 chars and add ellipsis
+            post.excerpt = post.excerpt[:155].rstrip() + "..."
+            result.warnings.append(f"excerpt auto-truncated to 158 chars with ellipsis")
         
         # Content validation
         if not post.content or not post.content.strip():
@@ -331,16 +323,22 @@ class BlogPublisherSkill:
         
         return slug
     
-    def _prepare_git_commit(self, filename: str, formatted_content: str) -> bool:
-        """Phase 3: Stage file and prepare for git commit.
+    def _prepare_and_commit(self, filename: str, formatted_content: str, post: BlogPost) -> tuple:
+        """Phase 3: Stage and commit the post file in the blog repo locally.
         
-        Returns: True if successful, False on error.
+        This DOES NOT push. Push is handled by the orchestrator.
+        
+        Returns: (commit_hash, success_bool)
         """
+        repo_path = Path(self.repo_config.get("local_path", "."))
+        posts_folder = self.repo_config.get("posts_folder", "_posts")
+        file_path = repo_path / posts_folder / filename
+        git_config = self.blog_config.get("git", {})
+        author_name = git_config.get("author_name", "RoadTrip")
+        author_email = git_config.get("author_email", "nstein@bizcadsystems.com")
+        commit_prefix = git_config.get("commit_prefix", "blog")
+        
         try:
-            repo_path = Path(self.repo_config.get("local_path", "."))
-            posts_folder = self.repo_config.get("posts_folder", "_posts")
-            file_path = repo_path / posts_folder / filename
-            
             # Ensure directory exists
             file_path.parent.mkdir(parents=True, exist_ok=True)
             
@@ -348,7 +346,7 @@ class BlogPublisherSkill:
             file_path.write_text(formatted_content, encoding='utf-8')
             
             # Stage file
-            result = subprocess.run(
+            subprocess.run(
                 ["git", "add", str(file_path)],
                 cwd=str(repo_path),
                 capture_output=True,
@@ -356,33 +354,7 @@ class BlogPublisherSkill:
                 timeout=10
             )
             
-            return result.returncode == 0
-        
-        except Exception as e:
-            print(f"Error preparing git commit: {e}")
-            return False
-    
-    def _push_to_blog_repo(self, filename: str, post: BlogPost) -> tuple[str, bool]:
-        """Phase 4: Commit and push to blog repository.
-        
-        Returns:
-            (commit_hash, push_success)
-        """
-        try:
-            repo_path = Path(self.repo_config.get("local_path", "."))
-            branch = self.repo_config.get("branch", "main")
-            git_config = self.blog_config.get("git", {})
-            author_name = git_config.get("author_name", "RoadTrip Orchestrator")
-            author_email = git_config.get("author_email", "workflow@roadtrip.local")
-            commit_prefix = git_config.get("commit_prefix", "blog")
-            
-            # Extract date from filename
-            date_part = filename.split('-')[0]  # YYYY-MM-DD
-            
-            # Generate commit message
-            commit_message = f"{commit_prefix}: publish {post.title} ({date_part})"
-            
-            # Set git config
+            # Configure git
             subprocess.run(
                 ["git", "config", "user.name", author_name],
                 cwd=str(repo_path),
@@ -397,6 +369,9 @@ class BlogPublisherSkill:
             )
             
             # Commit
+            date_part = filename.split('-')[0] if '-' in filename else "2026-02-13"
+            commit_message = f"{commit_prefix}: publish {post.title} ({date_part})"
+            
             commit_result = subprocess.run(
                 ["git", "commit", "-m", commit_message],
                 cwd=str(repo_path),
@@ -406,15 +381,7 @@ class BlogPublisherSkill:
             )
             
             if commit_result.returncode != 0:
-                # File might already exist; check status
-                status_result = subprocess.run(
-                    ["git", "log", "-1", "--pretty=format:%H"],
-                    cwd=str(repo_path),
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-                return status_result.stdout[:8], False
+                return "", False
             
             # Get commit hash
             hash_result = subprocess.run(
@@ -425,30 +392,11 @@ class BlogPublisherSkill:
                 timeout=5
             )
             
-            commit_hash = hash_result.stdout[:8]
-            
-            # Push with retries
-            max_retries = 3
-            for attempt in range(max_retries):
-                push_result = subprocess.run(
-                    ["git", "push", "origin", branch],
-                    cwd=str(repo_path),
-                    capture_output=True,
-                    text=True,
-                    timeout=15
-                )
-                
-                if push_result.returncode == 0:
-                    return commit_hash, True
-                
-                if attempt < max_retries - 1:
-                    import time
-                    time.sleep(2 ** attempt)  # Exponential backoff
-            
-            return commit_hash, False
+            commit_hash = hash_result.stdout[:8] if hash_result.returncode == 0 else ""
+            return commit_hash, True
         
         except Exception as e:
-            print(f"Error pushing to blog repo: {e}")
+            print(f"Error staging/committing post: {e}")
             return "", False
     
     def _generate_live_url(self, filename: str) -> str:

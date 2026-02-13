@@ -194,7 +194,7 @@ def main():
     args = parser.parse_args()
     
     print("=" * 60)
-    print("WORKFLOW: Get Token → Stage → Commit → Push")
+    print("WORKFLOW: Get Token -> Stage -> Commit -> Push")
     print("=" * 60)
     
     # Step 1: Get token
