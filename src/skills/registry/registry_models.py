@@ -22,6 +22,8 @@ class SkillStatus(Enum):
 class AgentState(Enum):
     """State of a workstream agent."""
     INIT = "init"
+    READY = "ready"  # Initialized and ready for queries
+    BUSY = "busy"    # Processing a request
     QUERYING = "querying"
     COMPUTING = "computing"
     WRITING = "writing"
@@ -123,6 +125,8 @@ class AgentStatus:
     """Status of a workstream agent."""
     agent_id: str  # "WS0", "WS1", etc.
     state: AgentState = AgentState.INIT
+    message: str = ""  # Human-readable status message
     last_action: str = ""
+    processed_count: int = 0  # Number of items processed
     error: Optional[str] = None
     updated_at: str = field(default_factory=lambda: datetime.now().isoformat())

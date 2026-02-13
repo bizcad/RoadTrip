@@ -28,6 +28,8 @@ class BaseAgent(ABC):
         self.use_mock = use_mock
         self.state = AgentState.INIT
         self.last_action = ""
+        self.message = ""
+        self.processed_count = 0
         self.error: Optional[str] = None
         self.query_log: List[AgentQuery] = []
         
@@ -44,6 +46,7 @@ class BaseAgent(ABC):
         self.logger.info(f"{self.state.value} → {new_state.value}")
         self.state = new_state
         self.last_action = action
+        self.message = action
     
     def query_agent(self, target_agent: "BaseAgent", query: str) -> Any:
         """
@@ -99,7 +102,9 @@ class BaseAgent(ABC):
         return AgentStatus(
             agent_id=self.agent_id,
             state=self.state,
+            message=self.message,
             last_action=self.last_action,
+            processed_count=self.processed_count,
             error=self.error
         )
     

@@ -33,6 +33,12 @@ class RegistryReader(BaseAgent):
         # Load registry on init
         self.transition_state(AgentState.INIT, "Loading registry")
         self._load_registry()
+        
+        # Mark as ready after successful load
+        if self._registry is not None:
+            self.transition_state(AgentState.READY, "Registry loaded and ready")
+        else:
+            self.transition_state(AgentState.ERROR, "Failed to load registry")
     
     def _load_registry(self):
         """Load registry from YAML file."""
@@ -53,6 +59,7 @@ class RegistryReader(BaseAgent):
         except Exception as e:
             self.error = str(e)
             self.transition_state(AgentState.ERROR, f"Failed to load registry: {e}")
+            self._registry = None  # Ensure registry is None on error
             raise
     
     def _parse_registry(self, data: Dict[str, Any]) -> RegistryData:
@@ -90,7 +97,12 @@ class RegistryReader(BaseAgent):
         - "get_skill:{skill_name}" → full metadata
         - "query_capabilities:{capability}" → skills with capability
         """
-        self.transition_state(AgentState.QUERYING, f"Query: {query[:30]}")
+        # Check registry is available
+        if self._registry is None:
+            self.transition_state(AgentState.ERROR, "Registry not loaded")
+            return None
+        
+        self.transition_state(AgentState.BUSY, f"Query: {query[:30]}")
         
         try:
             if query == "get_all_skills":
@@ -126,7 +138,8 @@ class RegistryReader(BaseAgent):
                 result = None
                 self.logger.warning(f"Unknown query: {query}")
             
-            self.transition_state(AgentState.VERIFIED, "Query handled")
+            self.processed_count += 1
+            self.transition_state(AgentState.READY, "Query handled")
             return result
         
         except Exception as e:
@@ -140,7 +153,11 @@ class RegistryReader(BaseAgent):
     
     def write_registry(self, registry: RegistryData):
         """Write updated registry to YAML file."""
-        self.transition_state(AgentState.WRITING, f"Writing registry to {self.registry_path}")
+        if registry is None:
+            self.transition_state(AgentState.ERROR, "Cannot write None registry")
+            raise ValueError("Registry cannot be None")
+        
+        self.transition_state(AgentState.BUSY, f"Writing registry to {self.registry_path}")
         
         try:
             # Convert to dict
@@ -158,6 +175,7 @@ class RegistryReader(BaseAgent):
             
             # Reload to verify
             self._load_registry()
+            self.processed_count += 1
             self.logger.info(f"✅ Registry written: {len(registry.skills)} skills")
         
         except Exception as e:
