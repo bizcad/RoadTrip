@@ -18,7 +18,8 @@ Database schema:
     - created (TIMESTAMP)
     - description (TEXT)
     - source_files (JSON)
-    - updated_at (TIMESTAMP)
+    - entry_point (TEXT) - Path to .py file
+    - updated (TIMESTAMP) - Last modification time
   
   fingerprints
     - id (PRIMARY KEY)
@@ -92,7 +93,8 @@ class SQLiteStore(RegistryStore):
                     created TEXT,
                     description TEXT,
                     source_files TEXT,  -- JSON array
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    entry_point TEXT,  -- Path to skill entry point (.py file)
+                    updated TEXT DEFAULT CURRENT_TIMESTAMP  -- ISO timestamp, updated on modification
                 )
             """)
             
@@ -154,8 +156,8 @@ class SQLiteStore(RegistryStore):
             cursor.execute("""
                 INSERT OR REPLACE INTO skills 
                 (name, version, fingerprint, author, capabilities, tests,
-                 test_coverage, status, created, description, source_files, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 test_coverage, status, created, description, source_files, entry_point, updated)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 skill_id,
                 skill_data.get("version", "1.0.0"),
@@ -168,11 +170,12 @@ class SQLiteStore(RegistryStore):
                 skill_data.get("created", datetime.now().isoformat()),
                 skill_data.get("description", ""),
                 source_files,
-                datetime.now().isoformat()
+                skill_data.get("entry_point", ""),
+                skill_data.get("updated", datetime.now().isoformat())
             ))
             
             conn.commit()
-            self.logger.info(f"✅ Saved skill: {skill_id}")
+            self.logger.info(f"Saved skill: {skill_id}")
         except Exception as e:
             self.logger.error(f"Failed to save skill: {e}")
             raise
