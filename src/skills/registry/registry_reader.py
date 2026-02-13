@@ -147,8 +147,12 @@ class RegistryReader(BaseAgent):
             self.transition_state(AgentState.ERROR, f"Query failed: {e}")
             raise
     
-    def read_registry(self) -> RegistryData:
-        """Get current registry state."""
+    def read_registry(self) -> Optional[RegistryData]:
+        """Get current registry state.
+        
+        Returns:
+            RegistryData if loaded successfully, None if load failed
+        """
         return self._registry
     
     def write_registry(self, registry: RegistryData):
