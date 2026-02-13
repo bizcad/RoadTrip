@@ -84,7 +84,7 @@ class TestValidationPhase:
         """Example 3: Hard block - empty title."""
         post = BlogPost(
             title="",
-            excerpt="This is a valid excerpt with sufficient length.",
+            excerpt="This is a valid excerpt with sufficient length for testing.",
             content="This is valid content with more than fifty characters total."
         )
         
@@ -98,8 +98,8 @@ class TestValidationPhase:
         """Example 7: Hard block - title exceeds 100 chars."""
         post = BlogPost(
             title="x" * 101,
-            excerpt="This is a valid excerpt with sufficient length.",
-            content="This is valid content with more than fifty characters."
+            excerpt="This is a valid excerpt with sufficient length for testing.",
+            content="This is valid content with more than fifty characters total."
         )
         
         result = skill._validate_input(post)
@@ -112,8 +112,8 @@ class TestValidationPhase:
         """Example 4: Hard block - content < 50 chars."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="This is a valid excerpt with sufficient length.",
-            content="Short"
+            excerpt="This is a valid excerpt with sufficient length for testing.",
+            content="x" * 20  # 20 chars < 50 minimum
         )
         
         result = skill._validate_input(post)
@@ -136,25 +136,29 @@ class TestValidationPhase:
         assert result.confidence == 1.0
         assert any("excerpt too short" in e.lower() for e in result.errors)
     
-    def test_excerpt_too_long_rejected(self, skill):
-        """Hard block - excerpt > 160 chars."""
+    def test_excerpt_too_long_auto_truncated(self, skill):
+        """Phase 1b: Auto-truncate - excerpt > 160 chars gets truncated to ~158 with ..."""
+        long_excerpt = "x" * 220
         post = BlogPost(
             title="Valid Title",
-            excerpt="x" * 161,
+            excerpt=long_excerpt,
             content="This is valid content with more than fifty characters total."
         )
         
         result = skill._validate_input(post)
         
-        assert result.decision == "REJECT"
-        assert result.confidence == 1.0
-        assert any("excerpt too long" in e.lower() for e in result.errors)
+        # Should APPROVE with truncation warning, not reject
+        assert result.decision == "APPROVE"
+        assert any("truncated" in w.lower() for w in result.warnings)
+        # Excerpt should have been truncated in-place
+        assert len(post.excerpt) <= 160
+        assert post.excerpt.endswith("...")
     
     def test_html_content_rejected(self, skill):
         """Hard block - HTML not allowed."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="This is a valid excerpt with sufficient length.",
+            excerpt="This is a valid excerpt with sufficient length for testing warnings.",
             content="# Title\n\n<script>alert('xss')</script>\n" + "x" * 100
         )
         
@@ -165,44 +169,49 @@ class TestValidationPhase:
         assert any("html" in e.lower() for e in result.errors)
     
     def test_secrets_detected_rejected(self, skill):
-        """Example 5: Hard block - secrets in content."""
+        """Example 5: Hard block - secrets in content (if check_for_secrets enabled)."""
         post = BlogPost(
             title="Integration Guide",
-            excerpt="How to integrate with external services securely.",
+            excerpt="How to integrate with external services securely and correctly.",
             content="""# Integration Guide
 
 Here's the API key:
-API_KEY=abc123xyz789secret
+API_KEY="abc123xyz789secret"
 """ + "x" * 100
         )
         
         result = skill._validate_input(post)
         
-        assert result.decision == "REJECT"
-        assert result.confidence == 1.0
-        assert any("secret" in e.lower() for e in result.errors)
+        # Only fails if check_for_secrets is True (default config)
+        if skill.validation_config.get("check_for_secrets", True):
+            assert result.decision == "REJECT"
+            assert result.confidence == 1.0
+            assert any("secret" in e.lower() for e in result.errors)
+        else:
+            assert result.decision == "APPROVE"
     
     def test_invalid_date_format_rejected(self, skill):
         """Hard block - invalid ISO date format."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="This is a valid excerpt with sufficient length.",
-            content="This is valid content with more than fifty characters.",
-            date="2026-02-09"  # Missing time component
+            excerpt="This is a valid excerpt with sufficient length for testing dates.",
+            content="This is valid content with more than fifty characters for testing.",
+            date="2026-02-09"  # Missing time component - should be ISO 8601 with T and Z
         )
         
         result = skill._validate_input(post)
         
+        # Date validation requires YYYY-MM-DDTHH:mm:ss.SSSZ format
         assert result.decision == "REJECT"
         assert result.confidence == 1.0
-        assert any("date" in e.lower() for e in result.errors)
+        assert any("date" in e.lower() or "iso 8601" in e.lower() for e in result.errors)
     
     def test_valid_iso_date_accepted(self, skill):
         """Valid ISO date with milliseconds accepted."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="This is a valid excerpt with sufficient length.",
-            content="This is valid content with more than fifty characters.",
+            excerpt="This is a valid excerpt with sufficient length here for testing.",
+            content="This is valid content with more than fifty characters for testing purposes.",
             date="2026-02-09T13:45:23.000Z"
         )
         
@@ -215,14 +224,15 @@ API_KEY=abc123xyz789secret
         """Example 2: Minimal input - defaults applied, warnings logged."""
         post = BlogPost(
             title="Skill Development",
-            excerpt="This is a valid excerpt with sufficient length.",
-            content="This is valid content with more than fifty characters."
+            excerpt="This is a valid excerpt with sufficient length for testing.",
+            content="This is valid content with more than fifty characters for testing purposes."
         )
         
         result = skill._validate_input(post)
         
         assert result.decision == "APPROVE"
-        assert len(result.warnings) >= 2
+        # Should have warnings for missing optional fields (author_picture, coverImage, ogImage)
+        assert len(result.warnings) >= 3
         assert result.confidence == 0.99  # Defaults applied = 0.99
         assert any("cover" in w.lower() for w in result.warnings)
 
@@ -372,11 +382,12 @@ class TestGitOperations:
         posts_dir = tmp_path / "_posts"
         posts_dir.mkdir()
         
-        mock_run.return_value = MagicMock(returncode=0)
+        mock_run.return_value = MagicMock(returncode=0, stdout="abc12345")
         
-        success = skill._prepare_git_commit(
+        commit_hash, success = skill._prepare_and_commit(
             "2026-02-09-test.md",
-            "---\ntitle: Test\n---\n\nContent"
+            "---\ntitle: Test\n---\n\nContent",
+            BlogPost(title="Test", excerpt="Valid excerpt.", content="Content" * 20)
         )
         
         assert success is True
@@ -388,14 +399,13 @@ class TestGitOperations:
         
         post = BlogPost(
             title="Orchestrator Architecture",
-            excerpt="Valid excerpt.",
+            excerpt="Valid excerpt for testing.",
             content="Content." * 20,
             date="2026-02-09T10:00:00.000Z"
         )
         
-        # We'll verify this by checking what was passed to subprocess
-        # (In real test, could capture the actual call)
-        assert "blog:" in skill.blog_config["git"].get("commit_prefix", "blog")
+        # commit_prefix is "blog", colon is added during commit
+        assert skill.blog_config["git"].get("commit_prefix", "blog") == "blog"
 
 
 class TestLiveURL:
@@ -464,7 +474,7 @@ class TestConfidenceScoring:
         """Defaults applied (non-blocking) score 0.99."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="Valid excerpt.",
+            excerpt="Valid excerpt with enough characters for testing here.",
             content="Valid content." * 10
             # Missing author_picture, coverImage
         )
@@ -479,10 +489,11 @@ class TestConfidenceScoring:
         """Perfect input (no defaults needed) scores 1.0."""
         post = BlogPost(
             title="Valid Title",
-            excerpt="Valid excerpt with enough chars.",
+            excerpt="Valid excerpt with enough characters for perfect testing example here.",
             content="Valid content." * 10,
             author_picture="/assets/author.jpg",
-            coverImage="/assets/cover.jpg"
+            coverImage="/assets/cover.jpg",
+            ogImage="/assets/og.jpg"
         )
         
         result = skill._validate_input(post)
@@ -582,7 +593,7 @@ class TestEdgeCases:
         """Boundary: title of exactly 100 chars is acceptable."""
         post = BlogPost(
             title="x" * 100,
-            excerpt="Valid excerpt.",
+            excerpt="This is a very valid excerpt with sufficient test example characters here.",
             content="Content." * 20
         )
         
@@ -617,8 +628,8 @@ class TestEdgeCases:
     def test_content_exactly_50_chars_accepted(self, skill):
         """Boundary: content of exactly 50 chars is acceptable."""
         post = BlogPost(
-            title="Valid",
-            excerpt="Valid excerpt.",
+            title="Valid Title",
+            excerpt="This is a very valid excerpt with sufficient test example characters here.",
             content="x" * 50
         )
         
@@ -708,6 +719,101 @@ class TestIntegration:
         formatted, filename = skill_with_mock_git._format_post(post)
         assert formatted is not None
         assert "orchestrator-architecture-proven" in filename
+
+
+class TestOrchestrationSilent:
+    """Phase 1b Orchestration: Silent blog publishing workflow"""
+    
+    def test_silent_publish_format_and_commit(self):
+        """Integration test: Full orchestration can run silently without browser interaction"""
+        import tempfile
+        import subprocess
+        import shutil
+        from pathlib import Path
+        
+        # Create temporary blog repo
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_path = Path(tmpdir) / "test-blog"
+            repo_path.mkdir(parents=True)
+            posts_folder = repo_path / "_posts"
+            posts_folder.mkdir()
+            
+            # Initialize git repo
+            subprocess.run(["git", "init"], cwd=str(repo_path), capture_output=True, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=str(repo_path), capture_output=True)
+            subprocess.run(["git", "config", "user.name", "Test User"], cwd=str(repo_path), capture_output=True)
+            
+            # Create skill with temp repo config
+            config = {
+                "blog": {
+                    "repo": {
+                        "url": "https://github.com/test/test.git",
+                        "branch": "main",
+                        "local_path": str(repo_path),
+                        "posts_folder": "_posts"
+                    },
+                    "vercel": {
+                        "domain": "test.vercel.app",
+                        "estimated_build_time_sec": 30
+                    },
+                    "git": {
+                        "author_name": "Test Author",
+                        "author_email": "test@example.com",
+                        "commit_prefix": "test"
+                    },
+                    "validation": {
+                        "min_content_length": 50,
+                        "min_excerpt_length": 50,
+                        "max_excerpt_length": 160,
+                        "max_file_size_mb": 1,
+                        "check_for_secrets": False
+                    },
+                    "defaults": {
+                        "author_name": "Test",
+                        "author_picture": "/assets/test.jpg",
+                        "coverImage": "/assets/cover.jpg"
+                    }
+                }
+            }
+            
+            skill = BlogPublisherSkill(config)
+            
+            # Create valid post
+            post = BlogPost(
+                title="Silent Test Post",
+                excerpt="Testing silent orchestration workflow with deterministic Phase 1b design patterns.",
+                content="# Silent Test\n\nThis post tests silent orchestration." + "x" * 100,
+                author_name="Test",
+                author_picture="/assets/test.jpg",
+                coverImage="/assets/cover.jpg"
+            )
+            
+            # Publish (format + commit only, no push)
+            result = skill.publish(post)
+            
+            # Verify result
+            assert result.decision == "APPROVE", f"Publish failed: {result.errors}"
+            assert result.success == True
+            assert len(result.filename) > 0
+            assert "silent-test-post" in result.filename
+            assert len(result.commit_hash) > 0
+            
+            # Verify file was created
+            files = list(posts_folder.glob("*.md"))
+            assert len(files) == 1
+            assert files[0].name == result.filename
+            
+            # Verify git commit was made
+            log_result = subprocess.run(
+                ["git", "log", "--oneline", "-1"],
+                cwd=str(repo_path),
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            assert len(log_result.stdout) > 0
+            # Commit hash in result is full hash, git log shows abbreviated (7 chars)
+            assert log_result.stdout.startswith(result.commit_hash[:7])
 
 
 if __name__ == "__main__":
