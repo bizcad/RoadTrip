@@ -87,10 +87,11 @@ class MCPInspector:
 ```
 
 **Key Points**:
-- Use GitPython to clone to temp directory
+- Clone to: `data/ClonedRepos/{mcp_name}/` (persisted, gitignored)
 - Handle missing server.json gracefully (flag as incomplete)
 - Extract from package.json, setup.py, go.mod, etc.
 - Store results in MCPMetadata dataclass
+- Run health_check() to verify server starts
 
 ### 2. SchemaExtractor Class
 ```python
