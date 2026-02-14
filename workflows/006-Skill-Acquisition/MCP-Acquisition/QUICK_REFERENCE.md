@@ -11,7 +11,7 @@
 
 | Task | File |
 |------|------|
-| Find MCPs in Official Registry | `src/mcp/discovery/registry_client.py` |
+| Find MCPs in Official Registry | `src/mcp/discovery/mcp_server_registry_client.py` |
 | Clone & analyze real MCPs | `src/mcp/discovery/mcp_inspector.py` |
 | Extract tool schemas from MCP | `src/mcp/discovery/schema_extractor.py` |
 | Create analysis reports (CSV, JSON) | `src/mcp/discovery/audit.py` |
@@ -31,8 +31,8 @@
 ### Discovery Phase
 ```python
 # Query official registry for MCPs
-from src.mcp.discovery import RegistryClient
-client = RegistryClient(cache_dir="./mcp_cache")
+from src.mcp.discovery import MCPServerRegistryClient
+client = MCPServerRegistryClient(cache_dir="./mcp_cache")
 servers = await client.get_servers(limit=100)
 
 # Introspect a real MCP repo

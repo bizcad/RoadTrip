@@ -81,7 +81,7 @@ tests/fixtures/
 
 ### For Implementation (Building the Code)
 1. Review `MODULE_ARCHITECTURE.md` (understand code structure)
-2. Go to `src/mcp/discovery/__init__.py` (start Phase 1)
+2. Create `src/mcp/discovery/mcp_server_registry_client.py` (start Phase 1)
 3. Reference back to `plan.md` for specific task details
 
 ### For Integration (Using the Catalog)
