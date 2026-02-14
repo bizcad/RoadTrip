@@ -96,14 +96,49 @@ Filesystem MCP clone contains:
 
 **Health Check Status**: ✅ Can access code, ❓ Haven't tested server startup yet
 
+#### 6. 🏗️ ARCHITECTURAL DECISION: Keep Monorepo Structure As-Is
+**Decision**: Do NOT flatten or reorganize the monorepo structure.
+
+**Why**:
+- ✅ Keeps analysis grounded in reality (actual upstream structure)
+- ✅ Easier to track updates from official repo in future
+- ✅ No maintenance burden from custom reorganization
+- ✅ Each MCP's location in `src/{server_name}/` is semantically meaningful
+- ❌ Flattening would lose context and require ongoing sync
+
+**Implementation Strategy**:
+1. Clone `modelcontextprotocol/servers` ONCE to `data/ClonedRepos/mcp-servers/`
+2. In mcp_candidates.json, add field: `"monorepo_path": "src/filesystem"` (location within monorepo)
+3. MCPInspector iterates through candidates and reads from their actual `src/{name}/` locations
+4. All analysis preserves the original directory structure
+5. Documentation clearly explains: "This is a monorepo - each MCP is at src/{name}/"
+
+**mcp_candidates.json Format Update**:
+```json
+{
+  "name": "filesystem",
+  "repository": "https://github.com/modelcontextprotocol/servers",
+  "monorepo_path": "src/filesystem",  ← NEW: location within monorepo
+  "description": "...",
+  ...
+}
+```
+
 ### Impact on Week 2 Implementation
 
 #### Architecture Change
 Instead of cloning 15-20 separate repos:
 1. Clone `modelcontextprotocol/servers` ONCE → `data/ClonedRepos/mcp-servers/`
-2. Iterate through `src/{server_name}/` for each MCP in candidates
-3. Parse both `.mcp.json` and code to extract metadata
+2. Iterate through candidates, use `monorepo_path` to find each MCP in `src/{server_name}/`
+3. Parse both `.mcp.json` (root) and code from individual `src/{name}/` directories
 4. Much more efficient (1 large clone vs. many small clones)
+5. **Preserve original monorepo structure** - don't reorganize or flatten files
+
+**Why NOT flatten the monorepo**:
+- Keeps analysis true to upstream reality
+- No maintenance burden tracking changes
+- Each MCP's location is semantically meaningful
+- Easier to update when official repo changes
 
 #### Authentication Pattern Validated
 ```python
