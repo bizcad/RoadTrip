@@ -29,7 +29,7 @@ Design and build an **empirical MCP discovery and acquisition system** that:
 **Objective**: Query Official Registry, identify candidates for introspection
 
 #### Tasks
-- [ ] 1.1 Create `RegistryClient` class
+- [ ] 1.1 Create `MCPServerRegistryClient` class
   - Authenticate with Official MCP Registry API
   - Query `/v0.1/servers` endpoint
   - Handle pagination
@@ -49,7 +49,7 @@ Design and build an **empirical MCP discovery and acquisition system** that:
   - Output: `mcp_candidates.json` (30 MCPs with GitHub URLs)
 
 **Artifacts**:
-- `src/mcp/discovery/registry_client.py`
+- `src/mcp/discovery/mcp_server_registry_client.py`
 - `workflows/006-Skill-Acquisition/MCP-Acquisition/mcp_candidates.json`
 - `workflows/006-Skill-Acquisition/MCP-Acquisition/WEEK1_REPORT.md`
 

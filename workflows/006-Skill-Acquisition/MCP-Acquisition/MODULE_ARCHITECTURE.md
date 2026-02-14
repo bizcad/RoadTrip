@@ -46,10 +46,10 @@ src/mcp/
 
 **Purpose**: Find and analyze MCPs from Official Registry
 
-#### `registry_client.py`
+#### `mcp_server_registry_client.py`
 ```python
-class RegistryClient:
-    """Query Official MCP Registry API"""
+class MCPServerRegistryClient:
+    """Query Official MCP Registry API (registry.modelcontextprotocol.io)"""
     
     def __init__(self, cache_dir: str = None):
         # Initialize with optional caching
