@@ -47,6 +47,10 @@ PromptTracking/
 *.key
 *.pem
 
+# Cloned MCP repositories (ephemeral, can be regenerated)
+data/ClonedRepos/
+!data/ClonedRepos/README.md
+
 # Initiative and strategy (separate private repos)
 workflows/003-signed-agentic-work/
 
