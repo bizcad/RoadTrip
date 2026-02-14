@@ -142,7 +142,7 @@ class ConfigResolver:
         
         return default
     
-    def get_source(self, key: str) -> ConfigSource:
+    def get_source(self, key: str) -> Optional[ConfigSource]:
         """
         Get the source of a configuration value.
         
@@ -150,7 +150,7 @@ class ConfigResolver:
             key: Configuration key
         
         Returns:
-            ConfigSource enum indicating where value came from
+            ConfigSource enum indicating where value came from, or None if not found
         """
         if key in self.hardcoded_config:
             return ConfigSource.HARDCODED

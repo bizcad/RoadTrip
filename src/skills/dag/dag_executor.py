@@ -96,6 +96,9 @@ class DAGExecutor:
             print(f"[EXECUTOR] DAG: {self.dag}")
         
         try:
+            # Ensure execution result is initialized
+            assert self._execution_result is not None, "Execution result not initialized"
+            
             # Get execution order
             execution_order = self.dag.topological_sort()
             

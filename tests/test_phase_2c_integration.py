@@ -41,7 +41,7 @@ class TestPhase2cIntegration:
     @pytest.fixture
     def discovered_skills(self):
         """Get list of discovered skills from project."""
-        from discover_skills import discover_all_skills
+        from scripts.discover_skills import discover_all_skills
         return discover_all_skills()
     
     # ===== DISCOVERY =====

@@ -267,12 +267,12 @@ class DAGBuilder:
         
         return self.dag
     
-    def build_and_validate(self) -> tuple[SkillDAG, List[str]]:
+    def build_and_validate(self) -> tuple[Optional[SkillDAG], List[str]]:
         """
-        Build DAG and return validation report.
+        Build DAG and validate, or return validation errors.
         
         Returns:
-            (dag, warnings) - dag may be invalid, warnings list
+            (dag, warnings) - dag may be invalid if validation fails, warnings list
         """
         is_valid, errors = self.validate()
         

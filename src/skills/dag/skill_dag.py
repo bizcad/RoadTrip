@@ -5,7 +5,7 @@ Represents skill dependencies and execution order.
 Supports cascade-stop semantics: if a skill fails, dependents are skipped.
 """
 
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -32,7 +32,7 @@ class SkillNode:
     """
     skill: SkillBase
     skill_name: str
-    config_overrides: Dict[str, any] = field(default_factory=dict)
+    config_overrides: Dict[str, Any] = field(default_factory=dict)
     input_mapping: Dict[str, str] = field(default_factory=dict)  # output_key -> input_key
     
     def __hash__(self):
@@ -104,7 +104,7 @@ class SkillDAG:
     def add_node(
         self,
         skill: SkillBase,
-        config_overrides: Optional[Dict[str, any]] = None,
+        config_overrides: Optional[Dict[str, Any]] = None,
         input_mapping: Optional[Dict[str, str]] = None
     ) -> SkillNode:
         """

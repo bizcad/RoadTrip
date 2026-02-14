@@ -106,8 +106,11 @@ class SkillLoader:
                     f"Interface validation failed for {metadata.name}:\n{error_msg}"
                 )
             
-            # Instantiate
-            instance = skill_class()
+            # Instantiate with metadata (required by SkillBase)
+            instance = skill_class(
+                skill_name=metadata.name,
+                skill_version=metadata.version
+            )
             
             # Cache
             self._loaded_skills[cache_key] = instance

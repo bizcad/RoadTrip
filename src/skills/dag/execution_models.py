@@ -164,19 +164,17 @@ class ExecutionContext:
     skill_entry_point: str
     inputs: Dict[str, Any] = field(default_factory=dict)
     outputs: Dict[str, Any] = field(default_factory=dict)
-    audit_trail: Optional[AuditTrail] = None
+    audit_trail: AuditTrail = field(default_factory=lambda: AuditTrail(skill_name="", skill_version=""))
     execution_mode: ExecutionMode = ExecutionMode.PROD
-    retry_config: Optional[RetryConfig] = None
+    retry_config: RetryConfig = field(default_factory=RetryConfig)
     
     def __post_init__(self):
-        """Initialize audit trail."""
-        if self.audit_trail is None:
+        """Initialize audit trail if needed."""
+        if not self.audit_trail or (self.audit_trail.skill_name == "" and self.audit_trail.skill_version == ""):
             self.audit_trail = AuditTrail(
                 skill_name=self.skill_name,
                 skill_version=self.skill_version
             )
-        if self.retry_config is None:
-            self.retry_config = RetryConfig()
     
     def log_debug(self, message: str, data: Optional[Dict[str, Any]] = None) -> None:
         """Log debug message (shown in dev mode)."""

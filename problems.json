@@ -1,0 +1,505 @@
+[{
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/config_resolver.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportReturnType",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportReturnType.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Type \"None\" is not assignable to return type \"ConfigSource\"\n  \"None\" is not assignable to \"ConfigSource\"",
+	"source": "Pylance",
+	"startLineNumber": 163,
+	"startColumn": 16,
+	"endLineNumber": 163,
+	"endColumn": 20,
+	"modelVersionId": 276,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_builder.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportReturnType",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportReturnType.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Type \"tuple[None, List[str]]\" is not assignable to return type \"tuple[SkillDAG, List[str]]\"\n  \"None\" is not assignable to \"SkillDAG\"",
+	"source": "Pylance",
+	"startLineNumber": 282,
+	"startColumn": 20,
+	"endLineNumber": 282,
+	"endColumn": 24,
+	"modelVersionId": 333,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_skill_result\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 184,
+	"startColumn": 44,
+	"endLineNumber": 184,
+	"endColumn": 60,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_skill_result\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 233,
+	"startColumn": 32,
+	"endLineNumber": 233,
+	"endColumn": 48,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_skill_result\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 290,
+	"startColumn": 32,
+	"endLineNumber": 290,
+	"endColumn": 48,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"total_execution_time_ms\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 296,
+	"startColumn": 36,
+	"endLineNumber": 296,
+	"endColumn": 59,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"status\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 300,
+	"startColumn": 55,
+	"endLineNumber": 300,
+	"endColumn": 61,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"skill_results\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 301,
+	"startColumn": 62,
+	"endLineNumber": 301,
+	"endColumn": 75,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"total_execution_time_ms\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 304,
+	"startColumn": 59,
+	"endLineNumber": 304,
+	"endColumn": 82,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"status\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 317,
+	"startColumn": 46,
+	"endLineNumber": 317,
+	"endColumn": 52,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"mode\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 318,
+	"startColumn": 44,
+	"endLineNumber": 318,
+	"endColumn": 48,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"total_execution_time_ms\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 319,
+	"startColumn": 53,
+	"endLineNumber": 319,
+	"endColumn": 76,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/dag_executor.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"skill_results\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 322,
+	"startColumn": 51,
+	"endLineNumber": 322,
+	"endColumn": 64,
+	"modelVersionId": 335,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/execution_models.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_event\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 187,
+	"startColumn": 26,
+	"endLineNumber": 187,
+	"endColumn": 35,
+	"modelVersionId": 264,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/execution_models.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_event\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 191,
+	"startColumn": 26,
+	"endLineNumber": 191,
+	"endColumn": 35,
+	"modelVersionId": 264,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/execution_models.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"add_error\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 195,
+	"startColumn": 26,
+	"endLineNumber": 195,
+	"endColumn": 35,
+	"modelVersionId": 264,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_base.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"start_time\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 261,
+	"startColumn": 42,
+	"endLineNumber": 261,
+	"endColumn": 52,
+	"modelVersionId": 317,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_base.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"set_complete\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 281,
+	"startColumn": 33,
+	"endLineNumber": 281,
+	"endColumn": 45,
+	"modelVersionId": 317,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_base.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportOptionalMemberAccess",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportOptionalMemberAccess.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "\"set_failed\" is not a known attribute of \"None\"",
+	"source": "Pylance",
+	"startLineNumber": 293,
+	"startColumn": 33,
+	"endLineNumber": 293,
+	"endColumn": 43,
+	"modelVersionId": 317,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_dag.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportGeneralTypeIssues",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportGeneralTypeIssues.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Expected class but received \"(iterable: Iterable[object], /) -> bool\"",
+	"source": "Pylance",
+	"startLineNumber": 35,
+	"startColumn": 33,
+	"endLineNumber": 35,
+	"endColumn": 36,
+	"modelVersionId": 323,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_dag.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportGeneralTypeIssues",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportGeneralTypeIssues.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Expected class but received \"(iterable: Iterable[object], /) -> bool\"",
+	"source": "Pylance",
+	"startLineNumber": 107,
+	"startColumn": 46,
+	"endLineNumber": 107,
+	"endColumn": 49,
+	"modelVersionId": 323,
+	"origin": "extHost1"
+}, {
+	"resource": "/g:/repos/AI/RoadTrip/src/skills/dag/skill_loader.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportCallIssue",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportCallIssue.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Arguments missing for parameters \"skill_name\", \"skill_version\"",
+	"source": "Pylance",
+	"startLineNumber": 110,
+	"startColumn": 24,
+	"endLineNumber": 110,
+	"endColumn": 37,
+	"modelVersionId": 295,
+	"origin": "extHost1"
+}, {
+	"resource": "/G:/repos/AI/RoadTrip/tests/test_phase_2c_integration.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Import \"discover_skills\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 44,
+	"startColumn": 14,
+	"endLineNumber": 44,
+	"endColumn": 29,
+	"modelVersionId": 2,
+	"origin": "extHost1"
+}, {
+	"resource": "/G:/repos/AI/RoadTrip/tests/test_phase_2c_integration.py",
+	"owner": "Pylance6",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 8,
+	"message": "Import \"discover_skills\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 353,
+	"startColumn": 14,
+	"endLineNumber": 353,
+	"endColumn": 29,
+	"modelVersionId": 2,
+	"origin": "extHost1"
+}]
