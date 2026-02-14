@@ -35,6 +35,97 @@ Clone real MCPs from GitHub, extract detailed metadata, identify patterns in 15-
 
 ---
 
+## 🔍 Clone Prototype Validation Results (Feb 14, Evening)
+
+**Prototype Finding**: Ran `prototype_mcp_clone_loop.py` to validate cloning strategy BEFORE Week 2.
+
+### Key Discoveries
+
+#### 1. ✅ GitHub Token Authentication Works
+- **Method**: `GITHUB_TOKEN` from environment variable
+- **Pattern**: `https://{token}@github.com/owner/repo`
+- **Critical**: Must `.strip()` token to remove newlines/whitespace from Credential Manager
+- **Result**: 3/3 clones successful with proper auth
+- **No more prompts**: Script can run non-interactively
+
+#### 2. ✅ Correct Repository URL Identified
+- **Wrong**: `https://github.com/anthropics/mcp-servers` ❌ (doesn't exist)
+- **Correct**: `https://github.com/modelcontextprotocol/servers` ✅
+- **Fixed**: Updated all 8 MCPs in mcp_candidates.json with correct URL
+
+#### 3. 🏗️ Monorepo Structure Discovered
+This is **NOT a 1:1 repo-to-MCP mapping**. The servers repo is organized as:
+```
+modelcontextprotocol/servers/
+├── src/
+│   ├── filesystem/    ← Individual MCP implementation
+│   ├── postgresql/
+│   ├── sqlite/
+│   ├── fetch/
+│   ├── git/
+│   ├── github/
+│   ├── time/
+│   ├── memory/
+│   └── ... (8+ MCPs)
+├── .mcp.json          (NOT server.json - monorepo config)
+├── package.json       (monorepo dependencies)
+└── README.md
+```
+
+**Implication for Week 2**: 
+- Clone ONCE: `git clone modelcontextprotocol/servers data/ClonedRepos/mcp-servers/`
+- Process MULTIPLE MCPs from subdirectories
+- Look for `.mcp.json` at root AND per-server configs
+- Extract tools from each `src/{server_name}/` directory
+
+#### 4. 🔧 Configuration File: `.mcp.json` (Not server.json)
+- **Root config**: `data/ClonedRepos/mcp-servers/.mcp.json` (monorepo settings)
+- **Expected**: Each MCP in `src/{name}/` may have own config or inherit root config
+- **Note**: Some MCPs are written in TypeScript (Node), others in Python
+- **Important**: Tools/capabilities come from code analysis, not just JSON
+
+#### 5. 📦 File Inventory from 3 Successful Clones
+Filesystem MCP clone contains:
+- `.git/` - Full git history
+- `.github/` - CI/CD workflows
+- `src/` - 8 language-specific server implementations
+- `scripts/` - Build & test scripts
+- `.mcp.json` - Monorepo config
+- `package.json` - Dependencies
+- Multiple `README.md`, Dockerfiles, TypeScript/Python configs
+
+**Health Check Status**: ✅ Can access code, ❓ Haven't tested server startup yet
+
+### Impact on Week 2 Implementation
+
+#### Architecture Change
+Instead of cloning 15-20 separate repos:
+1. Clone `modelcontextprotocol/servers` ONCE → `data/ClonedRepos/mcp-servers/`
+2. Iterate through `src/{server_name}/` for each MCP in candidates
+3. Parse both `.mcp.json` and code to extract metadata
+4. Much more efficient (1 large clone vs. many small clones)
+
+#### Authentication Pattern Validated
+```python
+import os
+token = os.getenv("GITHUB_TOKEN").strip()  # Remove newlines!
+url = f"https://{token}@github.com/modelcontextprotocol/servers"
+subprocess.run(["git", "clone", url, target_dir])
+```
+
+#### Testing Strategy
+- Clone prototype worked with real token → Use same pattern in tests
+- Mock filepath instead of mocking git (easier to test with real artifacts)
+- Already have copies of 3 servers in `data/ClonedRepos/` for reference
+
+### Prototype Code Artifact
+- **File**: `scripts/prototype_mcp_clone_loop.py` (330 LOC)
+- **Reusable**: The clone + health_check pattern is production-ready
+- **Location**: Can refactor into MCPInspector.clone_and_introspect()
+- **Status**: Committed to feature/mcp-acquisition branch (local, push auth pending)
+
+---
+
 ## What Week 1 Delivered
 
 ### Input: mcp_candidates.json
@@ -76,36 +167,55 @@ You will receive a JSON file with ~30 MCPs:
 class MCPInspector:
     """Clone and introspect MCP repositories"""
     
-    async def introspect(github_url: str) -> MCPMetadata:
-        # Clone repo, find server.json, extract metadata
+    async def clone_monorepo(repo_url: str) -> Path:
+        # Clone modelcontextprotocol/servers to data/ClonedRepos/mcp-servers/
+        # Uses GITHUB_TOKEN from environment for auth
+        # Returns path to cloned repo
         
-    def parse_server_json(path: str) -> ServerJSON:
-        # Read and parse server.json
+    async def introspect_mcp(mcp_name: str, monorepo_path: Path) -> MCPMetadata:
+        # Given an MCP name (e.g., "filesystem")
+        # Find src/{mcp_name}/ in monorepo
+        # Extract metadata from code + .mcp.json
         
-    def extract_capabilities(repo_path: str) -> List[ToolSchema]:
-        # Find tool definitions in code
+    def parse_mcp_config(config_path: str) -> MCPConfig:
+        # Read .mcp.json (root or per-MCP)
+        # Extract tools, protocols, capabilities
+        
+    def extract_tools(repo_path: str) -> List[ToolSchema]:
+        # Analyze Python or TypeScript code
+        # Extract function signatures, docstrings, type hints
+        # Build ToolSchema for each tool
 ```
 
-**Key Points**:
-- Clone to: `data/ClonedRepos/{mcp_name}/` (persisted, gitignored)
-- Handle missing server.json gracefully (flag as incomplete)
-- Extract from package.json, setup.py, go.mod, etc.
-- Store results in MCPMetadata dataclass
-- Run health_check() to verify server starts
+**Key Points** (Validated by Prototype):
+- Monorepo clone location: `data/ClonedRepos/mcp-servers/`
+- Per-MCP code location: `{monorepo}/src/{mcp_name}/`
+- Config file: `.mcp.json` (not server.json - was incorrect assumption!)
+- Each MCP may be in Python (mcp_server_*/) or TypeScript (src/*/index.ts)
+- Run health_check() after clone (verify .git and key files exist)
 
 ### 2. SchemaExtractor Class
 ```python
 class SchemaExtractor:
-    """Extract structured data from MCPs"""
+    """Extract structured data from MCPs in monorepo"""
     
-    def extract_tools(repo_path: str) -> List[ToolSchema]:
-        # Tool definitions, input/output schemas, cost
+    def extract_from_mcp(mcp_path: str, language: str) -> MCPAnalysis:
+        # Detect language (Python or TypeScript)
+        # Extract tools, dependencies, auth patterns
         
-    def extract_auth_requirements(repo_path: str) -> AuthPattern:
-        # API keys, OAuth, certs, environment variables
+    def extract_tools_python(module_path: str) -> List[ToolSchema]:
+        # Read Python files, find function definitions
+        # Extract docstrings, type hints
         
-    def extract_dependencies(repo_path: str) -> DependencyList:
-        # From package.json, setup.py, go.mod, requirements.txt
+    def extract_tools_typescript(src_path: str) -> List[ToolSchema]:
+        # Read TypeScript, find tool registrations
+        # Extract from tool definitions
+        
+    def extract_dependencies(mcp_path: str) -> DependencyList:
+        # package.json (TS), setup.py/pyproject.toml (Python)
+        
+    def extract_auth_requirements(mcp_path: str) -> AuthPattern:
+        # API keys, environment variables from code & config
 ```
 
 ### 3. AuditGenerator Class
@@ -227,6 +337,49 @@ CREATE TABLE mcp_tools (
   ...
 );
 ```
+
+---
+
+## Testing Strategy (Informed by Prototype)
+
+**Key Learning**: The monorepo has both TypeScript and Python MCPs, so unit tests must handle both.
+
+### Create Fixture Directory
+```
+tests/fixtures/mcp_monorepo/
+├── .mcp.json              (example root config)
+├── src/
+│   ├── filesystem/        (TypeScript MCP)
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   └── README.md
+│   └── mcp_server_time/   (Python MCP)
+│       ├── __main__.py
+│       ├── server.py
+│       ├── pyproject.toml
+│       └── README.md
+├── package.json           (monorepo dependencies)
+└── mcp_metadata_sample.json
+```
+
+### Mock Clone Pattern
+```python
+@patch('git.Repo.clone_from')
+def test_clone_monorepo(mock_clone):
+    # Don't call real git - use test fixture
+    mock_clone.return_value = Path("tests/fixtures/mcp_monorepo")
+    
+@patch('subprocess.run')  # For GITHUB_TOKEN insertion
+def test_token_auth(mock_run):
+    # Verify token is stripped and inserted correctly
+    pass
+```
+
+### Learned from Prototype
+- ✅ Real token auth works (no mocking needed for integration tests)
+- ✅ Clone pattern is reusable (can lift from prototype script)
+- ✅ Monorepo structure is consistent (one clone, many MCPs)
+- ✅ `.mcp.json` exists at root (look there for config)
 
 ---
 
