@@ -1,0 +1,46 @@
+# Blog Publisher Configuration
+# 
+# This configuration file controls all aspects of the blog publisher skill.
+# See SKILL.md for specification details.
+
+blog:
+  
+  # Repository configuration
+  repo:
+    url: "https://github.com/bizcad/roadtrip-blog.git"
+    branch: "main"
+    local_path: "G:\\repos\\AI\\roadtrip-blog"  # Local clone of blog repository
+    posts_folder: "_posts"  # Relative path to posts directory
+  
+  # Vercel deployment configuration
+  vercel:
+    domain: "roadtrip-blog-ten.vercel.app"
+    build_check_enabled: false  # Phase 3: TODO - enable Vercel API checks
+    estimated_build_time_sec: 30  # From Phase 2 observation
+  
+  # Git commit configuration
+  git:
+    author_name: "Nicholas Stein"
+    author_email: "nicholasstein@cox.net"
+    commit_prefix: "blog"  # Semantic commit prefix
+  
+  # Input validation configuration
+  validation:
+    min_content_length: 50  # Minimum characters for blog content
+    min_excerpt_length: 50  # SEO minimum
+    max_excerpt_length: 160  # SEO maximum
+    max_file_size_mb: 1  # Maximum file size
+    check_for_secrets: true  # Use rules-engine validation
+  
+  # Default values (used when optional fields are missing)
+  defaults:
+    author_name: "RoadTrip"
+    author_picture: "/assets/blog/authors/nick.jpeg"
+    coverImage: "/assets/blog/default-cover.jpg"
+    timezone: "UTC"
+
+
+# Usage
+# =====
+# The skill automatically loads this config from its directory.
+# To customize, edit the values below and restart the skill.
