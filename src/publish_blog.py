@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """
-Publish the blog post: How We Built a Trusted AI Skill
+⚠️  DEPRECATED - Use src/skills/blog_publisher.py directly instead
+
+This file is maintained for historical reference only (Phase 5-6 experiments).
+The canonical blog publisher skill implementation is now at: src/skills/blog_publisher.py
 
 This script calls the blog publishing orchestrator which handles:
 1. Blog Publisher SKILL - Format and commit
 2. Push with Token SKILL - Authenticate and push
+
+DEPRECATED: For new implementations, use:
+    from src.skills.blog_publisher import BlogPublisherSkill, BlogPost
+    skill = BlogPublisherSkill(config)
+    result = skill.publish(blog_post)
 """
 
 from orchestrate_blog_publish import orchestrate_blog_publish

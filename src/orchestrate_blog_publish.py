@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 """
-Blog Publishing Orchestrator - Phase 1b Implementation
+⚠️  DEPRECATED - Use src/skills/blog_publisher.py directly instead
 
-Purpose: Orchestrate the blog publishing workflow by chaining skills:
+This file is maintained for historical reference only (Phase 5-6 experiments).
+
+Original Purpose: Orchestrate the blog publishing workflow by chaining skills:
   1. blog_publisher SKILL - Validate, format, and commit post
   2. push_with_token SKILL - Authenticate and push to remote
 
-This follows Phase 1b principles:
-- Deterministic orchestration (hardcoded sequence, not dynamic routing)
-- Clear separation of concerns (format vs. push)
-- Leverages existing tested infrastructure (push_with_token)
-- Ready for Phase 2b migration to dynamic skill discovery
+CURRENT STATUS: The blog_publisher skill now handles the complete workflow autonomously.
+The Push integration is built into the skill, so this orchestrator is no longer needed.
 
-Usage:
-    python orchestrate_blog_publish.py <title> <excerpt> <content>
+MIGRATION: For new implementations, use:
+    from src.skills.blog_publisher import BlogPublisherSkill, BlogPost
+    skill = BlogPublisherSkill(config)
+    result = skill.publish(blog_post)
     
-    Or import as a module:
-        from orchestrate_blog_publish import orchestrate_blog_publish
-        result = orchestrate_blog_publish(title, excerpt, content)
+The skill includes all phases (validation, formatting, commit, push) in a single call.
 """
 
 import subprocess
