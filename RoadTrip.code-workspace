@@ -1,43 +1,16 @@
 {
-    "folders": [
-        {
-            "name": "RoadTrip",
-            "path": "."
-        }
-    ],
-    "settings": {
-        "terminal.integrated.profiles.windows": {
-            "RoadTrip PowerShell": {
-                "source": "PowerShell",
-                "args": [
-                    "-NoExit",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-File",
-                    "G:\\repos\\AI\\RoadTrip\\infra\\RoadTrip_profile.ps1"
-                ]
-            }
-        },
-        "terminal.integrated.defaultProfile.windows": "RoadTrip PowerShell",
-        "chat.tools.terminal.autoApprove": {
-            ".\\scripts\\git_push.ps1": true,
-            "/^git --version$/": {
-                "approve": true,
-                "matchCommandLine": true
-            },
-            "Test-Path": true,
-            "ForEach-Object": true,
-            "Get-Item": true,
-            ".\\tests\\test-agent-autonomous-push.ps1": true,
-            "&": true,
-            ".\\scripts\\push-with-token.ps1": true,
-            ".": true,
-            "logt": true,
-            "Out-File": true,
-            "gpush": true,
-            "py": true,
-            "pytest": true,
-            "git push": true
-        }
-    }
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"chat.tools.terminal.autoApprove": {
+			"code": true,
+			"Get-Command": true,
+			"where.exe": true,
+			"git push": true,
+			"py": true
+		}
+	}
 }
