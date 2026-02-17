@@ -21,6 +21,48 @@ from src.skills.trust_scorecard import (
 )
 
 
+def load_evidence_map(path: str) -> dict[str, dict[str, str]]:
+    """Load JSON evidence map for trust bundle generation."""
+
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("Evidence map must be a JSON object")
+
+    normalized: dict[str, dict[str, str]] = {}
+    for key, value in payload.items():
+        if not isinstance(key, str):
+            continue
+        if not isinstance(value, dict):
+            continue
+        normalized[key] = {
+            str(k): str(v)
+            for k, v in value.items()
+            if isinstance(k, str) and isinstance(v, str)
+        }
+    return normalized
+
+
+def resolve_evidence_links(
+    skill_name: str,
+    evidence_map: dict[str, dict[str, str]] | None,
+) -> dict[str, str]:
+    """Resolve evidence links with global defaults and per-skill overrides."""
+
+    if not evidence_map:
+        return {}
+
+    merged: dict[str, str] = {}
+    defaults = evidence_map.get("*", {})
+    if isinstance(defaults, dict):
+        merged.update(defaults)
+
+    skill_specific = evidence_map.get(skill_name, {})
+    if isinstance(skill_specific, dict):
+        merged.update(skill_specific)
+
+    return merged
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate trust scorecards")
     parser.add_argument(
@@ -48,11 +90,20 @@ def main() -> int:
         default="",
         help="Optional directory to emit per-skill trust bundle JSON files",
     )
+    parser.add_argument(
+        "--bundle-evidence-map",
+        default="",
+        help="Optional JSON map of evidence links keyed by '*' and/or skill name",
+    )
     args = parser.parse_args()
 
     overrides = {}
     if args.mock_profile:
         overrides = json.loads(Path(args.mock_profile).read_text(encoding="utf-8"))
+
+    evidence_map = {}
+    if args.bundle_evidence_map:
+        evidence_map = load_evidence_map(args.bundle_evidence_map)
 
     provider = MockGateProvider(overrides=overrides)
     cards = evaluate_registry(registry_path=args.registry, gate_provider=provider)
@@ -75,10 +126,12 @@ def main() -> int:
         bundle_dir = Path(args.bundle_dir)
         bundle_dir.mkdir(parents=True, exist_ok=True)
         for card in cards:
+            evidence_links = resolve_evidence_links(card.skill_name, evidence_map)
             bundle = build_trust_bundle(
                 scorecard=card,
                 release_id=args.release_id,
                 registry_path=args.registry,
+                evidence_links=evidence_links,
             )
             bundle_path = bundle_dir / f"{card.skill_name}.trust-bundle.json"
             bundle_path.write_text(json.dumps(bundle, indent=2), encoding="utf-8")

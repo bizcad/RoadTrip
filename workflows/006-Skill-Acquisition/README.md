@@ -102,6 +102,7 @@ Production Evaluation → Feedback → ... (improvement loop)
 | **PROCESS_GOVERNANCE.md** | Weekly loop, cadence, roles | 20 min | Entire team |
 | **DECISION_RECORD_Acquisition_Architecture.md** | Why this approach | 15 min | Architects |
 | **TRUST_BUNDLE_TEMPLATE.json** | Standard per-skill trust decision artifact schema | 5 min | Vetting + onboarding |
+| **TRUST_BUNDLE_EVIDENCE_MAP_TEMPLATE.json** | Default + per-skill evidence link mapping for bundle generation | 5 min | Vetting + onboarding |
 
 ---
 
@@ -142,6 +143,10 @@ Production Evaluation → Feedback → ... (improvement loop)
 For each skill that reaches vetting decision, produce a per-skill trust bundle JSON using:
 
 `py scripts/generate_trust_scorecard.py --bundle-dir workflows/006-Skill-Acquisition/trust-bundles --release-id <release-id>`
+
+Optional evidence mapping (global defaults + per-skill overrides):
+
+`py scripts/generate_trust_scorecard.py --bundle-dir workflows/006-Skill-Acquisition/trust-bundles --release-id <release-id> --bundle-evidence-map workflows/006-Skill-Acquisition/TRUST_BUNDLE_EVIDENCE_MAP_TEMPLATE.json`
 
 This emits one `*.trust-bundle.json` file per skill in a format aligned with `TRUST_BUNDLE_TEMPLATE.json`.
 
