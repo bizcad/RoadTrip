@@ -152,13 +152,27 @@ if ($ProjectRoot) {
         
         Push-Location $ProjectRoot
         try {
-            $invokeArgs = @()
-            if ($Message) { $invokeArgs += $Message }
-            if ($DryRun) { $invokeArgs += "-DryRun" }
-            if ($Log) { $invokeArgs += "-LogFile"; $invokeArgs += (Join-Path $ProjectRoot "logs\push.log") }
-            if ($VerbosePreference -eq "Continue") { $invokeArgs += "-Verbose" }
-            
-            & ".\scripts\git_push.ps1" @invokeArgs
+            $invokeParams = @{}
+
+            # Preserve explicit message binding semantics (including empty string)
+            if ($PSBoundParameters.ContainsKey('Message')) {
+                $invokeParams['Message'] = $Message
+            }
+
+            if ($DryRun.IsPresent) {
+                $invokeParams['DryRun'] = $true
+            }
+
+            if ($Log.IsPresent) {
+                $invokeParams['LogFile'] = Join-Path $ProjectRoot "logs\push.log"
+            }
+
+            # Forward common verbose intent when requested on wrapper
+            if ($PSBoundParameters.ContainsKey('Verbose')) {
+                $invokeParams['Verbose'] = $true
+            }
+
+            & ".\scripts\git_push.ps1" @invokeParams
         }
         finally {
             Pop-Location

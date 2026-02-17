@@ -10,7 +10,12 @@
 			"Get-Command": true,
 			"where.exe": true,
 			"git push": true,
-			"py": true
+			"py": true,
+			"ForEach-Object": true,
+			".\\scripts\\git_push.ps1": true,
+			".": true,
+			"gpush-dry": true,
+			"gpush": true
 		}
 	}
 }
