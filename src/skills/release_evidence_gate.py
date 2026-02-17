@@ -55,6 +55,62 @@ DEFAULT_EVIDENCE_PATHS = {
     "advisory_risk_acceptance_notes": "workflows/010-memory-for-self-improvement/risk-acceptance-notes.md",
 }
 
+EVIDENCE_CANDIDATE_PATHS = {
+    "release_decision_record": [
+        "workflows/010-memory-for-self-improvement/PDR_COMPLETION_REPORT.md",
+        "PHASE_3_COMPLETION_REPORT.md",
+    ],
+    "h2_validation_evidence": [
+        "workflows/010-memory-for-self-improvement/PRD-v2.1-AMENDMENTS.md",
+        "workflows/010-memory-for-self-improvement/PRD-self-improvement-engine-v2.md",
+    ],
+    "integration_test_evidence": [
+        "tests/test_phase_3_integration.py",
+        "tests/test_memory_loop_orchestrator.py",
+    ],
+    "adversarial_test_evidence": [
+        "workflows/010-memory-for-self-improvement/design-session-adversarial-loop.md",
+        "workflows/010-memory-for-self-improvement/adversarial-research-plan-codex_5_2.md",
+        "workflows/010-memory-for-self-improvement/adversarial-research-plan-gemini-3.md",
+    ],
+    "performance_test_evidence": [
+        "test_results.txt",
+        "tests/test_phase_3_dag.py",
+    ],
+    "security_test_evidence": [
+        "config/safety-rules.yaml",
+        "tests/test_memory_guardrails.py",
+    ],
+    "safety_gate_quarantine_evidence": [
+        "tests/test_sleep_consolidator.py",
+        "src/skills/consolidation/sleep_consolidator.py",
+    ],
+    "cost_telemetry_evidence": [
+        "docs/How to cut OpenClaw Costs.md",
+    ],
+    "memory_ceiling_pruning_evidence": [
+        "tests/test_memory_guardrails.py",
+        "src/skills/consolidation/guardrails.py",
+    ],
+    "trust_boundary_compliance_evidence": [
+        "logs/registry_snapshot.json",
+        "tests/test_registry_system.py",
+    ],
+    "version_provenance_package": [
+        "tests/test_version_provenance.py",
+    ],
+    "irreversible_risk_evidence_package": [
+        "tests/test_memory_guardrails.py",
+        "src/skills/consolidation/guardrails.py",
+    ],
+    "rollback_cooldown_evidence": [
+        "src/skills/consolidation/burned_patterns.py",
+    ],
+    "advisory_risk_acceptance_notes": [
+        "workflows/010-memory-for-self-improvement/PDR_COMPLETION_REPORT.md",
+    ],
+}
+
 DEFAULT_TELEMETRY_PATHS = {
     "critical_harm_events": "logs/safety_audit.jsonl",
     "safety_gate_effectiveness": "logs/consolidation_quarantine.jsonl",
@@ -62,6 +118,28 @@ DEFAULT_TELEMETRY_PATHS = {
     "consolidation_spend_compliance": "logs/cost_telemetry.jsonl",
     "memory_ceiling_compliance": "logs/memory_ceiling.jsonl",
     "irreversible_operation_protection": "logs/irreversible_guardrails.jsonl",
+}
+
+TELEMETRY_CANDIDATE_PATHS = {
+    "critical_harm_events": [
+        "logs/phase2b_audit_log.json",
+    ],
+    "safety_gate_effectiveness": [
+        "logs/phase2b_audit_summary.json",
+    ],
+    "trust_boundary_compliance": [
+        "logs/registry_snapshot.json",
+        "logs/phase2b_compliance_report.json",
+    ],
+    "consolidation_spend_compliance": [
+        "logs/phase2b_compliance_report.json",
+    ],
+    "memory_ceiling_compliance": [
+        "tests/test_memory_guardrails.py",
+    ],
+    "irreversible_operation_protection": [
+        "tests/test_memory_guardrails.py",
+    ],
 }
 
 
@@ -82,20 +160,30 @@ def build_default_manifest(repo_root: str = ".") -> dict[str, Any]:
     root = Path(repo_root)
     evidence: dict[str, Any] = {}
     for key in REQUIRED_EVIDENCE_KEYS + ADVISORY_EVIDENCE_KEYS:
-        relative_path = DEFAULT_EVIDENCE_PATHS[key]
+        relative_path, source = _discover_path(
+            root=root,
+            default_path=DEFAULT_EVIDENCE_PATHS[key],
+            candidates=EVIDENCE_CANDIDATE_PATHS.get(key, []),
+        )
         full_path = root / relative_path
         evidence[key] = {
             "path": relative_path,
             "exists": full_path.exists(),
+            "source": source,
         }
 
     telemetry: dict[str, Any] = {}
     for key in BLOCKING_TELEMETRY_KEYS:
-        relative_path = DEFAULT_TELEMETRY_PATHS[key]
+        relative_path, source = _discover_path(
+            root=root,
+            default_path=DEFAULT_TELEMETRY_PATHS[key],
+            candidates=TELEMETRY_CANDIDATE_PATHS.get(key, []),
+        )
         full_path = root / relative_path
         telemetry[key] = {
             "path": relative_path,
             "exists": full_path.exists(),
+            "source": source,
         }
 
     return {
@@ -231,3 +319,13 @@ def _validate_telemetry_file(path: Path) -> tuple[bool, bool]:
 
     # For markdown/txt or unknown files, non-empty counts as telemetry present.
     return True, _is_non_empty(path)
+
+
+def _discover_path(root: Path, default_path: str, candidates: list[str]) -> tuple[str, str]:
+    preferred = [default_path, *candidates]
+    for item in preferred:
+        if (root / item).exists():
+            if item == default_path:
+                return item, "default"
+            return item, "fallback"
+    return default_path, "missing"

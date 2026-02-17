@@ -28,6 +28,27 @@ def test_build_default_manifest_contains_all_required_keys(tmp_path: Path):
     assert sorted(manifest["telemetry"].keys()) == sorted(BLOCKING_TELEMETRY_KEYS)
 
 
+def test_build_default_manifest_uses_existing_fallback_candidates(tmp_path: Path):
+    _write(
+        tmp_path / "workflows/010-memory-for-self-improvement/PDR_COMPLETION_REPORT.md",
+        "report",
+    )
+    _write(tmp_path / "logs/phase2b_audit_log.json", "[]")
+
+    manifest = build_default_manifest(repo_root=str(tmp_path))
+
+    assert manifest["evidence"]["release_decision_record"]["exists"] is True
+    assert manifest["evidence"]["release_decision_record"]["source"] == "fallback"
+    assert (
+        manifest["evidence"]["release_decision_record"]["path"]
+        == "workflows/010-memory-for-self-improvement/PDR_COMPLETION_REPORT.md"
+    )
+
+    assert manifest["telemetry"]["critical_harm_events"]["exists"] is True
+    assert manifest["telemetry"]["critical_harm_events"]["source"] == "fallback"
+    assert manifest["telemetry"]["critical_harm_events"]["path"] == "logs/phase2b_audit_log.json"
+
+
 def test_evaluate_manifest_no_go_when_required_evidence_missing(tmp_path: Path):
     manifest_path = tmp_path / "manifest.json"
     manifest = {
