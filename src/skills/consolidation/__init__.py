@@ -7,6 +7,8 @@ from .sleep_consolidator import (
     SafetyGateValidator,
     SleepConsolidator,
 )
+from .guardrails import CeilingCheckResult, IrreversibleOperationGuard, MemoryCeilingError, MemoryGuardrails
+from .burned_patterns import BurnedPattern, BurnedPatternRegistry
 
 __all__ = [
     "ConsolidationCandidate",
@@ -14,4 +16,10 @@ __all__ = [
     "SafetyGateValidator",
     "QuarantineLogger",
     "ConsolidationPipeline",
+    "CeilingCheckResult",
+    "MemoryCeilingError",
+    "MemoryGuardrails",
+    "IrreversibleOperationGuard",
+    "BurnedPattern",
+    "BurnedPatternRegistry",
 ]
