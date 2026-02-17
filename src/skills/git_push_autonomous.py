@@ -27,6 +27,14 @@ from typing import Optional, Dict, Any
 import subprocess
 import json
 import sys
+import re
+import uuid
+
+from src.skills.auth_validator import AuthValidator
+from src.skills.commit_message import CommitMessageSkill
+from src.skills.rules_engine import evaluate as evaluate_rules
+from src.skills.telemetry_logger import TelemetryLogger
+from src.skills.telemetry_logger_models import TelemetryEntry
 
 
 @dataclass
@@ -355,6 +363,279 @@ class GitPushSkill:
         except Exception as e:
             result.errors.append(f"Git push execution failed: {str(e)}")
             return False
+
+
+__version__ = "1.1.0"
+
+
+def _run_git(repo_path: Path, args: list[str], timeout: int = 10) -> subprocess.CompletedProcess:
+    """Run a git command in the repository path."""
+    return subprocess.run(
+        ["git", *args],
+        cwd=str(repo_path),
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+    )
+
+
+def _parse_status_paths(status_output: str) -> list[str]:
+    """Parse file paths from `git status --porcelain` output."""
+    files: list[str] = []
+    for raw_line in status_output.splitlines():
+        if not raw_line:
+            continue
+
+        line = raw_line.rstrip("\n")
+        if len(line) < 4:
+            continue
+
+        path_part = line[3:].strip()
+        if " -> " in path_part:
+            path_part = path_part.split(" -> ", 1)[1].strip()
+
+        if path_part:
+            files.append(path_part)
+
+    seen: set[str] = set()
+    ordered_unique: list[str] = []
+    for file_path in files:
+        if file_path not in seen:
+            seen.add(file_path)
+            ordered_unique.append(file_path)
+    return ordered_unique
+
+
+def _match_push_prompt(prompt: str) -> bool:
+    """Return True when prompt is a push intent for latest/local changes."""
+    normalized = (prompt or "").strip().lower()
+    if not normalized:
+        return False
+
+    patterns = (
+        r"\bpush\s+my\s+changes\b",
+        r"\bpush\s+changes\b",
+        r"\bpush\s+the\s+latest\s+changes\b",
+        r"\bplease\s+push\s+the\s+latest\s+changes\b",
+        r"\bgit\s+push\b",
+    )
+    return any(re.search(pattern, normalized) for pattern in patterns)
+
+
+def _stage_and_commit(
+    repo_path: Path,
+    commit_message: str,
+) -> Dict[str, Any]:
+    """Stage all changes and commit when there is staged content."""
+    add_proc = _run_git(repo_path, ["add", "-A"], timeout=20)
+    if add_proc.returncode != 0:
+        return {
+            "success": False,
+            "committed": False,
+            "error": f"git add failed: {add_proc.stderr.strip()}",
+        }
+
+    staged_proc = _run_git(repo_path, ["diff", "--cached", "--name-only"], timeout=10)
+    if staged_proc.returncode != 0:
+        return {
+            "success": False,
+            "committed": False,
+            "error": f"git diff --cached failed: {staged_proc.stderr.strip()}",
+        }
+
+    staged_files = [line.strip() for line in staged_proc.stdout.splitlines() if line.strip()]
+    if not staged_files:
+        return {
+            "success": True,
+            "committed": False,
+            "commit_hash": "",
+            "staged_files": [],
+        }
+
+    commit_proc = _run_git(repo_path, ["commit", "-m", commit_message], timeout=20)
+    if commit_proc.returncode != 0:
+        return {
+            "success": False,
+            "committed": False,
+            "error": f"git commit failed: {commit_proc.stderr.strip()}",
+            "staged_files": staged_files,
+        }
+
+    hash_proc = _run_git(repo_path, ["rev-parse", "--short", "HEAD"], timeout=10)
+    commit_hash = hash_proc.stdout.strip() if hash_proc.returncode == 0 else ""
+
+    return {
+        "success": True,
+        "committed": True,
+        "commit_hash": commit_hash,
+        "staged_files": staged_files,
+        "git_output": (commit_proc.stdout + commit_proc.stderr).strip(),
+    }
+
+
+def execute(input_data: dict) -> dict:
+    """Execute full git-push-autonomous chain with deterministic safety gates."""
+    prompt = input_data.get("prompt", "")
+    if prompt and not _match_push_prompt(prompt):
+        return {
+            "decision": "SKIPPED",
+            "success": False,
+            "reason": "Prompt does not match git-push-autonomous intent.",
+            "prompt": prompt,
+        }
+
+    repo_path = Path(input_data.get("repo_path", ".")).resolve()
+    branch = input_data.get("branch", "main")
+    remote = input_data.get("remote", "origin")
+    dry_run = bool(input_data.get("dry_run", False))
+    force = bool(input_data.get("force", False))
+    log_file = input_data.get("log_file", "data/telemetry.jsonl")
+    commit_strategy_path = input_data.get(
+        "commit_strategy_path",
+        str(repo_path / "config" / "commit-strategy.yaml"),
+    )
+    workflow_id = f"git-push-{uuid.uuid4().hex[:8]}"
+
+    result: Dict[str, Any] = {
+        "workflow_id": workflow_id,
+        "decision": "REJECT",
+        "success": False,
+        "prompt": prompt,
+        "prompt_matched": True,
+        "repo_path": str(repo_path),
+        "branch": branch,
+        "remote": remote,
+        "dry_run": dry_run,
+        "changed_files": [],
+        "errors": [],
+        "warnings": [],
+    }
+
+    def _log(decision: str, reasoning: str, artifacts: Optional[dict] = None) -> None:
+        try:
+            logger = TelemetryLogger()
+            entry = TelemetryEntry(
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                workflow_id=workflow_id,
+                decision_id=f"git-push-autonomous-{uuid.uuid4().hex[:8]}",
+                skill="git_push_autonomous",
+                operation="execute",
+                input_summary={
+                    "branch": branch,
+                    "remote": remote,
+                    "dry_run": dry_run,
+                    "prompt": prompt,
+                },
+                decision=decision,
+                confidence=1.0,
+                reasoning=reasoning,
+                artifacts=artifacts or {},
+            )
+            logger_result = logger.log_entry(entry, log_file)
+            result["telemetry"] = {
+                "success": logger_result.success,
+                "log_file": logger_result.log_file,
+                "total_entries": logger_result.total_entries,
+            }
+        except Exception as telemetry_error:
+            result["warnings"].append(f"Telemetry logging failed: {telemetry_error}")
+
+    try:
+        status_proc = _run_git(repo_path, ["status", "--porcelain"], timeout=10)
+        if status_proc.returncode != 0:
+            error = f"git status failed: {status_proc.stderr.strip()}"
+            result["errors"].append(error)
+            _log("ERROR", error)
+            return result
+
+        changed_files = _parse_status_paths(status_proc.stdout)
+        result["changed_files"] = changed_files
+
+        auth_result = AuthValidator().validate(branch=branch, operation="push")
+        result["auth"] = auth_result.to_dict()
+        if not auth_result.is_valid_and_authorized():
+            result["errors"].append(auth_result.reasoning)
+            _log("DENIED", auth_result.reasoning, {"auth": auth_result.to_dict()})
+            return result
+
+        rules_result = evaluate_rules(files=changed_files, repo_root=str(repo_path))
+        result["rules"] = {
+            "decision": rules_result.decision,
+            "approved_files": rules_result.approved_files,
+            "blocked_files": [
+                {
+                    "path": blocked.path,
+                    "reason": blocked.reason,
+                    "matched_rule": blocked.matched_rule,
+                }
+                for blocked in rules_result.blocked_files
+            ],
+            "confidence": rules_result.confidence,
+            "warnings": rules_result.warnings,
+        }
+        result["warnings"].extend(rules_result.warnings)
+
+        if rules_result.decision != "APPROVE":
+            blocked_reason = "Files blocked by safety rules"
+            result["errors"].append(blocked_reason)
+            _log("DENIED", blocked_reason, {"rules": result["rules"]})
+            return result
+
+        commit_result = {
+            "success": True,
+            "committed": False,
+            "commit_hash": "",
+            "message": input_data.get("message", ""),
+            "staged_files": [],
+        }
+
+        if changed_files:
+            message = input_data.get("message")
+            if not message:
+                commit_skill = CommitMessageSkill(config_path=commit_strategy_path)
+                generated = commit_skill.generate(staged_files=changed_files)
+                message = generated.message
+                commit_result["generator"] = {
+                    "approach": str(generated.approach_used.value),
+                    "confidence": generated.confidence,
+                }
+
+            commit_result["message"] = message
+            commit_result = {
+                **commit_result,
+                **_stage_and_commit(repo_path=repo_path, commit_message=message),
+            }
+
+            if not commit_result.get("success", False):
+                result["errors"].append(commit_result.get("error", "Commit failed"))
+                result["commit"] = commit_result
+                _log("ERROR", "Commit step failed", {"commit": commit_result})
+                return result
+
+        result["commit"] = commit_result
+
+        push_skill = GitPushSkill(repo_path=str(repo_path))
+        push_request = GitPushRequest(
+            branch=branch,
+            remote=remote,
+            force=force,
+            dry_run=dry_run,
+        )
+        push_result = push_skill.push(push_request)
+        result["push"] = push_result.to_dict()
+        result["decision"] = push_result.decision
+        result["success"] = push_result.success
+        result["warnings"].extend(push_result.warnings)
+        result["errors"].extend(push_result.errors)
+
+        log_decision = "APPROVED" if push_result.success else "DENIED"
+        _log(log_decision, f"Push decision: {push_result.decision}", {"push": result["push"]})
+        return result
+
+    except Exception as exc:
+        result["errors"].append(str(exc))
+        _log("ERROR", f"Unhandled exception: {exc}")
+        return result
 
 
 def main():
