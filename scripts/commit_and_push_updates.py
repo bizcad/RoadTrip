@@ -14,7 +14,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from skills.commit_message import CommitMessageSkill
 
-
 def main():
     print("=" * 70)
     print("Using Python Skills to Commit and Push Updates")
