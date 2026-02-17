@@ -29,12 +29,21 @@ import json
 import sys
 import re
 import uuid
+import os
 
 from src.skills.auth_validator import AuthValidator
 from src.skills.commit_message import CommitMessageSkill
 from src.skills.rules_engine import evaluate as evaluate_rules
 from src.skills.telemetry_logger import TelemetryLogger
 from src.skills.telemetry_logger_models import TelemetryEntry
+
+
+def _git_env() -> dict[str, str]:
+    """Build non-interactive environment for git subprocess calls."""
+    env = dict(os.environ)
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    env["GCM_INTERACTIVE"] = "never"
+    return env
 
 
 @dataclass
@@ -46,6 +55,7 @@ class GitPushRequest:
     force: bool = False                       # Force push (dangerous)
     dry_run: bool = False                     # Simulate without pushing
     check_auth: bool = True                   # Validate auth first
+    push_timeout_seconds: int = 60            # Timeout for git push
 
 
 @dataclass
@@ -179,7 +189,8 @@ class GitPushSkill:
                 cwd=str(self.repo_path),
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
+                env=_git_env(),
             )
             
             if proc.returncode != 0:
@@ -212,7 +223,8 @@ class GitPushSkill:
                 cwd=str(self.repo_path),
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
+                env=_git_env(),
             )
             
             if proc.returncode != 0:
@@ -270,7 +282,8 @@ class GitPushSkill:
                 cwd=str(self.repo_path),
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
+                env=_git_env(),
             )
             
             if proc.returncode != 0:
@@ -305,7 +318,8 @@ class GitPushSkill:
                 cwd=str(self.repo_path),
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
+                env=_git_env(),
             )
             
             if proc.returncode != 0:
@@ -329,7 +343,7 @@ class GitPushSkill:
             True if successful, False if failed
         """
         try:
-            cmd = ["git", "push"]
+            cmd = ["git", "-c", "credential.interactive=never", "push"]
             
             if request.force:
                 cmd.append("--force-with-lease")  # Safer than --force
@@ -342,7 +356,8 @@ class GitPushSkill:
                 cwd=str(self.repo_path),
                 capture_output=True,
                 text=True,
-                timeout=30
+                timeout=request.push_timeout_seconds,
+                env=_git_env(),
             )
             
             result.git_output = proc.stdout + proc.stderr
@@ -358,14 +373,17 @@ class GitPushSkill:
             return True
             
         except subprocess.TimeoutExpired:
-            result.errors.append("Git push command timed out (>30s)")
+            result.errors.append(
+                f"Git push command timed out (>{request.push_timeout_seconds}s). "
+                "Set push_timeout_seconds higher if network is slow."
+            )
             return False
         except Exception as e:
             result.errors.append(f"Git push execution failed: {str(e)}")
             return False
 
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 
 def _run_git(repo_path: Path, args: list[str], timeout: int = 10) -> subprocess.CompletedProcess:
@@ -376,6 +394,7 @@ def _run_git(repo_path: Path, args: list[str], timeout: int = 10) -> subprocess.
         capture_output=True,
         text=True,
         timeout=timeout,
+        env=_git_env(),
     )
 
 
@@ -489,6 +508,7 @@ def execute(input_data: dict) -> dict:
     remote = input_data.get("remote", "origin")
     dry_run = bool(input_data.get("dry_run", False))
     force = bool(input_data.get("force", False))
+    push_timeout_seconds = int(input_data.get("push_timeout_seconds", 60))
     log_file = input_data.get("log_file", "data/telemetry.jsonl")
     commit_strategy_path = input_data.get(
         "commit_strategy_path",
@@ -506,6 +526,7 @@ def execute(input_data: dict) -> dict:
         "branch": branch,
         "remote": remote,
         "dry_run": dry_run,
+        "push_timeout_seconds": push_timeout_seconds,
         "changed_files": [],
         "errors": [],
         "warnings": [],
@@ -524,6 +545,7 @@ def execute(input_data: dict) -> dict:
                     "branch": branch,
                     "remote": remote,
                     "dry_run": dry_run,
+                    "push_timeout_seconds": push_timeout_seconds,
                     "prompt": prompt,
                 },
                 decision=decision,
@@ -620,6 +642,7 @@ def execute(input_data: dict) -> dict:
             remote=remote,
             force=force,
             dry_run=dry_run,
+            push_timeout_seconds=push_timeout_seconds,
         )
         push_result = push_skill.push(push_request)
         result["push"] = push_result.to_dict()
@@ -650,6 +673,7 @@ def main():
     parser.add_argument("--repo", help="Repository path (default: current directory)")
     parser.add_argument("--force", action="store_true", help="Force push with lease")
     parser.add_argument("--dry-run", action="store_true", help="Simulate push without executing")
+    parser.add_argument("--push-timeout-seconds", type=int, default=60, help="Timeout for git push (default: 60)")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     
     args = parser.parse_args()
@@ -660,7 +684,8 @@ def main():
         branch=args.branch,
         remote=args.remote,
         force=args.force,
-        dry_run=args.dry_run
+        dry_run=args.dry_run,
+        push_timeout_seconds=args.push_timeout_seconds,
     )
     result = skill.push(request)
     

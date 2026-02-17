@@ -22,9 +22,9 @@ from pathlib import Path
 from datetime import datetime
 
 try:
-    from src.skills.git_push_autonomous import GitPushSkill, GitPushRequest, GitPushResult
+    from src.skills.git_push_autonomous import GitPushSkill, GitPushRequest, GitPushResult, _git_env
 except ImportError:
-    from git_push_autonomous import GitPushSkill, GitPushRequest, GitPushResult
+    from git_push_autonomous import GitPushSkill, GitPushRequest, GitPushResult, _git_env
 
 
 class TestRepositoryValidation:
@@ -199,6 +199,7 @@ class TestGitPushRequest:
         assert request.force is False
         assert request.dry_run is False
         assert request.check_auth is True
+        assert request.push_timeout_seconds == 60
     
     def test_custom_request(self):
         """Create request with custom values."""
@@ -206,13 +207,25 @@ class TestGitPushRequest:
             branch="develop",
             remote="upstream",
             force=True,
-            dry_run=True
+            dry_run=True,
+            push_timeout_seconds=120,
         )
         
         assert request.branch == "develop"
         assert request.remote == "upstream"
         assert request.force is True
         assert request.dry_run is True
+        assert request.push_timeout_seconds == 120
+
+
+class TestGitEnvironment:
+    """Test git subprocess environment hardening."""
+
+    def test_git_env_is_non_interactive(self):
+        env = _git_env()
+
+        assert env.get("GIT_TERMINAL_PROMPT") == "0"
+        assert env.get("GCM_INTERACTIVE") == "never"
 
 
 class TestGitPushResult:
