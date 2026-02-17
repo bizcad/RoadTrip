@@ -22,7 +22,8 @@ That's what RoadTrip builds.
 
 ---
 
-## The Problem: AI Access + Safety
+## The Problem: AI Access + Safety 
+
 
 Most AI frameworks choose a uncomfortable binary:
 
