@@ -103,6 +103,7 @@ Production Evaluation → Feedback → ... (improvement loop)
 | **DECISION_RECORD_Acquisition_Architecture.md** | Why this approach | 15 min | Architects |
 | **TRUST_BUNDLE_TEMPLATE.json** | Standard per-skill trust decision artifact schema | 5 min | Vetting + onboarding |
 | **TRUST_MANIFEST_EVIDENCE_MAP_TEMPLATE.json** | Default + per-skill evidence link mapping for trust manifest generation | 5 min | Vetting + onboarding |
+| **SKILL_TRUST_FLOW.md** | End-to-end trust flow from discovery to decision | 10 min | Vetting + operators |
 
 ---
 
@@ -117,7 +118,8 @@ Production Evaluation → Feedback → ... (improvement loop)
 ### For Vetting Committee Members
 1. Read **VETTING_FRAMEWORK.md** (your checklist)
 2. Review **SKILL_FUNNEL_MATURITY_MODEL.md** (Phase 2: Vetting details)
-3. Familiarize with decision records process
+3. Read **SKILL_TRUST_FLOW.md** (operational flow + commands)
+4. Familiarize with decision records process
 
 ### For Orchestrator/Integration Team
 1. Read **SKILL_ACQUISITION_STRATEGY.md** (Phase 3: Onboarding)
