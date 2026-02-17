@@ -1,0 +1,14 @@
+{
+  "*": {
+    "test_evidence": "tests/path-or-report.txt",
+    "security_evidence": "workflows/006-Skill-Acquisition/security-review.md",
+    "provenance_evidence": "workflows/010-memory-for-self-improvement/VERSION-PROVENANCE-PACKAGE-CHECKLIST.md",
+    "fingerprint_evidence": "config/skills-registry.yaml",
+    "notes": "default evidence references"
+  },
+  "example_skill_name": {
+    "test_evidence": "tests/test_example_skill.py",
+    "security_evidence": "workflows/006-Skill-Acquisition/skill-reviews/example-skill-security.md",
+    "notes": "skill-specific override"
+  }
+}

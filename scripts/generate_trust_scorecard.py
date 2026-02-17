@@ -86,14 +86,24 @@ def main() -> int:
         help="Release identifier stamped into trust bundles",
     )
     parser.add_argument(
+        "--manifest-dir",
+        default="",
+        help="Optional directory to emit per-skill trust manifest JSON files",
+    )
+    parser.add_argument(
         "--bundle-dir",
         default="",
-        help="Optional directory to emit per-skill trust bundle JSON files",
+        help="Deprecated alias for --manifest-dir",
+    )
+    parser.add_argument(
+        "--manifest-evidence-map",
+        default="",
+        help="Optional JSON manifest map of evidence links keyed by '*' and/or skill name",
     )
     parser.add_argument(
         "--bundle-evidence-map",
         default="",
-        help="Optional JSON map of evidence links keyed by '*' and/or skill name",
+        help="Deprecated alias for --manifest-evidence-map",
     )
     args = parser.parse_args()
 
@@ -101,9 +111,17 @@ def main() -> int:
     if args.mock_profile:
         overrides = json.loads(Path(args.mock_profile).read_text(encoding="utf-8"))
 
+    if args.manifest_dir and args.bundle_dir:
+        raise ValueError("Use either --manifest-dir or --bundle-dir, not both")
+    if args.manifest_evidence_map and args.bundle_evidence_map:
+        raise ValueError("Use either --manifest-evidence-map or --bundle-evidence-map, not both")
+
+    manifest_dir = args.manifest_dir or args.bundle_dir
+    manifest_evidence_map = args.manifest_evidence_map or args.bundle_evidence_map
+
     evidence_map = {}
-    if args.bundle_evidence_map:
-        evidence_map = load_evidence_map(args.bundle_evidence_map)
+    if manifest_evidence_map:
+        evidence_map = load_evidence_map(manifest_evidence_map)
 
     provider = MockGateProvider(overrides=overrides)
     cards = evaluate_registry(registry_path=args.registry, gate_provider=provider)
@@ -122,8 +140,8 @@ def main() -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
-    if args.bundle_dir:
-        bundle_dir = Path(args.bundle_dir)
+    if manifest_dir:
+        bundle_dir = Path(manifest_dir)
         bundle_dir.mkdir(parents=True, exist_ok=True)
         for card in cards:
             evidence_links = resolve_evidence_links(card.skill_name, evidence_map)
@@ -133,12 +151,12 @@ def main() -> int:
                 registry_path=args.registry,
                 evidence_links=evidence_links,
             )
-            bundle_path = bundle_dir / f"{card.skill_name}.trust-bundle.json"
+            bundle_path = bundle_dir / f"{card.skill_name}.trust-manifest.json"
             bundle_path.write_text(json.dumps(bundle, indent=2), encoding="utf-8")
 
     print(f"Scorecard report: {output}")
-    if args.bundle_dir:
-        print(f"Trust bundles: {args.bundle_dir}")
+    if manifest_dir:
+        print(f"Trust manifests: {manifest_dir}")
     print(
         "Summary: "
         f"ALLOW_AUTO={report['summary'].get('ALLOW_AUTO', 0)} "

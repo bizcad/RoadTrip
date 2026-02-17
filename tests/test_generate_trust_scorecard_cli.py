@@ -51,3 +51,8 @@ def test_resolve_evidence_links_defaults_only_for_unknown_skill():
     resolved = resolve_evidence_links("unknown_skill", evidence_map)
 
     assert resolved["test_evidence"] == "tests/default.txt"
+
+
+def test_resolve_evidence_links_empty_map():
+    resolved = resolve_evidence_links("unknown_skill", {})
+    assert resolved == {}
