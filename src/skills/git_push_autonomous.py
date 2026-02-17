@@ -39,22 +39,29 @@ from src.skills.telemetry_logger_models import TelemetryEntry
 
 
 def _git_env() -> dict[str, str]:
-    """Build environment for git subprocess calls.
+    """Build environment for headless git subprocess calls.
 
-    When git runs inside a subprocess with capture_output=True, it has no
-    attached terminal.  GCM detects this and tries to fall back to an askpass
-    helper or interactive prompt — both of which fail headlessly.
+    When git runs inside a subprocess with capture_output=True it has no
+    attached terminal.  Without the fixes below GCM tries to pick an account
+    interactively and fails with 'Cannot prompt because user interactivity has
+    been disabled'.
 
-    Fix: tell GCM to use the Windows Credential Store (wincredman) directly,
-    bypassing all interactive flows, and remove the askpass helpers that would
-    try to spawn GUI dialogs.
+    Three changes are required together:
+    1. GCM_INTERACTIVE=never  — tells GCM to skip any interactive flow.
+    2. GIT_TERMINAL_PROMPT=0  — tells git itself not to prompt on the terminal.
+    3. Remove GIT_ASKPASS / SSH_ASKPASS — these point to a GUI helper
+       (git-askpass.exe) that cannot run headlessly; removing them lets GCM
+       reach the Windows Credential Store directly.
+
+    Pre-requisites (one-time git config, already set on this machine):
+      git config --global credential.helper manager
+      git config --global credential.credentialStore wincredman
+      git config --global credential.https://github.com.username <username>
+    Without the username entry GCM cannot select the stored PAT silently.
     """
     env = dict(os.environ)
-    # Direct GCM to Windows Credential Manager — no UI, no prompts.
-    env["GCM_CREDENTIAL_STORE"] = "wincredman"
     env["GCM_INTERACTIVE"] = "never"
     env["GIT_TERMINAL_PROMPT"] = "0"
-    # Remove GUI askpass helpers that cannot run headlessly.
     env.pop("GIT_ASKPASS", None)
     env.pop("SSH_ASKPASS", None)
     return env

@@ -30,6 +30,7 @@ ALLOWED_PREFIXES = (
     "data/",
     "PromptTracking/",
     "skills/",
+    ".claude/",  # Claude Code config (skills, settings) — safe to push
 )
 
 # Individual files that are always allowed, even if they match blocked patterns.

@@ -7,7 +7,8 @@
       "Bash(where:*)",
       "Bash(/c/Users/bizca/AppData/Local/Programs/Python/Python313/python.exe:*)",
       "Bash(grep:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(env -u GIT_ASKPASS -u SSH_ASKPASS GCM_INTERACTIVE=never GIT_TERMINAL_PROMPT=0 git push:*)"
     ]
   }
 }
