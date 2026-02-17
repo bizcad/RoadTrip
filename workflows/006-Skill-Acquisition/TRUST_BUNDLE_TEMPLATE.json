@@ -1,0 +1,30 @@
+{
+  "schema": "roadtrip-trust-bundle/v1",
+  "release_id": "YYYY-MM-DD-or-tag",
+  "skill": {
+    "name": "skill_name",
+    "registry_path": "config/skills-registry.yaml"
+  },
+  "decision": {
+    "status": "ALLOW_AUTO|MANUAL_REVIEW|BLOCK",
+    "score": 0,
+    "max_score": 100,
+    "blocking_failures": []
+  },
+  "gate_results": [
+    {
+      "gate_name": "fingerprint_verified",
+      "passed": true,
+      "blocking": true,
+      "score_weight": 25,
+      "reason": "fingerprint present"
+    }
+  ],
+  "evidence": {
+    "test_evidence": "tests/... or report path",
+    "security_evidence": "security report path",
+    "provenance_evidence": "version provenance path",
+    "fingerprint_evidence": "registry/fingerprint evidence path",
+    "notes": "reviewer notes"
+  }
+}

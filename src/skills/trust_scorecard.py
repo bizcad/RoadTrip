@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any
 
@@ -164,6 +164,40 @@ def summarize(scorecards: list[TrustScorecard]) -> dict[str, int]:
     for card in scorecards:
         buckets[card.decision] = buckets.get(card.decision, 0) + 1
     return buckets
+
+
+def build_trust_bundle(
+    scorecard: TrustScorecard,
+    release_id: str,
+    registry_path: str,
+    evidence_links: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Build a standard trust bundle payload for one skill."""
+
+    links = evidence_links or {}
+
+    return {
+        "schema": "roadtrip-trust-bundle/v1",
+        "release_id": release_id,
+        "skill": {
+            "name": scorecard.skill_name,
+            "registry_path": registry_path,
+        },
+        "decision": {
+            "status": scorecard.decision,
+            "score": scorecard.score,
+            "max_score": scorecard.max_score,
+            "blocking_failures": scorecard.blocking_failures,
+        },
+        "gate_results": [asdict(item) for item in scorecard.gates],
+        "evidence": {
+            "test_evidence": links.get("test_evidence", ""),
+            "security_evidence": links.get("security_evidence", ""),
+            "provenance_evidence": links.get("provenance_evidence", ""),
+            "fingerprint_evidence": links.get("fingerprint_evidence", ""),
+            "notes": links.get("notes", ""),
+        },
+    }
 
 
 def _load_registry_skills(registry_path: str) -> dict[str, dict[str, Any]]:

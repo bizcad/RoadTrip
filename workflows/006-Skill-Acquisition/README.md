@@ -101,6 +101,7 @@ Production Evaluation → Feedback → ... (improvement loop)
 | **VETTING_FRAMEWORK.md** | How to evaluate skills (checklist) | 20 min | Vetting team |
 | **PROCESS_GOVERNANCE.md** | Weekly loop, cadence, roles | 20 min | Entire team |
 | **DECISION_RECORD_Acquisition_Architecture.md** | Why this approach | 15 min | Architects |
+| **TRUST_BUNDLE_TEMPLATE.json** | Standard per-skill trust decision artifact schema | 5 min | Vetting + onboarding |
 
 ---
 
@@ -135,6 +136,16 @@ Production Evaluation → Feedback → ... (improvement loop)
 ---
 
 ## Key Concepts
+
+## Trust Bundle Artifact (New)
+
+For each skill that reaches vetting decision, produce a per-skill trust bundle JSON using:
+
+`py scripts/generate_trust_scorecard.py --bundle-dir workflows/006-Skill-Acquisition/trust-bundles --release-id <release-id>`
+
+This emits one `*.trust-bundle.json` file per skill in a format aligned with `TRUST_BUNDLE_TEMPLATE.json`.
+
+Use this bundle as the portable handoff record between vetting, onboarding, and release review.
 
 ### Skill vs. MCP vs. Capability
 
