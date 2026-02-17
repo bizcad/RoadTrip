@@ -41,20 +41,22 @@ from src.skills.telemetry_logger_models import TelemetryEntry
 def _git_env() -> dict[str, str]:
     """Build environment for git subprocess calls.
 
-    GCM (Git Credential Manager) resolves stored credentials silently when
-    GCM_INTERACTIVE and GIT_TERMINAL_PROMPT are NOT set.  Setting them to
-    'never'/'0' breaks GCM's non-interactive credential lookup and causes
-    'fatal: unable to get password from user'.  Instead, strip the askpass
-    helpers that would spawn GUI dialogs, and leave GCM free to use the
-    Windows Credential Store directly.
+    When git runs inside a subprocess with capture_output=True, it has no
+    attached terminal.  GCM detects this and tries to fall back to an askpass
+    helper or interactive prompt — both of which fail headlessly.
+
+    Fix: tell GCM to use the Windows Credential Store (wincredman) directly,
+    bypassing all interactive flows, and remove the askpass helpers that would
+    try to spawn GUI dialogs.
     """
     env = dict(os.environ)
-    # Remove GUI askpass helpers — they cannot run headlessly.
-    # GCM will fall through to the Windows Credential Store without them.
+    # Direct GCM to Windows Credential Manager — no UI, no prompts.
+    env["GCM_CREDENTIAL_STORE"] = "wincredman"
+    env["GCM_INTERACTIVE"] = "never"
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    # Remove GUI askpass helpers that cannot run headlessly.
     env.pop("GIT_ASKPASS", None)
     env.pop("SSH_ASKPASS", None)
-    # Do NOT set GCM_INTERACTIVE or GIT_TERMINAL_PROMPT — doing so prevents
-    # GCM from completing its silent credential lookup.
     return env
 
 
