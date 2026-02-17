@@ -321,4 +321,61 @@ Phase 2a is a success when:
 
 ---
 
+## Update — February 17, 2026 (Git Push Chain + Credential Fix)
+
+### What was implemented
+- `src/skills/git_push_autonomous.py` now includes executable `execute(input_data)` chain:
+  - prompt match gate
+  - auth validation
+  - rules-engine file checks
+  - deterministic commit message generation
+  - stage + commit
+  - push
+  - telemetry logging
+- `src/skills/adaptive_executor.py` added:
+  - semantic intent mapping (`git_push`)
+  - registry-first skill resolution (fast path)
+  - fingerprint enforcement gate
+  - bounded self-correct retry (`max_retry_depth`)
+  - metrics logs at each decision point (`logs/execution_metrics.jsonl`)
+
+### Root cause of “running in circles”
+- The repeated failure was not chain logic; it was interactive HTTPS credential prompts during `git push` in agent context.
+- Even with correct orchestration, push stalls/fails if credentials require user dialog.
+
+### Permanent fix implemented in code
+- `git_push_autonomous.py` hardened for non-interactive git operations:
+  - `GIT_TERMINAL_PROMPT=0`
+  - `GCM_INTERACTIVE=never`
+  - push command uses `git -c credential.interactive=never push ...`
+- Push timeout is now configurable (`push_timeout_seconds`, default `60`).
+
+### Local credential setup that worked
+```powershell
+git config --global credential.helper manager-core
+@"
+protocol=https
+host=github.com
+username=bizcad
+password=YOUR_PAT
+"@ | git credential approve
+```
+
+### Quick verification sequence (passed)
+```powershell
+$env:GIT_TERMINAL_PROMPT='0'
+$env:GCM_INTERACTIVE='never'
+git ls-remote origin -h refs/heads/main
+git push --dry-run origin main
+git fetch origin
+git rev-list --count origin/main..HEAD
+```
+- Result: non-interactive auth works, dry-run push works, ahead count `0` after fetch.
+
+### Test status for this update
+- `py -m pytest -q tests/test_git_push_autonomous.py tests/test_git_push_prompt_e2e.py` ✅
+- `py -m pytest -q tests/test_adaptive_executor.py` ✅
+
+---
+
 **Next sync**: After Phase 2a Task A0 is complete (expected: Feb 18).
