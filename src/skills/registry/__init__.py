@@ -27,6 +27,7 @@ from .orchestrator import RegistryOrchestrator
 from .storage_interface import RegistryStore, StorageConfig
 from .storage_yaml import YAMLStore
 from .storage_sqlite import SQLiteStore
+from .version_provenance import VersionProvenanceVerifier, VersionProvenanceResult
 
 __all__ = [
     # Models
@@ -54,4 +55,7 @@ __all__ = [
     "StorageConfig",
     "YAMLStore",
     "SQLiteStore"
+    ,
+    "VersionProvenanceVerifier",
+    "VersionProvenanceResult"
 ]
