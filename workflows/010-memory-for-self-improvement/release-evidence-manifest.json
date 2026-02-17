@@ -1,0 +1,92 @@
+{
+  "spec": "release-evidence-manifest/v1",
+  "generated_at": "2026-02-17T01:50:35.186326+00:00",
+  "release_window": {
+    "start": null,
+    "end": null
+  },
+  "evidence": {
+    "release_decision_record": {
+      "path": "workflows/010-memory-for-self-improvement/release-decision.md",
+      "exists": false
+    },
+    "h2_validation_evidence": {
+      "path": "workflows/010-memory-for-self-improvement/H2-validation-evidence.md",
+      "exists": false
+    },
+    "integration_test_evidence": {
+      "path": "test_results.txt",
+      "exists": true
+    },
+    "adversarial_test_evidence": {
+      "path": "workflows/010-memory-for-self-improvement/adversarial-test-evidence.md",
+      "exists": false
+    },
+    "performance_test_evidence": {
+      "path": "workflows/010-memory-for-self-improvement/performance-test-evidence.md",
+      "exists": false
+    },
+    "security_test_evidence": {
+      "path": "workflows/010-memory-for-self-improvement/security-test-evidence.md",
+      "exists": false
+    },
+    "safety_gate_quarantine_evidence": {
+      "path": "logs/consolidation_quarantine.jsonl",
+      "exists": false
+    },
+    "cost_telemetry_evidence": {
+      "path": "logs/cost_telemetry.jsonl",
+      "exists": false
+    },
+    "memory_ceiling_pruning_evidence": {
+      "path": "logs/memory_ceiling.jsonl",
+      "exists": false
+    },
+    "trust_boundary_compliance_evidence": {
+      "path": "logs/trust_boundary_checks.jsonl",
+      "exists": false
+    },
+    "version_provenance_package": {
+      "path": "workflows/010-memory-for-self-improvement/VERSION-PROVENANCE-PACKAGE-CHECKLIST.md",
+      "exists": true
+    },
+    "irreversible_risk_evidence_package": {
+      "path": "logs/irreversible_guardrails.jsonl",
+      "exists": false
+    },
+    "rollback_cooldown_evidence": {
+      "path": "logs/burned_patterns.json",
+      "exists": false
+    },
+    "advisory_risk_acceptance_notes": {
+      "path": "workflows/010-memory-for-self-improvement/risk-acceptance-notes.md",
+      "exists": false
+    }
+  },
+  "telemetry": {
+    "critical_harm_events": {
+      "path": "logs/safety_audit.jsonl",
+      "exists": false
+    },
+    "safety_gate_effectiveness": {
+      "path": "logs/consolidation_quarantine.jsonl",
+      "exists": false
+    },
+    "trust_boundary_compliance": {
+      "path": "logs/trust_boundary_checks.jsonl",
+      "exists": false
+    },
+    "consolidation_spend_compliance": {
+      "path": "logs/cost_telemetry.jsonl",
+      "exists": false
+    },
+    "memory_ceiling_compliance": {
+      "path": "logs/memory_ceiling.jsonl",
+      "exists": false
+    },
+    "irreversible_operation_protection": {
+      "path": "logs/irreversible_guardrails.jsonl",
+      "exists": false
+    }
+  }
+}
