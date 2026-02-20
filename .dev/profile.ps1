@@ -26,7 +26,20 @@ $ProjectRoot = if ((Test-Path ".\RoadTrip.code-workspace") -and (Test-Path ".\sc
 }
 
 if (-not $ProjectRoot) {
-    Write-Host "⚠️  Not in RoadTrip workspace - skipping initialization" -ForegroundColor Gray
+    $controlPlaneRoot = if ((Test-Path ".\ControlPlane.code-workspace") -and (Test-Path ".\infra\ControlPlane_profile.ps1")) {
+        (Get-Item .).FullName
+    } elseif ((Test-Path "..\ControlPlane.code-workspace") -and (Test-Path "..\infra\ControlPlane_profile.ps1")) {
+        (Get-Item ..).FullName
+    } else {
+        $null
+    }
+
+    if ($controlPlaneRoot) {
+        $controlPlaneProfile = Join-Path $controlPlaneRoot "infra\ControlPlane_profile.ps1"
+        . $controlPlaneProfile
+    } else {
+        Write-Host "⚠️  Not in RoadTrip or ControlPlane workspace - skipping initialization" -ForegroundColor Gray
+    }
     return
 }
 
