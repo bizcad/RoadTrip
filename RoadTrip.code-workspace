@@ -2,9 +2,17 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../ControlPlane"
 		}
 	],
 	"settings": {
+		"github.copilot.chat.codeGeneration.instructions": [
+			{
+				"file": ".github/copilot-instructions.md"
+			}
+		],
 		"chat.tools.terminal.autoApprove": {
 			"code": true,
 			"Get-Command": true,

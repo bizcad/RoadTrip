@@ -1,0 +1,11 @@
+id: prospective
+description: Pending future-intent reminders, TODOs, and handoffs.
+entry_path: entries/{entry_id}
+retention:
+  ttl_days: 14
+  on_expire: move_to:episodic
+lifecycle:
+  promotion_targets:
+    - working
+    - episodic
+  requires_review_for_promotion: false

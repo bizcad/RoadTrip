@@ -1,0 +1,49 @@
+id: silent-policy-bypass
+memory_class: prospective
+title: Silent policy bypass mitigation packet
+status: pending
+priority: P0
+created_at: 2026-02-17T23:20:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Some users and agents will intentionally or accidentally route around policy controls.
+  If bypass occurs without an explicit event trail, governance fails silently while
+  outcomes can still appear successful.
+assumption: Detectable enforcement boundaries + explicit bypass telemetry reduces silent drift.
+evidence_needed: policy-gate coverage rate, bypass event count, and unlogged bypass count.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  fail_closed_on_policy_unavailable: true
+  require_policy_decision_event: true
+  require_pre_execution_policy_check: true
+  require_post_execution_policy_attestation: true
+  enforcement_points:
+    - intent_resolution
+    - skill_selection
+    - pre_execute
+    - fallback_retry
+    - escalation_handoff
+  required_event_fields:
+    - policy_version
+    - decision
+    - actor
+    - target
+    - rationale
+    - trace_id
+  denylist_examples:
+    - force_push_without_review
+    - skip_rules_engine
+    - disable_fingerprint_verification
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

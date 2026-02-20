@@ -66,8 +66,8 @@
 .NOTES
     Requires:
       - Python 3.8+
-      - PyYAML: pip install pyyaml
-      - anthropic (optional, for Tier 2): pip install anthropic
+    - PyYAML: py -m pip install pyyaml
+    - anthropic (optional, for Tier 2): py -m pip install anthropic
     
     The skill is immutable; git_push.ps1 is untouched.
     Integration testing happens when you manually verify the message.

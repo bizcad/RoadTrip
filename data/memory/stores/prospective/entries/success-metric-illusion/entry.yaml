@@ -1,0 +1,42 @@
+id: success-metric-illusion
+memory_class: prospective
+title: Success metric illusion and purpose-first evaluation policy
+status: pending
+priority: P0
+created_at: 2026-02-17T23:55:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Surface success (benchmarks, pretty outputs, headline pass rates) can optimize
+  public perception while failing user purpose. This is especially dangerous for
+  asymmetric-risk tasks where one miss (for example doctor/bank mail) has much
+  higher cost than many routine successes.
+assumption: Purpose-weighted and harm-weighted metrics outperform aggregate pass-rate metrics.
+evidence_needed: critical-miss rate, harm-weighted error score, and intervention-required rate by task tier.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  metric_families:
+    - utility_outcome
+    - harm_avoidance
+    - user_trust
+    - aesthetic_quality
+  hard_rules:
+    - never_use_single_score_as_gate
+    - require_task_tier_for_evaluation
+    - require_critical_miss_reporting
+  task_tiers:
+    - critical_signal
+    - operational
+    - cosmetic
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

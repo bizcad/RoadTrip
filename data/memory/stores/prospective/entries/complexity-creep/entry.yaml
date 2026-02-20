@@ -1,0 +1,51 @@
+id: complexity-creep
+memory_class: prospective
+title: Complexity creep and ruthless pruning policy
+status: pending
+priority: P0
+created_at: 2026-02-18T00:10:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Systems naturally accumulate controls, memories, and artifacts faster than they remove them.
+  Human preference also trends toward retention. Without explicit hard limits, complexity
+  and storage usage drift upward until reliability, performance, and usability degrade.
+assumption: Hard resource budgets + mandatory auto-pruning outperform discretionary/manual cleanup.
+evidence_needed: storage-budget adherence rate, prune efficiency, and complexity trend after policy enforcement.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  budget_model:
+    max_total_disk_percent: 70
+    warning_threshold_percent: 60
+    emergency_threshold_percent: 80
+  prune_lanes:
+    - lane: transient
+      default_ttl_days: 3
+      deletion_mode: automatic
+    - lane: operational
+      default_ttl_days: 14
+      deletion_mode: automatic_with_quarantine
+    - lane: critical
+      default_ttl_days: 90
+      deletion_mode: review_required
+  hard_rules:
+    - no_budget_no_retention
+    - no_owner_no_persist
+    - no_access_in_30_days_then_candidate_for_prune
+    - override_requires_ticket_and_expiry
+  human_override:
+    max_override_days: 14
+    max_concurrent_overrides: 20
+    requires_reason: true
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

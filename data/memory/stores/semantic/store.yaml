@@ -1,0 +1,10 @@
+id: semantic
+description: Distilled facts, relationships, and reusable abstractions.
+entry_path: entries/{entry_id}
+retention:
+  ttl_days: 180
+  on_expire: move_to:long_term
+lifecycle:
+  promotion_targets:
+    - long_term
+  requires_review_for_promotion: true

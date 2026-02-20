@@ -1,0 +1,26 @@
+id: security-residue
+memory_class: prospective
+title: Security residue packet
+status: pending
+priority: P0
+created_at: 2026-02-18T00:40:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Deprecated or archived artifacts can retain sensitive remediation details and
+  become latent exposure surfaces.
+assumption: Redaction and retention class enforcement reduce residual exposure.
+evidence_needed: redaction misses in deprecated/archive samples.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

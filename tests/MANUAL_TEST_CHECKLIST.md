@@ -506,7 +506,7 @@ FileNotFoundError: config/blog-config.yaml
 ```
 ModuleNotFoundError: No module named 'yaml'
 ```
-→ Install: `pip install pyyaml`
+→ Install: `py -m pip install pyyaml`
 
 ---
 

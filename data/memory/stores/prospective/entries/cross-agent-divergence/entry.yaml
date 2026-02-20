@@ -1,0 +1,33 @@
+id: cross-agent-divergence
+memory_class: prospective
+title: Cross-agent divergence and coordination policy
+status: pending
+priority: P0
+created_at: 2026-02-17T17:35:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Agents can remove errors without preserving intent, and multi-agent
+  self-optimization can introduce hidden second-order effects.
+assumption: Structured communication modes + bounded optimization loops reduce divergence risk.
+evidence_needed: intent-preservation pass rate and post-fix regression rate.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  baseline_retry_limit: 2
+  escalation_after_limit: true
+  default_comm_mode: supportive_consensus
+  allow_adversarial_review: true
+  specialist_spawn_allowed: true
+  specialist_prune_required: true
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

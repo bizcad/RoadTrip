@@ -1,0 +1,11 @@
+id: working
+description: Active session state and short-lived scratchpad artifacts.
+entry_path: entries/{entry_id}
+retention:
+  ttl_days: 3
+  on_expire: move_to:episodic
+lifecycle:
+  promotion_targets:
+    - episodic
+    - semantic
+  requires_review_for_promotion: false

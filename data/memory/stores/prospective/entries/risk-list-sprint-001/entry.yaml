@@ -1,0 +1,20 @@
+id: risk-list-sprint-001
+memory_class: prospective
+title: Sprint 001 risk-list execution (fast-thinking)
+status: pending
+priority: P0
+created_at: 2026-02-17T16:25:00Z
+objective: >-
+  Work through the full "what could go wrong" list using real-world run data,
+  then decide target_promote/target_quarantine/target_reject per item.
+linked_items:
+  - data/memory/stores/prospective/entries/wrong-memory-lock-in
+  - data/memory/stores/prospective/entries/fast-refined-validated-scored-paradigm
+  - docs/Self-Improvement/Playbooks/Sprint_001_Mitigation_Workbench.md
+review_model:
+  cadence: weekly
+  decision_gate: promote_park_expire
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

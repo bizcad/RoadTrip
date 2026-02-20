@@ -2,6 +2,43 @@
 
 This file documents the custom commands, aliases, and project-specific setup for the RoadTrip repository so they're available in Claude's memory for future sessions.
 
+## 🔴 Critical Reminders - READ FIRST
+
+### ⚠️ #1: Use `py` not `python` on Windows
+```bash
+# ❌ WRONG - Will fail with "Python was not found"
+python scripts/dev_dashboard.py
+
+# ✅ CORRECT - Use Python Launcher
+py scripts/dev_dashboard.py
+```
+
+**Why:** Windows Microsoft Store Python stub intercepts `python` commands. The error message about Settings is misleading - that path doesn't exist. Always use `py` on Windows.
+
+### ⚠️ #2: PowerShell Aliases Only Work in RoadTrip Directory
+```powershell
+# ✅ CORRECT
+cd G:\repos\AI\RoadTrip
+gpush
+
+# ❌ WRONG - Will fail if not in RoadTrip directory
+cd C:\SomewhereElse
+gpush  # ERROR: gpush not recognized
+```
+
+### ⚠️ #3: GITHUB_TOKEN Must Be Set for Silent Push
+```powershell
+# Check if set
+$env:GITHUB_TOKEN
+
+# If empty, load it
+$env:GITHUB_TOKEN = (Get-Content "ProjectSecrets\PAT.txt" -Raw).Trim()
+```
+
+**📚 Full Guide:** See [COMMON_MISTAKES.md](COMMON_MISTAKES.md) for complete troubleshooting and prevention systems.
+
+---
+
 ## Project Location
 - **Repository**: `G:\repos\AI\RoadTrip`
 - **GitHub**: https://github.com/bizcad/RoadTrip

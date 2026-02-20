@@ -1,6 +1,18 @@
 # Claude Cortex
 - [link]("https://github.com/YoungMoneyInvestments/claude-cortex")
 
+## RoadTrip implementation note (folder-native manifests)
+
+RoadTrip models memory stores as folders under `data/memory/stores/` with machine-readable YAML metadata.
+
+- Root manifest: `data/memory/manifest.yaml`
+- Schema contract: `data/memory/schema/memory-manifest.schema.yaml`
+- Per-store metadata: `data/memory/stores/<store>/store.yaml`
+
+Each memory entry is a folder (`entries/<entry_id>`). Promotion or expiration is handled by moving the entry folder between store paths according to manifest transition rules.
+
+In this implementation, these stores are treated as memory classifications rather than a strict hierarchy; transitions are policy-based reclassification moves.
+
 ### The memory layer Claude Code is missing. Modeled after the human brain.
 
 ---

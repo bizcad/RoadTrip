@@ -1,0 +1,91 @@
+schema_version: "1.0"
+layout: folder-native
+entry_granularity: folder
+entry_path_template: "stores/{store}/entries/{entry_id}"
+classification_model: non_hierarchical
+
+stores:
+  - id: prospective
+    path: stores/prospective
+    role: pending_future_intent
+    default_ttl_days: 14
+    max_entry_size_kb: 256
+    mutable: true
+    allowed_transitions:
+      - working
+      - episodic
+    promotion_targets:
+      - working
+      - episodic
+    expiration_targets:
+      - episodic
+
+  - id: working
+    path: stores/working
+    role: active_session_state
+    default_ttl_days: 3
+    max_entry_size_kb: 512
+    mutable: true
+    allowed_transitions:
+      - prospective
+      - episodic
+      - semantic
+    promotion_targets:
+      - episodic
+      - semantic
+    expiration_targets:
+      - episodic
+
+  - id: episodic
+    path: stores/episodic
+    role: time_ordered_experience
+    default_ttl_days: 30
+    max_entry_size_kb: 1024
+    mutable: append_only
+    allowed_transitions:
+      - prospective
+      - working
+      - semantic
+      - long_term
+    promotion_targets:
+      - semantic
+      - long_term
+    expiration_targets:
+      - long_term
+
+  - id: semantic
+    path: stores/semantic
+    role: distilled_knowledge
+    default_ttl_days: 180
+    max_entry_size_kb: 2048
+    mutable: controlled
+    allowed_transitions:
+      - episodic
+      - long_term
+    promotion_targets:
+      - long_term
+    expiration_targets:
+      - long_term
+
+  - id: long_term
+    path: stores/long_term
+    role: durable_policy_and_patterns
+    default_ttl_days: null
+    max_entry_size_kb: 4096
+    mutable: controlled
+    allowed_transitions:
+      - semantic
+      - episodic
+    promotion_targets: []
+    expiration_targets: []
+
+transitions:
+  required_fields:
+    - from_store
+    - to_store
+    - entry_id
+    - reason
+    - actor
+    - timestamp_utc
+  enforce_manifest_targets: true
+  allow_physical_move: true

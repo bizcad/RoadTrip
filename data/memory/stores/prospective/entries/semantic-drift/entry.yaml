@@ -1,0 +1,26 @@
+id: semantic-drift
+memory_class: prospective
+title: Semantic drift after replacement packet
+status: pending
+priority: P0
+created_at: 2026-02-18T00:30:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Replacement implementations can preserve surface behavior while violating
+  original intent or capability semantics.
+assumption: Capability parity checks reduce drift during replacement and fallback.
+evidence_needed: post-replacement parity failure rate and user-intent regression count.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

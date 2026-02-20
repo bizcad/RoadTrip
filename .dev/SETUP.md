@@ -103,6 +103,11 @@ cmdkey /add:github_pat /user:github /pass:"your_token"
 use-mode coding
 ```
 
+### Command safety reminders
+- Use `py` instead of `python` for runnable examples in this repo.
+- Use `py -m pip install ...` instead of bare `pip install ...`.
+- Review `COMMON_MISTAKES.md` for the full prevention checklist.
+
 ## Documentation
 
 - **Full guide**: `.dev/README.md`

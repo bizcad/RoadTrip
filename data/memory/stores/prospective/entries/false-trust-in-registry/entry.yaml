@@ -1,0 +1,26 @@
+id: false-trust-in-registry
+memory_class: prospective
+title: False trust in registry mitigation packet
+status: pending
+priority: P0
+created_at: 2026-02-18T00:30:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Certified registry entries can fail in real runtime contexts due to dependency,
+  environment, or policy drift while still appearing trusted.
+assumption: Trust must be continuously validated at runtime, not inferred from registry status alone.
+evidence_needed: certified-skill runtime failure rate by environment delta.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

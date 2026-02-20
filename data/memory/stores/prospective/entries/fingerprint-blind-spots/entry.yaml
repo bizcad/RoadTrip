@@ -1,0 +1,30 @@
+id: fingerprint-blind-spots
+memory_class: prospective
+title: Fingerprint blind spots mitigation packet
+status: pending
+priority: P0
+created_at: 2026-02-17T17:00:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  If verification mode/config is weak or inconsistent, modified code can be
+  trusted incorrectly and bypass expected controls.
+assumption: Fingerprint enforcement has blind spots in real-world drift scenarios.
+evidence_needed: mismatch incidents, bypass-path detections, and false-accept rates.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
+initial_hypotheses:
+  - Fingerprint generation scope excludes critical dependency/config state.
+  - Mock/real verification modes can diverge in behavior.
+  - Registry fingerprints can become stale without periodic revalidation.

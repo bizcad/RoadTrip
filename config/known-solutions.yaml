@@ -1,0 +1,20 @@
+solutions:
+  - id: git-push-https-auth-noninteractive
+    intent: git_push
+    title: Non-interactive GitHub HTTPS authentication for agent push
+    summary: Resolve push failures caused by interactive credential prompts or missing PAT.
+    matches:
+      error_codes:
+        - EXECUTION_FAILED
+        - EXECUTION_EXCEPTION
+      message_patterns:
+        - "unable to get password from user"
+        - "authentication failed"
+        - "credential"
+        - "terminal prompts disabled"
+    steps:
+      - "Configure GCM helper: git config --global credential.helper manager"
+      - "Set default username for github.com: git config --global credential.https://github.com.username bizcad"
+      - "Store PAT in credential manager using git credential approve with protocol=https, host=github.com, username=bizcad, password=<PAT>"
+      - "Verify non-interactive auth: set GIT_TERMINAL_PROMPT=0 and run git ls-remote origin -h refs/heads/main"
+      - "Verify push path: set GIT_TERMINAL_PROMPT=0 and run git push --dry-run origin main"

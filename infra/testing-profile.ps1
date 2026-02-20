@@ -46,7 +46,7 @@ function test-check-pytest {
     Check if pytest is available
     #>
     try {
-        $result = python -m pytest --version 2>&1
+        $result = py -m pytest --version 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ pytest available: $result" -ForegroundColor Green
             return $true
@@ -54,7 +54,7 @@ function test-check-pytest {
     }
     catch { }
     
-    Write-Host "❌ pytest not found. Install with: pip install pytest pytest-cov" -ForegroundColor Red
+    Write-Host "❌ pytest not found. Install with: py -m pip install pytest pytest-cov" -ForegroundColor Red
     return $false
 }
 

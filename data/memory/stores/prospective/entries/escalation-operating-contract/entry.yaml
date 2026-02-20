@@ -1,0 +1,57 @@
+id: escalation-operating-contract
+memory_class: prospective
+title: Escalation operating contract and service-tier policy
+status: pending
+priority: P0
+created_at: 2026-02-17T23:40:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Escalation is not always a failure path; some domains intentionally require
+  social loops for quality and governance. The risk is unbounded escalation with
+  no time/budget contract, especially across mixed workloads (on-demand user
+  tasks and scheduled maintenance jobs).
+assumption: Service-tier budgets and explicit escalation modes improve reliability more than hard-stop-only policy.
+evidence_needed: on-time handoff rate by tier, budget adherence, and overnight job completion SLO.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  escalation_modes:
+    - social_loop_bounded
+    - hard_stop_handoff
+    - autonomous_retry_then_handoff
+  service_tiers:
+    - tier: interactive_critical
+      target_response_minutes: 5
+      max_escalation_hops: 2
+      budget_model: latency_first
+    - tier: interactive_standard
+      target_response_minutes: 30
+      max_escalation_hops: 3
+      budget_model: balanced
+    - tier: scheduled_maintenance
+      target_response_minutes: 480
+      completion_window: nightly
+      budget_model: throughput_first
+    - tier: continuous_24x7
+      target_response_minutes: 15
+      max_escalation_hops: 4
+      budget_model: availability_first
+  required_event_fields:
+    - escalation_mode
+    - service_tier
+    - response_target
+    - budget_used
+    - handoff_owner
+    - trace_id
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

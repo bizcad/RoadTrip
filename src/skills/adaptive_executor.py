@@ -7,11 +7,13 @@ import importlib.util
 import inspect
 import json
 import re
+import sys
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
+import yaml
 
 from src.skills.registry.fingerprint_generator import FingerprintGenerator
 from src.skills.registry.fingerprint_verifier import FingerprintVerifier
@@ -32,6 +34,7 @@ class AdaptiveExecutionResult:
     output: Optional[dict] = None
     error_code: Optional[str] = None
     error_message: Optional[str] = None
+    suggested_fix: Optional[dict] = None
 
 
 class AdaptiveExecutor:
@@ -42,12 +45,15 @@ class AdaptiveExecutor:
         repo_root: str = ".",
         registry_path: str = "config/skills-registry.yaml",
         metrics_log_path: str = "logs/execution_metrics.jsonl",
+        known_solutions_path: str = "config/known-solutions.yaml",
         use_mock_fingerprint: bool = True,
     ):
         self.repo_root = Path(repo_root).resolve()
         self.registry_path = self.repo_root / registry_path
         self.metrics_log_path = self.repo_root / metrics_log_path
+        self.known_solutions_path = self.repo_root / known_solutions_path
         self.use_mock_fingerprint = use_mock_fingerprint
+        self.known_solutions = self._load_known_solutions()
 
     def execute_prompt(
         self,
@@ -148,6 +154,11 @@ class AdaptiveExecutor:
 
             if not allowed:
                 if attempt_number >= attempt_limit:
+                    fix = self._lookup_solution(
+                        intent=intent,
+                        error_code="FINGERPRINT_MISMATCH",
+                        message=fingerprint_message,
+                    )
                     return AdaptiveExecutionResult(
                         success=False,
                         decision="STOP",
@@ -157,6 +168,7 @@ class AdaptiveExecutor:
                         skill_name=skill_name,
                         error_code="FINGERPRINT_MISMATCH",
                         error_message=fingerprint_message,
+                        suggested_fix=fix,
                     )
                 continue
 
@@ -172,6 +184,11 @@ class AdaptiveExecutor:
                     },
                 )
                 if attempt_number >= attempt_limit:
+                    fix = self._lookup_solution(
+                        intent=intent,
+                        error_code="ENTRYPOINT_INVALID",
+                        message=f"Skill {skill_name} has no callable entry point.",
+                    )
                     return AdaptiveExecutionResult(
                         success=False,
                         decision="STOP",
@@ -181,6 +198,7 @@ class AdaptiveExecutor:
                         skill_name=skill_name,
                         error_code="ENTRYPOINT_INVALID",
                         error_message=f"Skill {skill_name} has no callable entry point.",
+                        suggested_fix=fix,
                     )
                 continue
 
@@ -199,6 +217,11 @@ class AdaptiveExecutor:
                     },
                 )
                 if attempt_number >= attempt_limit:
+                    fix = self._lookup_solution(
+                        intent=intent,
+                        error_code="EXECUTION_EXCEPTION",
+                        message=str(exc),
+                    )
                     return AdaptiveExecutionResult(
                         success=False,
                         decision="STOP",
@@ -208,6 +231,7 @@ class AdaptiveExecutor:
                         skill_name=skill_name,
                         error_code="EXECUTION_EXCEPTION",
                         error_message=str(exc),
+                        suggested_fix=fix,
                     )
                 continue
 
@@ -242,6 +266,12 @@ class AdaptiveExecutor:
             )
 
             if attempt_number >= attempt_limit:
+                output_message = self._extract_failure_message(output)
+                fix = self._lookup_solution(
+                    intent=intent,
+                    error_code="EXECUTION_FAILED",
+                    message=output_message,
+                )
                 return AdaptiveExecutionResult(
                     success=False,
                     decision="STOP",
@@ -250,8 +280,9 @@ class AdaptiveExecutor:
                     attempts=attempt_number,
                     skill_name=skill_name,
                     error_code="EXECUTION_FAILED",
-                    error_message="Skill execution failed and retry depth exhausted.",
+                    error_message=output_message or "Skill execution failed and retry depth exhausted.",
                     output=output if isinstance(output, dict) else {"result": output},
+                    suggested_fix=fix,
                 )
 
         return AdaptiveExecutionResult(
@@ -262,6 +293,71 @@ class AdaptiveExecutor:
             error_code="UNREACHABLE",
             error_message="Execution ended unexpectedly.",
         )
+
+    def _load_known_solutions(self) -> list[dict[str, Any]]:
+        """Load structured solution memory from config/known-solutions.yaml."""
+        if not self.known_solutions_path.exists():
+            return []
+
+        try:
+            with open(self.known_solutions_path, "r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle) or {}
+            solutions = data.get("solutions", [])
+            if isinstance(solutions, list):
+                return [item for item in solutions if isinstance(item, dict)]
+            return []
+        except Exception:
+            return []
+
+    def _extract_failure_message(self, output: Any) -> str:
+        """Extract useful failure text from a skill output payload."""
+        if isinstance(output, dict):
+            errors = output.get("errors")
+            if isinstance(errors, list) and errors:
+                return "; ".join(str(item) for item in errors)
+            for key in ("error", "reason", "message"):
+                value = output.get(key)
+                if isinstance(value, str) and value.strip():
+                    return value
+        return ""
+
+    def _lookup_solution(self, intent: str, error_code: str, message: str) -> Optional[dict]:
+        """Find the first matching known solution for this failure."""
+        normalized_message = (message or "").lower()
+
+        for solution in self.known_solutions:
+            solution_intent = str(solution.get("intent", "")).strip().lower()
+            if solution_intent and solution_intent != intent:
+                continue
+
+            matches = solution.get("matches", {}) if isinstance(solution.get("matches"), dict) else {}
+            codes = [str(item).upper() for item in matches.get("error_codes", [])]
+            if codes and error_code.upper() not in codes:
+                continue
+
+            patterns = [str(item) for item in matches.get("message_patterns", [])]
+            if patterns and not any(re.search(pattern, normalized_message) for pattern in patterns):
+                continue
+
+            found = {
+                "id": solution.get("id", ""),
+                "title": solution.get("title", ""),
+                "summary": solution.get("summary", ""),
+                "steps": solution.get("steps", []),
+            }
+            self._log_event(
+                "memory",
+                "KNOWN_SOLUTION_HIT",
+                {"intent": intent, "error_code": error_code, "solution_id": found["id"]},
+            )
+            return found
+
+        self._log_event(
+            "memory",
+            "KNOWN_SOLUTION_MISS",
+            {"intent": intent, "error_code": error_code, "message": message[:200]},
+        )
+        return None
 
     def _semantic_intent(self, prompt: str) -> str:
         normalized = (prompt or "").strip().lower()
@@ -277,6 +373,22 @@ class AdaptiveExecutor:
         )
         if any(re.search(pattern, normalized) for pattern in push_patterns):
             return "git_push"
+
+        memory_transition_patterns = (
+            r"\b(promote|move|expire)\b.*\b(memory|entry)\b",
+            r"\bfrom\s+[a-z_]+\s+to\s+[a-z_]+\b",
+        )
+        if any(re.search(pattern, normalized) for pattern in memory_transition_patterns):
+            return "memory_transition"
+
+        list_skill_patterns = (
+            r"\bshow\s+me\s+(a\s+)?list\s+of\s+skills\b",
+            r"\blist\s+skills\b",
+            r"\bshow\s+skills\b",
+            r"\bregistry\s+list\b",
+        )
+        if any(re.search(pattern, normalized) for pattern in list_skill_patterns):
+            return "list_skills"
 
         return "unknown"
 
@@ -305,6 +417,20 @@ class AdaptiveExecutor:
                     candidates.insert(0, (skill_name, metadata))
                     continue
                 if "push_git_commit" in capabilities or "git_push" in capabilities:
+                    candidates.append((skill_name, metadata))
+
+            if intent == "memory_transition":
+                if skill_name == "memory_store_transition":
+                    candidates.insert(0, (skill_name, metadata))
+                    continue
+                if "memory_store_transition" in capabilities or "memory_transition" in capabilities:
+                    candidates.append((skill_name, metadata))
+
+            if intent == "list_skills":
+                if skill_name == "registry_list":
+                    candidates.insert(0, (skill_name, metadata))
+                    continue
+                if "registry_list" in capabilities or "list_skills" in capabilities:
                     candidates.append((skill_name, metadata))
 
         if candidates:
@@ -344,6 +470,7 @@ class AdaptiveExecutor:
             return None
 
         module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
         spec.loader.exec_module(module)
 
         return getattr(module, function_name, None)
@@ -357,7 +484,41 @@ class AdaptiveExecutor:
             payload.setdefault("branch", "main")
             payload.setdefault("remote", "origin")
 
+        if intent == "memory_transition":
+            extracted = self._parse_memory_transition_prompt(prompt)
+            if extracted.get("entry_id") and "entry_id" not in payload:
+                payload["entry_id"] = extracted["entry_id"]
+            if extracted.get("from_store") and "from_store" not in payload:
+                payload["from_store"] = extracted["from_store"]
+            if extracted.get("to_store") and "to_store" not in payload:
+                payload["to_store"] = extracted["to_store"]
+            payload.setdefault("memory_root", "data/memory")
+            payload.setdefault("dry_run", False)
+
+        if intent == "list_skills":
+            payload.setdefault("registry_path", "config/skills-registry.yaml")
+
         return payload
+
+    def _parse_memory_transition_prompt(self, prompt: str) -> dict[str, str]:
+        normalized = (prompt or "").strip().lower()
+        if not normalized:
+            return {}
+
+        parsed: dict[str, str] = {}
+
+        entry_match = re.search(r"\bentry\s+([a-z0-9._-]+)\b", normalized)
+        if entry_match:
+            parsed["entry_id"] = entry_match.group(1)
+
+        from_match = re.search(r"\bfrom\s+([a-z_]+)\b", normalized)
+        to_match = re.search(r"\bto\s+([a-z_]+)\b", normalized)
+        if from_match:
+            parsed["from_store"] = from_match.group(1)
+        if to_match:
+            parsed["to_store"] = to_match.group(1)
+
+        return parsed
 
     def _invoke_skill(self, skill_callable: Callable[..., Any], skill_input: dict) -> Any:
         signature = inspect.signature(skill_callable)

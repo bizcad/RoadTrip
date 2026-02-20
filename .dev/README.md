@@ -166,6 +166,15 @@ bpublish / bp                   # Publish blog
 show-content-help               # Show content commands
 ```
 
+## Mistake Prevention (Required Reading)
+
+- `COMMON_MISTAKES.md` - canonical command-safety and troubleshooting guide
+- `.github/copilot-instructions.md` - always-on Copilot reminders for `py` and `py -m pip`
+
+Core rule in this workspace:
+- Use `py` (not `python`) on Windows.
+- Use `py -m pip install ...` (not bare `pip install ...`).
+
 ## Switching to Another Workspace
 
 1. Open a different workspace (File > Open Workspace from File...)

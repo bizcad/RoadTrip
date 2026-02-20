@@ -1,0 +1,100 @@
+id: orchestrator-failure-self-improvement-routing-v0
+status: draft
+classification: interesting-idea
+
+objectives:
+  - maintain_system_stability
+  - optimize_for_quality_and_safety
+  - minimize_cost_using_free_or_low_cost_lanes
+
+lane_order:
+  - fast_registry_lookup
+  - medium_effort_reasoning
+  - expensive_agentic_solve
+
+queueing:
+  model: hybrid
+  event_assisted_enqueue: true
+  sleep_cycle_pull: true
+  sleep_cycle_caps:
+    max_items: 3
+    max_runtime_minutes: 10
+    max_token_budget: 25000
+
+routing_inputs:
+  urgency_levels: [low, medium, high]
+  risk_levels: [low, medium, high]
+  requires_historical_check: true
+  historical_fields:
+    - seen_before
+    - historical_cost_to_resolve
+    - historical_success_by_lane
+
+decision_rules:
+  - id: known-fast-win
+    when:
+      seen_before: true
+      fast_lane_success_rate_gte: 0.8
+      risk_not: high
+    then:
+      lane: fast_registry_lookup
+
+  - id: unknown-low-risk
+    when:
+      seen_before: false
+      urgency_in: [low, medium]
+      risk_in: [low, medium]
+    then:
+      lane: medium_effort_reasoning
+      mode: sleep_cycle_pull
+
+  - id: high-risk-or-security
+    when:
+      any:
+        - risk_eq: high
+        - failure_class_in: [security, auth, safety]
+    then:
+      lane: medium_effort_reasoning
+      requires_hitl: true
+
+  - id: budget-protection
+    when:
+      projected_tokens_exceed_cap: true
+    then:
+      action: defer_or_hitl_override
+
+escalation:
+  on_validation_fail:
+    from_fast_to_medium: true
+    from_medium_to_expensive: true
+  max_autonomous_attempts: 2
+  on_max_attempts_reached: quarantine_and_hitl_review
+
+promotion:
+  from_expensive_to_fast_registry:
+    required:
+      - replications_gte: 2
+      - no_safety_regression: true
+      - rollback_rate_lte: 0.05
+      - confidence_gte: 0.8
+
+hitl:
+  required_for:
+    - budget_cap_override
+    - high_urgency_and_high_risk
+    - security_auth_safety_failure_classes
+    - borderline_registry_promotion
+
+metrics:
+  - fast_lane_win_rate
+  - escalation_rate
+  - expensive_lane_invocation_rate
+  - cost_per_success_by_lane
+  - mean_tokens_per_resolved_issue
+  - budget_breach_count
+  - hitl_override_rate
+  - confidence_drift_rate
+
+notes:
+  - This is a draft policy for prospective experimentation.
+  - Promote to working only after evidence-based validation.

@@ -1,0 +1,56 @@
+id: mcp-router-hardening
+memory_class: prospective
+title: Hardened MCP router connection boundary
+status: pending
+priority: P0
+created_at: 2026-02-17T23:20:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  External MCP server traffic can expand attack surface and leak privileged
+  internal capabilities unless routed through a hardened control point.
+assumption: >-
+  A dedicated MCP router host with strict ingress policy and segmented network
+  boundaries reduces exploit blast radius and limits direct exposure of
+  internal skills.
+evidence_needed: >-
+  Reduced direct external access paths to internal tools, successful blocked
+  unauthorized connection attempts, and no regression in approved MCP workflows.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+network_pattern:
+  topology: dedicated-router-host
+  preferred_transport: tailscale_private_tailnet
+  public_endpoint_policy: opt-in_only_with_hardening
+  internal_capabilities_exposed: minimal_allowlist
+  scope_targets:
+    - external_skills
+    - aspire_app
+    - vps_services
+    - docker_containers
+control_layers:
+  network_level:
+    - tailscale_tailnet_segmentation
+    - router_firewall_allowlist
+    - private_by_default_connectivity
+  application_level:
+    - registry_capability_gating
+    - connector_policy_enforcement
+    - auditable_routing_decisions
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
+notes: >-
+  Seed concept from Rocky Lhotka MCP Aggregator thread and Bizcad plan to host
+  the router on an isolated iMac with explicit path controls back to the main
+  Windows development system. Combined with Registry policy controls, this
+  enables dual-layer separation: network boundary enforcement plus app-level
+  capability/routing governance.

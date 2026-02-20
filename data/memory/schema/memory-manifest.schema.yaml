@@ -1,0 +1,77 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Memory Store Manifest
+version: "1.0"
+type: object
+required:
+  - schema_version
+  - layout
+  - entry_granularity
+  - entry_path_template
+  - stores
+  - transitions
+properties:
+  schema_version:
+    type: string
+  layout:
+    type: string
+    enum: [folder-native]
+  entry_granularity:
+    type: string
+    enum: [folder]
+  entry_path_template:
+    type: string
+  stores:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - id
+        - path
+        - role
+        - default_ttl_days
+        - max_entry_size_kb
+        - mutable
+        - promotion_targets
+        - expiration_targets
+      properties:
+        id:
+          type: string
+          pattern: "^[a-z_]+$"
+        path:
+          type: string
+        role:
+          type: string
+        default_ttl_days:
+          type: [integer, "null"]
+          minimum: 1
+        max_entry_size_kb:
+          type: integer
+          minimum: 1
+        mutable:
+          type: string
+          enum: [true, append_only, controlled]
+        promotion_targets:
+          type: array
+          items:
+            type: string
+        expiration_targets:
+          type: array
+          items:
+            type: string
+  transitions:
+    type: object
+    required:
+      - required_fields
+      - enforce_manifest_targets
+      - allow_physical_move
+    properties:
+      required_fields:
+        type: array
+        minItems: 1
+        items:
+          type: string
+      enforce_manifest_targets:
+        type: boolean
+      allow_physical_move:
+        type: boolean

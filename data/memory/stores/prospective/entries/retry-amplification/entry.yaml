@@ -1,0 +1,33 @@
+id: retry-amplification
+memory_class: prospective
+title: Retry amplification and bounded-depth policy
+status: pending
+priority: P0
+created_at: 2026-02-17T17:10:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Retries can recover transient failures, but poorly bounded retries can
+  amplify damage and hide root causes.
+assumption: Bounded retries (depth 1-2) are safer than open-ended retries.
+evidence_needed: failure recovery rate vs blast-radius incidents by retry depth.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  default_retry_depth: 1
+  max_retry_depth: 2
+  stop_on:
+    - fingerprint_mismatch
+    - unresolved_target
+    - irreversible_operation_without_guard
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

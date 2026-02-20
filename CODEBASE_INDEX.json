@@ -1,0 +1,337 @@
+{
+  "metadata": {
+    "generated": "2026-02-19",
+    "version": "1.0.0",
+    "description": "Classification index for RoadTrip codebase organized by functional path",
+    "total_files": 119,
+    "classification_schema": {
+      "user": "Files that end users interact with to accomplish tasks",
+      "developer": "Files for building, developing, and maintaining the framework",
+      "self-healing": "Files for error detection, analysis, adaptation, and self-improvement",
+      "safety": "Files for vetting, security, policy enforcement, and trust validation"
+    }
+  },
+  "index": {
+    "user": {
+      "description": "User-facing functionality: Run agents, workflows, skills",
+      "orchestration": [
+        "src/orchestrator.py",
+        "src/orchestrate_blog_publish.py",
+        "src/skills/skill_orchestrator.py",
+        "src/skills/skill_orchestrator_models.py"
+      ],
+      "blog_publishing": [
+        "src/publish_blog.py",
+        "src/blog_publisher_cli.py",
+        "src/skills/blog_publisher.py"
+      ],
+      "git_operations": [
+        "scripts/commit_and_push_updates.py",
+        "scripts/git_push.ps1",
+        "scripts/invoke-commit-message.ps1",
+        "scripts/invoke-git-push-with-token.ps1",
+        "scripts/push-with-token.ps1",
+        "src/skills/git_push_autonomous.py",
+        "src/skills/git_push_autonomous_models.py"
+      ],
+      "skill_browsing": [
+        "src/view_registry.py",
+        "src/list_skills.py",
+        "src/skills/registry_list.py"
+      ],
+      "skill_invocation": [
+        "src/skills/commit_message.py",
+        "src/skills/commit_message_models.py",
+        "src/skills/telemetry_logger.py",
+        "src/skills/telemetry_logger_models.py"
+      ],
+      "configuration": [
+        "src/skills/config_loader.py",
+        "src/skills/token_resolver.py"
+      ],
+      "mcp_integration": [
+        "src/mcp/discovery/mcp_server_registry_client.py",
+        "src/mcp/__init__.py",
+        "src/mcp/discovery/__init__.py",
+        "src/mcp/interactions/__init__.py",
+        "src/mcp/processing/__init__.py"
+      ]
+    },
+    "developer": {
+      "description": "Developer tooling: Build agents, workflows, code modules",
+      "registry_management": [
+        "src/registry_builder.py",
+        "src/agents/registry_agent.py",
+        "src/agents/registry_models.py",
+        "src/skills/registry/registry_reader.py",
+        "src/skills/registry/registry_models.py",
+        "src/skills/registry/orchestrator.py"
+      ],
+      "skill_discovery": [
+        "scripts/discover_skills.py",
+        "workflows/009-Skill-Discovery/YouTube-transcript-downloader.py"
+      ],
+      "fingerprinting": [
+        "src/agents/fingerprint_agent.py",
+        "src/agents/fingerprint_models.py",
+        "src/skills/registry/fingerprint_generator.py",
+        "src/skills/registry/fingerprint_verifier.py",
+        "src/skills/models/fingerprint.py"
+      ],
+      "registration": [
+        "src/skills/registry/registration.py",
+        "src/skills/registry/verification.py",
+        "src/skills/registry/base_agent.py"
+      ],
+      "storage_backends": [
+        "src/skills/registry/storage_interface.py",
+        "src/skills/registry/storage_yaml.py",
+        "src/skills/registry/storage_sqlite.py"
+      ],
+      "dag_workflow": [
+        "src/skills/dag/dag_builder.py",
+        "src/skills/dag/dag_executor.py",
+        "src/skills/dag/skill_dag.py",
+        "src/skills/dag/skill_base.py",
+        "src/skills/dag/skill_loader.py",
+        "src/skills/dag/config_resolver.py",
+        "src/skills/dag/execution_models.py",
+        "src/skills/dag/__init__.py"
+      ],
+      "prototyping": [
+        "scripts/prototype_mcp_clone_loop.py",
+        "scripts/test_push.py",
+        "test_semantic_skill_invocation.py"
+      ],
+      "credential_setup": [
+        "scripts/setup-github-credentials.ps1",
+        "scripts/setup-github-credentials-dev-env.ps1",
+        "scripts/git-askpass-env.cmd",
+        "scripts/git-pass-provider.ps1",
+        "scripts/git_askpass_helper.py"
+      ],
+      "mock_skills": [
+        "src/skills/mock_validator.py",
+        "src/skills/mock_committer.py"
+      ]
+    },
+    "self-healing": {
+      "description": "Error detection, analysis, adaptation, and self-improvement",
+      "adaptive_execution": [
+        "src/skills/adaptive_executor.py"
+      ],
+      "memory_systems": [
+        "src/skills/memory_loop_orchestrator.py",
+        "src/skills/memory_store_transition.py",
+        "src/skills/episodic_index.py",
+        "src/skills/consolidation/sleep_consolidator.py",
+        "src/skills/consolidation/burned_patterns.py",
+        "src/skills/consolidation/guardrails.py",
+        "src/skills/consolidation/__init__.py"
+      ],
+      "session_management": [
+        "src/skills/session_bootstrap.py"
+      ],
+      "telemetry_analysis": [
+        "scripts/export_phase2b_audit_logs.py",
+        "data/telemetry.jsonl"
+      ],
+      "verification_scripts": [
+        "verify_phase_2c.py"
+      ],
+      "orchestrator_recovery": [
+        "tests/test_orchestrator_recovery.py"
+      ],
+      "known_solutions": [
+        "config/known-solutions.yaml"
+      ]
+    },
+    "safety": {
+      "description": "Vetting, security, policy enforcement, and trust validation",
+      "authorization": [
+        "src/skills/auth_validator.py",
+        "src/skills/auth_validator_models.py",
+        "config/authorization.yaml"
+      ],
+      "rules_engine": [
+        "src/skills/rules_engine.py",
+        "config/safety-rules.yaml"
+      ],
+      "trust_validation": [
+        "src/skills/trust_scorecard.py",
+        "scripts/generate_trust_scorecard.py"
+      ],
+      "release_evidence": [
+        "src/skills/release_evidence_gate.py",
+        "scripts/check_release_evidence.py",
+        "scripts/generate_release_evidence_manifest.py"
+      ],
+      "yaml_validation": [
+        "src/skills/yaml_redirect_validator.py"
+      ],
+      "version_provenance": [
+        "src/skills/registry/version_provenance.py"
+      ],
+      "memory_guardrails": [
+        "src/skills/consolidation/guardrails.py"
+      ],
+      "config_policies": [
+        "config/commit-strategy.yaml",
+        "config/telemetry-config.yaml"
+      ]
+    },
+    "shared": {
+      "description": "Common utilities and models used across multiple paths",
+      "base_models": [
+        "src/skills/models.py",
+        "src/skills/models/fingerprint.py"
+      ],
+      "initialization": [
+        "src/__init__.py",
+        "src/skills/__init__.py",
+        "src/agents/__init__.py",
+        "src/skills/registry/__init__.py"
+      ]
+    },
+    "testing": {
+      "description": "Test files organized by functional area",
+      "user_tests": [
+        "tests/test_commit_message.py",
+        "tests/test_blog_publisher.py",
+        "tests/test_orchestrator_recovery.py",
+        "tests/test_skill_orchestrator.py",
+        "tests/test_git_push_autonomous.py",
+        "tests/test_git_push_integration.py",
+        "tests/test_git_push_prompt_e2e.py",
+        "tests/mcp/discovery/test_mcp_server_registry_client.py"
+      ],
+      "developer_tests": [
+        "tests/test_registry_system.py",
+        "tests/test_registry_agent.py",
+        "tests/test_registry_list.py",
+        "tests/test_fingerprint_agent.py",
+        "tests/test_phase_2b_real_skills.py",
+        "tests/test_phase_2c_integration.py",
+        "tests/test_phase_2c_storage_backends.py",
+        "tests/test_phase_3_integration.py",
+        "tests/test_phase_3_dag.py",
+        "tests/test_pipeline.py"
+      ],
+      "self-healing_tests": [
+        "tests/test_adaptive_executor.py",
+        "tests/test_memory_loop_orchestrator.py",
+        "tests/test_memory_store_transition.py",
+        "tests/test_episodic_index.py",
+        "tests/test_sleep_consolidator.py",
+        "tests/test_session_bootstrap.py"
+      ],
+      "safety_tests": [
+        "tests/test_auth_validator.py",
+        "tests/test_rules_engine.py",
+        "tests/test_trust_scorecard.py",
+        "tests/test_generate_trust_scorecard_cli.py",
+        "tests/test_release_evidence_gate.py",
+        "tests/test_yaml_redirect_validator.py",
+        "tests/test_version_provenance.py",
+        "tests/test_memory_guardrails.py"
+      ],
+      "test_infrastructure": [
+        "tests/conftest.py",
+        "tests/__init__.py"
+      ]
+    }
+  },
+  "file_relationships": {
+    "orchestrator_dependencies": {
+      "src/orchestrator.py": {
+        "depends_on": [
+          "config/skills-registry.yaml",
+          "src/skills/*.py"
+        ],
+        "used_by": [
+          "User workflows",
+          "Automated agents"
+        ]
+      }
+    },
+    "registry_pipeline": {
+      "flow": [
+        "scripts/discover_skills.py -> discovers skills",
+        "src/registry_builder.py -> builds registry",
+        "src/agents/fingerprint_agent.py -> generates fingerprints",
+        "src/agents/registry_agent.py -> manages CRUD",
+        "src/view_registry.py -> displays to user"
+      ]
+    },
+    "git_push_pipeline": {
+      "flow": [
+        "User triggers: gpush or scripts/commit_and_push_updates.py",
+        "Calls: src/skills/commit_message.py (generate message)",
+        "Validates: src/skills/auth_validator.py (check authorization)",
+        "Logs: src/skills/telemetry_logger.py (record event)",
+        "Executes: git commands via subprocess",
+        "Uses: ProjectSecrets/PAT.txt for authentication"
+      ]
+    },
+    "trust_validation_pipeline": {
+      "flow": [
+        "scripts/generate_trust_scorecard.py -> analyzes skill",
+        "src/skills/trust_scorecard.py -> computes scores",
+        "src/agents/fingerprint_agent.py -> validates integrity",
+        "src/skills/registry/verification.py -> checks registration",
+        "scripts/check_release_evidence.py -> gates release"
+      ]
+    }
+  },
+  "entry_points": {
+    "cli_scripts": [
+      "src/orchestrator.py",
+      "src/publish_blog.py",
+      "src/view_registry.py",
+      "src/list_skills.py",
+      "src/registry_builder.py",
+      "src/agents/registry_agent.py",
+      "src/agents/fingerprint_agent.py",
+      "scripts/commit_and_push_updates.py",
+      "scripts/check_release_evidence.py",
+      "scripts/generate_trust_scorecard.py",
+      "scripts/discover_skills.py"
+    ],
+    "powershell_scripts": [
+      "scripts/git_push.ps1",
+      "infra/RoadTrip_profile.ps1"
+    ],
+    "programmatic_apis": [
+      "src/skills/auth_validator.py::AuthValidatorSkill",
+      "src/skills/commit_message.py::CommitMessageSkill",
+      "src/skills/telemetry_logger.py::TelemetryLogger",
+      "src/skills/adaptive_executor.py::AdaptiveExecutor",
+      "src/orchestrator.py::Orchestrator"
+    ]
+  },
+  "navigation_tips": {
+    "finding_user_functionality": "Look in 'user' section or search entry_points.cli_scripts",
+    "finding_developer_tools": "Look in 'developer' section, especially registry_management and fingerprinting",
+    "finding_self_healing": "Look in 'self-healing' section, especially adaptive_execution and memory_systems",
+    "finding_safety_enforcement": "Look in 'safety' section, especially authorization and rules_engine",
+    "understanding_workflows": "Check file_relationships section for pipelines",
+    "running_something": "See RUNNING_THE_PROJECT.md for detailed how-to guides"
+  },
+  "reorganization_suggestions": {
+    "current_structure": "Flat structure in src/skills/ with ~40 files",
+    "proposed_structure": {
+      "src/user/": "User-facing functionality (orchestrator, blog, git ops)",
+      "src/developer/": "Developer tooling (registry, fingerprinting, DAG)",
+      "src/healing/": "Self-healing systems (adaptive, memory, consolidation)",
+      "src/safety/": "Safety and security (auth, rules, trust, evidence)",
+      "src/shared/": "Common utilities and models"
+    },
+    "benefits": [
+      "Clear separation of concerns",
+      "Easier to navigate",
+      "Simpler imports",
+      "Better aligned with functional paths"
+    ],
+    "migration_effort": "Medium - requires updating all imports and tests"
+  }
+}

@@ -1,0 +1,33 @@
+id: registry-authority-policy
+memory_class: prospective
+title: Registry authority boundary and candidate intake policy
+status: pending
+priority: P0
+created_at: 2026-02-17T16:50:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  External change velocity (dependencies, CDN, upstream fixes) can break trusted
+  execution paths. We need clear authority boundaries for Registry writes.
+policy_thesis:
+  - Outsiders may submit candidates, but cannot directly mutate trusted registry entries.
+  - Trusted registry changes require vetting evidence and paired review.
+  - Preview usage is opt-in and never default routing.
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+assumption: Authority control is required to preserve trust under ecosystem churn.
+evidence_needed: Reduction in break/fallback incidents after authority gating.
+review_by: 2026-02-24
+decision: pending
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
+notes: >-
+  This is linked to the 'second brain' inspiration, but extended for
+  prospective-memory with attached supporting docs for slow-thinking review.

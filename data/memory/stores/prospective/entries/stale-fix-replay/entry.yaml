@@ -1,0 +1,24 @@
+id: stale-fix-replay
+memory_class: prospective
+title: Stale fix replay mitigation research packet
+status: pending
+priority: P0
+created_at: 2026-02-17T16:35:00Z
+problem_statement: >-
+  Cached remediations can become obsolete after auth/tool/policy drift and be
+  repeatedly replayed, causing avoidable failure loops.
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
+review_by: 2026-02-24
+decision: pending

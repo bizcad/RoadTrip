@@ -131,8 +131,6 @@ skills:
     description: Shared data models for the RoadTrip Skills Framework.
     source_files:
     - src/skills/models.py
-    - src/skills/models_models.py
-    - tests/test_models.py
   rules_engine:
     version: 1.0.0
     fingerprint: a09525ee93b21a1d
@@ -197,3 +195,55 @@ skills:
     - src/skills/token_resolver.py
     - src/skills/token_resolver_models.py
     - tests/test_token_resolver.py
+  memory_store_transition:
+    version: 1.0.0
+    fingerprint: 52108d38e746de2a
+    author: roadtrip_team
+    capabilities:
+    - memory_store_transition
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-17T00:00:00Z'
+    updated: '2026-02-17T00:00:00Z'
+    entry_point: src/skills/memory_store_transition.py::execute
+    description: Move memory entry folders across stores using manifest transition rules.
+    source_files:
+    - src/skills/memory_store_transition.py
+    - tests/test_memory_store_transition.py
+  yaml_redirect_validator:
+    version: 1.0.0
+    fingerprint: f53f261f4f2ca8d1
+    author: roadtrip_team
+    capabilities:
+    - yaml_redirect_validation
+    - redirect_chain_dag_check
+    - redirect_chain_cycle_check
+    - redirect_chain_hop_check
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-18T00:00:00Z'
+    updated: '2026-02-18T00:00:00Z'
+    entry_point: src/skills/yaml_redirect_validator.py::execute
+    description: Validate deprecated redirect chains in YAML as DAG with max-hop and cycle checks.
+    source_files:
+    - src/skills/yaml_redirect_validator.py
+    - tests/test_yaml_redirect_validator.py
+  registry_list:
+    version: 1.0.0
+    fingerprint: 7a9f3c2d4b1e8f60
+    author: roadtrip_team
+    capabilities:
+    - registry_list
+    - list_skills
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-02-18T00:00:00Z'
+    updated: '2026-02-18T00:00:00Z'
+    entry_point: src/skills/registry_list.py::execute
+    description: List skills currently registered in skills-registry.yaml.
+    source_files:
+    - src/skills/registry_list.py
+    - tests/test_registry_list.py

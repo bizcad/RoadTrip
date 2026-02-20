@@ -1,0 +1,26 @@
+id: concurrency-races
+memory_class: prospective
+title: Concurrency races packet
+status: pending
+priority: P0
+created_at: 2026-02-18T00:40:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Simultaneous lifecycle or registry mutations can produce lost updates,
+  inconsistent state, and nondeterministic behavior.
+assumption: Versioned writes and conflict detection reduce race-induced corruption.
+evidence_needed: write-conflict count, lost-update incidents, and recovery time.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

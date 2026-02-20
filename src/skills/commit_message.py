@@ -50,7 +50,7 @@ except ImportError:
 try:
     import yaml
 except ImportError:
-    sys.stderr.write("Error: PyYAML not installed. Run: pip install pyyaml\n")
+    sys.stderr.write("Error: PyYAML not installed. Run: py -m pip install pyyaml\n")
     sys.exit(1)
 
 
@@ -428,7 +428,7 @@ class CommitMessageSkill:
         try:
             import anthropic
         except ImportError:
-            sys.stderr.write("Error: anthropic library not installed. Run: pip install anthropic\n")
+            sys.stderr.write("Error: anthropic library not installed. Run: py -m pip install anthropic\n")
             # Fallback to Tier 1 result
             tier1 = self._tier1_generate(staged_files, diff)
             return CommitMessageResult(

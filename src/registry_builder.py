@@ -3,15 +3,17 @@
 Registry Builder: Scan skills directory and build skills-registry.yaml
 
 Usage:
-    python src/registry_builder.py              # Scan and update registry
-    python src/registry_builder.py --verify     # Verify registry is current
+    python src/registry_builder.py                    # Safe info/help (read-only)
+    python src/registry_builder.py --info             # Show usage + safety model
+    python src/registry_builder.py --verify           # Verify registry is current (read-only)
+    python src/registry_builder.py --build --force    # Rebuild registry (mutating)
 """
 
+import argparse
 import sys
 import yaml
 from pathlib import Path
 from datetime import datetime
-import inspect
 
 
 def scan_skills_directory(skills_dir: Path) -> dict:
@@ -146,13 +148,76 @@ def verify_registry(registry_file: Path) -> bool:
         print(f"[OK] Registry is current ({len(registered_skills)} skills)")
         return True
     else:
-        print(f"[WARN] Registry is out of date. Run: python src/registry_builder.py")
+        print("[WARN] Registry is out of date.")
+        print("[WARN] Do not run full rebuild in exploratory mode.")
+        print("[INFO] Use reviewed/manual update path for registry changes.")
         return False
 
 
+def print_info() -> None:
+    print("\nRegistry Builder - Safe Mode")
+    print("=" * 40)
+    print("This tool can mutate config/skills-registry.yaml only when explicitly requested.")
+    print("\nRead-only commands:")
+    print("  python src/registry_builder.py --info")
+    print("  python src/registry_builder.py --verify")
+    print("\nMutating command (explicit opt-in required):")
+    print("  python src/registry_builder.py --build --force")
+    print("\nGuidance:")
+    print("  - Prefer --verify during exploration")
+    print("  - Use reviewed/manual workflow before registry mutation")
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Registry Builder (safe defaults)",
+        add_help=True,
+    )
+    parser.add_argument(
+        "--info",
+        action="store_true",
+        help="Show safe usage guidance (read-only).",
+    )
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="Verify registry consistency with src/skills (read-only).",
+    )
+    parser.add_argument(
+        "--build",
+        action="store_true",
+        help="Rebuild registry from src/skills (mutating).",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Required with --build to allow mutation.",
+    )
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    if "--verify" in sys.argv:
-        registry_file = Path(__file__).parent.parent / "config" / "skills-registry.yaml"
+    args = parse_args(sys.argv[1:])
+
+    registry_file = Path(__file__).parent.parent / "config" / "skills-registry.yaml"
+
+    if args.info:
+        print_info()
+        sys.exit(0)
+
+    if args.verify:
         verify_registry(registry_file)
-    else:
+        sys.exit(0)
+
+    if args.build:
+        if not args.force:
+            print("[BLOCKED] Refusing to mutate registry without --force.")
+            print("[INFO] Use --verify for read-only validation.")
+            print("[INFO] To rebuild explicitly: python src/registry_builder.py --build --force")
+            sys.exit(2)
+
         build_registry()
+        sys.exit(0)
+
+    # Default behavior: safe, read-only info output.
+    print_info()

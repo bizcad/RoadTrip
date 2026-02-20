@@ -1,0 +1,726 @@
+{
+  "metadata": {
+    "version": "2.0",
+    "generated": "2026-02-19",
+    "description": "Enhanced codebase index with classification, relationships, and navigation",
+    "companion_docs": [
+      "CODEBASE_MAP.md",
+      "RUNNING_THE_PROJECT.md"
+    ]
+  },
+  "taxonomies": {
+    "functional_paths": [
+      "USER_PATH",
+      "DEVELOPER_PATH",
+      "SELF_HEALING_PATH",
+      "SAFETY_PATH"
+    ],
+    "execution_types": [
+      "ENTRY_POINT",
+      "LIBRARY",
+      "CONFIGURATION",
+      "DOCUMENTATION",
+      "AGENT",
+      "SKILL",
+      "UTILITY"
+    ],
+    "architectural_layers": [
+      "ORCHESTRATION",
+      "AGENT",
+      "SKILL",
+      "INFRASTRUCTURE",
+      "CONFIGURATION"
+    ],
+    "interaction_modes": [
+      "CLI",
+      "PYTHON_API",
+      "POWERSHELL",
+      "WEB"
+    ]
+  },
+  "entry_points": [
+    {
+      "file": "src/orchestrator.py",
+      "command": "python src/orchestrator.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Main workflow execution engine - chains skills together",
+      "layer": "ORCHESTRATION",
+      "interaction": "CLI",
+      "imports": ["importlib", "yaml", "json"],
+      "calls": ["skills.*.execute()"],
+      "called_by": ["orchestrate_blog_publish.py", "publish_blog.py"]
+    },
+    {
+      "file": "scripts/commit_and_push_updates.py",
+      "command": "python scripts/commit_and_push_updates.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Auto-commit and push using CommitMessageSkill",
+      "layer": "ORCHESTRATION",
+      "interaction": "CLI",
+      "imports": ["skills.commit_message"],
+      "calls": ["CommitMessageSkill.execute()", "git CLI"],
+      "called_by": ["gpush alias"]
+    },
+    {
+      "file": "scripts/git_push.ps1",
+      "command": "pwsh scripts/git_push.ps1",
+      "aliases": ["gpush"],
+      "functional_path": "USER_PATH",
+      "purpose": "PowerShell git push automation with AI commit messages",
+      "layer": "ORCHESTRATION",
+      "interaction": "POWERSHELL",
+      "calls": ["git CLI"],
+      "called_by": ["gpush", "gpush-dry", "gpush-log"]
+    },
+    {
+      "file": "src/publish_blog.py",
+      "command": "python src/publish_blog.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Interactive blog publishing",
+      "layer": "ORCHESTRATION",
+      "interaction": "CLI",
+      "imports": ["skills.blog_publisher"],
+      "calls": ["BlogPublisherSkill.execute()"]
+    },
+    {
+      "file": "src/orchestrate_blog_publish.py",
+      "command": "python src/orchestrate_blog_publish.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Orchestrated blog publishing workflow",
+      "layer": "ORCHESTRATION",
+      "interaction": "CLI",
+      "imports": ["orchestrator"],
+      "calls": ["Orchestrator.run_workflow()"]
+    },
+    {
+      "file": "src/blog_publisher_cli.py",
+      "command": "python src/blog_publisher_cli.py",
+      "functional_path": "USER_PATH",
+      "purpose": "CLI interface for blog publishing",
+      "layer": "ORCHESTRATION",
+      "interaction": "CLI",
+      "imports": ["skills.blog_publisher"],
+      "calls": ["BlogPublisherSkill.execute()"]
+    },
+    {
+      "file": "src/view_registry.py",
+      "command": "python src/view_registry.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Browse registered skills",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": ["yaml"],
+      "calls": [],
+      "reads": ["config/skills-registry.yaml"]
+    },
+    {
+      "file": "src/list_skills.py",
+      "command": "python src/list_skills.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Quick skill enumeration",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": ["yaml"],
+      "calls": [],
+      "reads": ["config/skills-registry.yaml"]
+    },
+    {
+      "file": "src/registry_builder.py",
+      "command": "python src/registry_builder.py --build --force",
+      "functional_path": "DEVELOPER_PATH",
+      "purpose": "Scan skills directory and rebuild registry",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": ["yaml"],
+      "calls": [],
+      "writes": ["config/skills-registry.yaml"]
+    },
+    {
+      "file": "src/agents/registry_agent.py",
+      "command": "python -m src.agents.registry_agent --list",
+      "functional_path": "DEVELOPER_PATH",
+      "purpose": "Manage skill registry (CRUD operations)",
+      "layer": "AGENT",
+      "interaction": "CLI",
+      "imports": ["registry_models"],
+      "calls": [],
+      "reads_writes": ["data/skill-registry/*.yaml"]
+    },
+    {
+      "file": "src/agents/fingerprint_agent.py",
+      "command": "python -m src.agents.fingerprint_agent",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Calculate skill fingerprints for trust verification",
+      "layer": "AGENT",
+      "interaction": "CLI",
+      "imports": ["fingerprint_models"],
+      "calls": []
+    },
+    {
+      "file": "scripts/discover_skills.py",
+      "command": "python scripts/discover_skills.py",
+      "functional_path": "DEVELOPER_PATH",
+      "purpose": "Discover available skills in filesystem",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": [],
+      "calls": []
+    },
+    {
+      "file": "scripts/generate_trust_scorecard.py",
+      "command": "python scripts/generate_trust_scorecard.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Generate trust scores for skills",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": ["fingerprint_agent"],
+      "calls": []
+    },
+    {
+      "file": "scripts/check_release_evidence.py",
+      "command": "python scripts/check_release_evidence.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Verify release integrity",
+      "layer": "INFRASTRUCTURE",
+      "interaction": "CLI",
+      "imports": [],
+      "calls": []
+    }
+  ],
+  "skills": [
+    {
+      "name": "commit_message",
+      "file": "src/skills/commit_message.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Generate semantic commit messages from git diff",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": true,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["commit_and_push_updates.py", "orchestrator"]
+    },
+    {
+      "name": "git_push_autonomous",
+      "file": "src/skills/git_push_autonomous.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Autonomous git push with safety checks",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": true,
+      "status": "active",
+      "dependencies": ["commit_message"],
+      "called_by": ["commit_and_push_updates.py", "orchestrator"]
+    },
+    {
+      "name": "blog_publisher",
+      "file": "src/skills/blog_publisher.py",
+      "functional_path": "USER_PATH",
+      "purpose": "Publish blog posts with validation",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": true,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["publish_blog.py", "orchestrate_blog_publish.py", "blog_publisher_cli.py"]
+    },
+    {
+      "name": "auth_validator",
+      "file": "src/skills/auth_validator.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Validate GitHub authentication tokens",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": false,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["orchestrator"]
+    },
+    {
+      "name": "token_resolver",
+      "file": "src/skills/token_resolver.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Resolve and manage authentication tokens",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": true,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["auth_validator", "git_push_autonomous"]
+    },
+    {
+      "name": "telemetry_logger",
+      "file": "src/skills/telemetry_logger.py",
+      "functional_path": "SELF_HEALING_PATH",
+      "purpose": "Log execution telemetry for analysis",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": false,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["orchestrator"]
+    },
+    {
+      "name": "rules_engine",
+      "file": "src/skills/rules_engine.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Enforce safety rules and policies",
+      "layer": "SKILL",
+      "interface": "execute(context: dict) -> SkillResult",
+      "standalone": false,
+      "status": "active",
+      "dependencies": [],
+      "called_by": ["orchestrator"]
+    }
+  ],
+  "libraries": [
+    {
+      "file": "src/agents/registry_models.py",
+      "functional_path": "DEVELOPER_PATH",
+      "purpose": "Data models for skill registry",
+      "layer": "AGENT",
+      "exports": [
+        "SkillRegistryEntry",
+        "RegistryInput",
+        "RegistryResult",
+        "RegistryOperation",
+        "RegistryStatus"
+      ],
+      "imported_by": ["registry_agent.py"]
+    },
+    {
+      "file": "src/agents/fingerprint_models.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Data models for fingerprinting",
+      "layer": "AGENT",
+      "exports": ["FingerprintResult", "FingerprintInput"],
+      "imported_by": ["fingerprint_agent.py"]
+    },
+    {
+      "file": "src/skills/models/fingerprint.py",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Fingerprint calculation utilities",
+      "layer": "SKILL",
+      "exports": ["calculate_fingerprint", "verify_fingerprint"],
+      "imported_by": ["fingerprint_agent.py", "registry_builder.py"]
+    }
+  ],
+  "configuration_files": [
+    {
+      "file": "config/skills-registry.yaml",
+      "functional_path": "DEVELOPER_PATH",
+      "purpose": "Master catalog of all registered skills",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["orchestrator.py", "view_registry.py", "list_skills.py"],
+      "written_by": ["registry_builder.py", "registry_agent.py"],
+      "critical": true
+    },
+    {
+      "file": "config/known-solutions.yaml",
+      "functional_path": "SELF_HEALING_PATH",
+      "purpose": "Catalog of known errors and remediation steps",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["orchestrator.py"],
+      "written_by": ["manual edits", "future: learning agent"],
+      "critical": true
+    },
+    {
+      "file": "config/authorization.yaml",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Authorization rules for skill execution",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["orchestrator.py", "auth_validator"],
+      "critical": true
+    },
+    {
+      "file": "config/safety-rules.yaml",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "Safety constraints for autonomous operations",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["orchestrator.py", "rules_engine"],
+      "critical": true
+    },
+    {
+      "file": "config/blog-config.yaml",
+      "functional_path": "USER_PATH",
+      "purpose": "Blog publishing configuration",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["blog_publisher.py", "publish_blog.py"],
+      "critical": false
+    },
+    {
+      "file": "config/commit-strategy.yaml",
+      "functional_path": "USER_PATH",
+      "purpose": "Commit message generation rules",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["commit_message.py"],
+      "critical": false
+    },
+    {
+      "file": "config/telemetry-config.yaml",
+      "functional_path": "SELF_HEALING_PATH",
+      "purpose": "Telemetry logging configuration",
+      "layer": "CONFIGURATION",
+      "format": "YAML",
+      "read_by": ["telemetry_logger.py", "orchestrator.py"],
+      "critical": false
+    }
+  ],
+  "data_files": [
+    {
+      "file": "data/telemetry.jsonl",
+      "functional_path": "SELF_HEALING_PATH",
+      "purpose": "Execution logs for pattern analysis",
+      "format": "JSONL",
+      "written_by": ["orchestrator.py", "telemetry_logger"],
+      "read_by": ["future: analytics agent"]
+    },
+    {
+      "file": "logs/execution_metrics.jsonl",
+      "functional_path": "SELF_HEALING_PATH",
+      "purpose": "Skill execution performance metrics",
+      "format": "JSONL",
+      "written_by": ["orchestrator.py"],
+      "read_by": ["future: analytics agent"]
+    },
+    {
+      "file": "ProjectSecrets/PAT.txt",
+      "functional_path": "SAFETY_PATH",
+      "purpose": "GitHub Personal Access Token",
+      "format": "TEXT",
+      "security": "GITIGNORED",
+      "read_by": ["commit_and_push_updates.py", "git_push.ps1", "token_resolver"]
+    }
+  ],
+  "key_workflows": [
+    {
+      "name": "Git Push (Python)",
+      "entry_point": "scripts/commit_and_push_updates.py",
+      "flow": [
+        "1. Load PAT token from ProjectSecrets/PAT.txt",
+        "2. Detect changed files (git status)",
+        "3. Call CommitMessageSkill.execute() to generate message",
+        "4. Stage files (git add)",
+        "5. Commit (git commit)",
+        "6. Push (git push with PAT)"
+      ],
+      "files_involved": [
+        "scripts/commit_and_push_updates.py",
+        "src/skills/commit_message.py",
+        "ProjectSecrets/PAT.txt",
+        "config/commit-strategy.yaml"
+      ]
+    },
+    {
+      "name": "Git Push (PowerShell)",
+      "entry_point": "scripts/git_push.ps1",
+      "aliases": ["gpush"],
+      "flow": [
+        "1. Detect changed files (git status)",
+        "2. Generate commit message (embedded logic or AI call)",
+        "3. Stage files (git add)",
+        "4. Commit (git commit)",
+        "5. Push (git push, uses stored credentials)"
+      ],
+      "files_involved": ["scripts/git_push.ps1", "infra/RoadTrip_profile.ps1"]
+    },
+    {
+      "name": "Blog Publishing (Orchestrated)",
+      "entry_point": "src/orchestrate_blog_publish.py",
+      "flow": [
+        "1. Load Orchestrator",
+        "2. Define workflow: [(validate, config), (publish, config)]",
+        "3. Call Orchestrator.run_workflow()",
+        "4. Orchestrator loads skills from registry",
+        "5. Execute blog_publisher skill",
+        "6. Return results"
+      ],
+      "files_involved": [
+        "src/orchestrate_blog_publish.py",
+        "src/orchestrator.py",
+        "src/skills/blog_publisher.py",
+        "config/blog-config.yaml",
+        "config/skills-registry.yaml"
+      ]
+    },
+    {
+      "name": "Registry Rebuild",
+      "entry_point": "src/registry_builder.py",
+      "flow": [
+        "1. Scan src/skills/ directory",
+        "2. Extract metadata from each skill (version, docstring, interface)",
+        "3. Calculate fingerprints",
+        "4. Build registry dict",
+        "5. Write to config/skills-registry.yaml",
+        "6. Log statistics"
+      ],
+      "files_involved": [
+        "src/registry_builder.py",
+        "src/skills/*.py",
+        "config/skills-registry.yaml",
+        "src/skills/models/fingerprint.py"
+      ]
+    },
+    {
+      "name": "Skill Execution via Orchestrator",
+      "entry_point": "src/orchestrator.py",
+      "flow": [
+        "1. Load registry from config/skills-registry.yaml",
+        "2. Load known solutions from config/known-solutions.yaml",
+        "3. For each (skill_name, config) in workflow:",
+        "4.   Load skill module dynamically (importlib)",
+        "5.   Call skill.execute(context)",
+        "6.   Handle result (SUCCESS/FAILED/SKIPPED)",
+        "7.   On failure: check known-solutions, attempt recovery",
+        "8.   Log metrics to logs/execution_metrics.jsonl",
+        "9. Return list of SkillResult objects"
+      ],
+      "files_involved": [
+        "src/orchestrator.py",
+        "config/skills-registry.yaml",
+        "config/known-solutions.yaml",
+        "config/safety-rules.yaml",
+        "src/skills/*.py",
+        "logs/execution_metrics.jsonl"
+      ]
+    }
+  ],
+  "dependency_graph": {
+    "orchestrator.py": {
+      "imports": ["importlib", "yaml", "json", "re", "Path"],
+      "dynamic_imports": ["src.skills.*"],
+      "reads": [
+        "config/skills-registry.yaml",
+        "config/known-solutions.yaml",
+        "config/safety-rules.yaml"
+      ],
+      "writes": ["logs/execution_metrics.jsonl"],
+      "calls": ["skill.execute() for each registered skill"]
+    },
+    "commit_and_push_updates.py": {
+      "imports": ["skills.commit_message.CommitMessageSkill", "subprocess", "os", "Path"],
+      "reads": ["ProjectSecrets/PAT.txt"],
+      "calls": ["CommitMessageSkill.execute()", "git CLI via subprocess"]
+    },
+    "commit_message.py": {
+      "imports": ["yaml", "Path", "datetime", "json"],
+      "reads": ["config/commit-strategy.yaml"],
+      "calls": ["git CLI via subprocess"],
+      "returns": "SkillResult"
+    },
+    "blog_publisher.py": {
+      "imports": ["yaml", "Path", "datetime", "json"],
+      "reads": ["config/blog-config.yaml"],
+      "calls": ["external blog API (if configured)"],
+      "returns": "SkillResult"
+    },
+    "registry_builder.py": {
+      "imports": ["yaml", "Path", "datetime", "argparse"],
+      "reads": ["src/skills/*.py"],
+      "writes": ["config/skills-registry.yaml"],
+      "calls": ["fingerprint calculation"]
+    },
+    "registry_agent.py": {
+      "imports": ["registry_models", "yaml", "Path", "datetime"],
+      "reads": ["data/skill-registry/*.yaml"],
+      "writes": ["data/skill-registry/*.yaml"],
+      "returns": "RegistryResult"
+    },
+    "fingerprint_agent.py": {
+      "imports": ["fingerprint_models", "hashlib", "Path"],
+      "reads": ["skill source files"],
+      "calls": ["calculate_fingerprint()"],
+      "returns": "FingerprintResult"
+    }
+  },
+  "file_classifications": {
+    "by_functional_path": {
+      "USER_PATH": [
+        "src/orchestrator.py",
+        "src/publish_blog.py",
+        "src/orchestrate_blog_publish.py",
+        "src/blog_publisher_cli.py",
+        "src/view_registry.py",
+        "src/list_skills.py",
+        "scripts/commit_and_push_updates.py",
+        "scripts/git_push.ps1",
+        "src/skills/commit_message.py",
+        "src/skills/git_push_autonomous.py",
+        "src/skills/blog_publisher.py",
+        "config/blog-config.yaml",
+        "config/commit-strategy.yaml"
+      ],
+      "DEVELOPER_PATH": [
+        "src/registry_builder.py",
+        "src/agents/registry_agent.py",
+        "src/agents/registry_models.py",
+        "scripts/discover_skills.py",
+        "config/skills-registry.yaml"
+      ],
+      "SELF_HEALING_PATH": [
+        "config/known-solutions.yaml",
+        "data/telemetry.jsonl",
+        "logs/execution_metrics.jsonl",
+        "src/skills/telemetry_logger.py",
+        "config/telemetry-config.yaml"
+      ],
+      "SAFETY_PATH": [
+        "src/agents/fingerprint_agent.py",
+        "src/agents/fingerprint_models.py",
+        "src/skills/auth_validator.py",
+        "src/skills/token_resolver.py",
+        "src/skills/rules_engine.py",
+        "src/skills/models/fingerprint.py",
+        "scripts/generate_trust_scorecard.py",
+        "scripts/check_release_evidence.py",
+        "config/authorization.yaml",
+        "config/safety-rules.yaml",
+        "ProjectSecrets/PAT.txt"
+      ]
+    },
+    "by_execution_type": {
+      "ENTRY_POINT": [
+        "src/orchestrator.py",
+        "src/publish_blog.py",
+        "src/orchestrate_blog_publish.py",
+        "src/blog_publisher_cli.py",
+        "src/view_registry.py",
+        "src/list_skills.py",
+        "src/registry_builder.py",
+        "src/agents/registry_agent.py",
+        "src/agents/fingerprint_agent.py",
+        "scripts/commit_and_push_updates.py",
+        "scripts/discover_skills.py",
+        "scripts/generate_trust_scorecard.py",
+        "scripts/check_release_evidence.py",
+        "scripts/git_push.ps1"
+      ],
+      "LIBRARY": [
+        "src/agents/registry_models.py",
+        "src/agents/fingerprint_models.py",
+        "src/skills/models/fingerprint.py",
+        "src/skills/*.py (when imported)"
+      ],
+      "SKILL": [
+        "src/skills/commit_message.py",
+        "src/skills/git_push_autonomous.py",
+        "src/skills/blog_publisher.py",
+        "src/skills/auth_validator.py",
+        "src/skills/token_resolver.py",
+        "src/skills/telemetry_logger.py",
+        "src/skills/rules_engine.py"
+      ],
+      "AGENT": [
+        "src/agents/registry_agent.py",
+        "src/agents/fingerprint_agent.py"
+      ],
+      "CONFIGURATION": [
+        "config/*.yaml"
+      ]
+    },
+    "by_layer": {
+      "ORCHESTRATION": [
+        "src/orchestrator.py",
+        "src/orchestrate_blog_publish.py",
+        "src/publish_blog.py",
+        "scripts/commit_and_push_updates.py"
+      ],
+      "AGENT": [
+        "src/agents/registry_agent.py",
+        "src/agents/fingerprint_agent.py"
+      ],
+      "SKILL": [
+        "src/skills/*.py"
+      ],
+      "INFRASTRUCTURE": [
+        "src/registry_builder.py",
+        "src/view_registry.py",
+        "src/list_skills.py",
+        "scripts/discover_skills.py"
+      ]
+    }
+  },
+  "common_tasks": {
+    "push_to_github": {
+      "methods": [
+        {
+          "command": "gpush",
+          "type": "POWERSHELL",
+          "file": "scripts/git_push.ps1"
+        },
+        {
+          "command": "python scripts/commit_and_push_updates.py",
+          "type": "PYTHON",
+          "file": "scripts/commit_and_push_updates.py"
+        }
+      ]
+    },
+    "publish_blog": {
+      "methods": [
+        {
+          "command": "python src/publish_blog.py",
+          "type": "PYTHON",
+          "file": "src/publish_blog.py"
+        },
+        {
+          "command": "python src/orchestrate_blog_publish.py",
+          "type": "PYTHON",
+          "file": "src/orchestrate_blog_publish.py"
+        }
+      ]
+    },
+    "view_skills": {
+      "methods": [
+        {
+          "command": "python src/view_registry.py",
+          "type": "PYTHON",
+          "file": "src/view_registry.py"
+        },
+        {
+          "command": "python src/list_skills.py",
+          "type": "PYTHON",
+          "file": "src/list_skills.py"
+        }
+      ]
+    },
+    "add_new_skill": {
+      "steps": [
+        "1. Create skill file: src/skills/my_skill.py",
+        "2. Implement execute() function returning SkillResult",
+        "3. Run: python src/registry_builder.py --build --force",
+        "4. Verify: python src/view_registry.py"
+      ],
+      "files": [
+        "src/skills/my_skill.py",
+        "src/registry_builder.py",
+        "config/skills-registry.yaml"
+      ]
+    },
+    "run_workflow": {
+      "methods": [
+        {
+          "command": "python src/orchestrator.py",
+          "type": "PYTHON",
+          "file": "src/orchestrator.py"
+        }
+      ],
+      "programmatic": "from src.orchestrator import Orchestrator; orch = Orchestrator(); orch.run_workflow([...])"
+    }
+  },
+  "navigation_tips": [
+    "Start with entry points (files with main())",
+    "Follow orchestrator.py to understand execution flow",
+    "Check config/skills-registry.yaml to see available skills",
+    "Read individual skills in src/skills/ (self-contained)",
+    "Use grep/search for function names to find usages",
+    "Check workflows/ for example workflow definitions",
+    "Read CODEBASE_MAP.md for visual navigation guide",
+    "Read RUNNING_THE_PROJECT.md for usage instructions"
+  ]
+}

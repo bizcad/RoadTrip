@@ -1,0 +1,23 @@
+id: wrong-memory-lock-in
+memory_class: prospective
+title: Wrong-memory lock-in mitigation sprint seed
+status: pending
+priority: P0
+created_at: 2026-02-17T16:15:00Z
+source:
+  session_log: PromptTracking/Session Log 20260217.md
+  line_range: 1171-1210
+problem_statement: >-
+  A bad known solution can be stored once and repeatedly reused as truth,
+  causing systematic failure.
+work_items:
+  - Build admission policy controls for known solutions.
+  - Define expiry and freshness checks.
+  - Define escalation contract after bounded retry.
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
+notes: >-
+  Target terminology is used instead of promotion/quarantine/reject verbs
+  per session-log line 1203 instruction.

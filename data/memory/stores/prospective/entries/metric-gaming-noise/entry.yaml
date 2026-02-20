@@ -1,0 +1,26 @@
+id: metric-gaming-noise
+memory_class: prospective
+title: Metric gaming and noise packet
+status: pending
+priority: P1
+created_at: 2026-02-18T00:35:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Success metrics can be optimized superficially through low-value traffic or
+  narrow test distributions, masking real utility.
+assumption: Severity-weighted and purpose-linked metrics resist gaming.
+evidence_needed: success variance by scenario severity and traffic profile.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

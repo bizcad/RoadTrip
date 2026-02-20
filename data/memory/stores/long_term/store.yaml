@@ -1,0 +1,9 @@
+id: long_term
+description: Durable, high-confidence policies and proven patterns.
+entry_path: entries/{entry_id}
+retention:
+  ttl_days: null
+  on_expire: none
+lifecycle:
+  promotion_targets: []
+  requires_review_for_promotion: true

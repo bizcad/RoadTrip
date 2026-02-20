@@ -1,0 +1,37 @@
+id: secret-leakage-risk
+memory_class: prospective
+title: Secret leakage risk mitigation packet
+status: pending
+priority: P0
+created_at: 2026-02-17T17:20:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Secrets may leak into logs, prompts, docs, commits, or memory stores and can
+  create immediate compromise risk.
+assumption: Centralized secret management with strict redaction reduces exposure risk.
+evidence_needed: zero confirmed secret exposures in tracked artifacts over review window.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+policy_seed:
+  default_storage: centralized_secret_store
+  local_dev_allowed: true
+  local_dev_store_requirements:
+    - encrypted_at_rest
+    - not_committed
+    - rotation_supported
+  hard_rules:
+    - never_log_secret_values
+    - redact_before_persist
+    - rotate_on_suspected_exposure
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive

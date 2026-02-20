@@ -1,0 +1,22 @@
+id: fast-refined-validated-scored-paradigm
+memory_class: prospective
+title: Fast -> Refined -> Validated/Scored execution paradigm
+status: pending
+priority: P1
+created_at: 2026-02-17T16:15:00Z
+source:
+  session_log: PromptTracking/Session Log 20260217.md
+  line_range: 1171-1210
+paradigm:
+  - fast_answers
+  - refined_answer
+  - validated_scored_answers
+objective: >-
+  Convert probabilistic agent artifacts into scored judgments suitable for
+  trusted operational playbooks.
+linked_artifacts:
+  - docs/Self-Improvement/Playbooks/Trusted_Operational_Playbook_DRAFT.md
+  - docs/Self-Improvement/Playbooks/Sprint_001_Mitigation_Workbench.md
+  - docs/Self-Improvement/Playbooks/PDR_TEMPLATE.md
+  - docs/Self-Improvement/Playbooks/ADR_TEMPLATE.md
+next_step: Draft one concrete PDR/ADR for wrong-memory-lock-in using this paradigm.

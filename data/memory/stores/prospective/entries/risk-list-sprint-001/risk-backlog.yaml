@@ -1,0 +1,225 @@
+schema_version: "1.0"
+list_name: sprint_001_what_could_go_wrong
+status: active
+source:
+  session_log: PromptTracking/Session Log 20260217.md
+  line_range: 1113-1147
+
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+
+risks:
+  - id: wrong_memory_lock_in
+    title: Wrong-memory lock-in
+    assumption: A bad known solution can be repeatedly reused as truth.
+    evidence_needed: failure recurrence rate after solution hit
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: stale_fix_replay
+    title: Stale fix replay
+    assumption: Old remediations are replayed after environment drift.
+    evidence_needed: stale-hit count and post-hit failure rate
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: false_trust_in_registry
+    title: False trust in registry
+    assumption: Certified skill can fail in current runtime context.
+    evidence_needed: certified-skill failures by environment delta
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: fingerprint_blind_spots
+    title: Fingerprint blind spots
+    assumption: Verification mode/config allows drift to pass.
+    evidence_needed: mismatch incidents and bypass path audit
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: retry_amplification
+    title: Retry amplification
+    assumption: Fallback retries increase blast radius.
+    evidence_needed: failures worsened after retry
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: telemetry_noise
+    title: Telemetry as noise
+    assumption: Logs accumulate without improving decisions.
+    evidence_needed: % of events linked to concrete policy/action
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: secret_leakage
+    title: Secret leakage risk
+    assumption: Sensitive material leaks via logs/memory/prompts.
+    evidence_needed: redaction misses in sampled outputs
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: cross_agent_divergence
+    title: Cross-agent divergence
+    assumption: Different agents interpret memory/policy differently.
+    evidence_needed: same-intent divergent outcome count
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: silent_policy_bypass
+    title: Silent policy bypass
+    assumption: Known fixes bypass controls without explicit signal.
+    evidence_needed: bypass detections and missing events
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: weak_escalation_contract
+    title: Escalation operating contract and budget policy
+    assumption: Escalation can be an intentional social loop if bounded by explicit response budgets and service tiers.
+    evidence_needed: on-time handoff rate by tier, budget burn by escalation mode, and unresolved incidents past response target
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: success_metric_illusion
+    title: Success metric illusion
+    assumption: High benchmark or pass-rate scores can optimize perception while missing mission-critical outcomes.
+    evidence_needed: critical-miss rate, harm-weighted error score, and post-success correction rate by task tier
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: complexity_creep
+    title: Complexity creep
+    assumption: Systems and humans over-retain by default; without hard resource budgets, complexity and storage footprint grow faster than pruning.
+    evidence_needed: active-vs-retired control ratio, storage growth rate, and forced-prune event frequency by store tier
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: mcp_router_hardening
+    title: MCP router hardening (architectural)
+    assumption: A dedicated hardened MCP router boundary can reduce external attack surface and prevent direct exposure of internal skills.
+    evidence_needed: blocked unauthorized connection attempts, reduced externally reachable internal capabilities, and stable approved MCP workflows
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+top_risks:
+  - id: redirect_chain_corruption
+    title: Redirect-chain corruption
+    assumption: deprecated_in_favor_of chains can loop or overgrow.
+    evidence_needed: cycle detections and chain hop distribution
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: semantic_drift
+    title: Semantic drift
+    assumption: Replacement executes but changes intent/behavior.
+    evidence_needed: capability parity failures after redirect
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: version_illusion
+    title: Version illusion
+    assumption: Newer version is treated as safer without evidence.
+    evidence_needed: regressions introduced by higher-version redirects
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: silent_fallback_masking
+    title: Silent fallback masking
+    assumption: Auto-resolve hides root failures.
+    evidence_needed: hidden-failure detections with fallback success
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: zombie_entries
+    title: Zombie entries
+    assumption: Deprecated entries never retire due to residual traffic.
+    evidence_needed: deprecated entries with last_used older than retirement target
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: orphan_target_risk
+    title: Orphan target risk
+    assumption: Redirect target missing artifact but pointer remains.
+    evidence_needed: not_found hits on superseded targets
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: trust_boundary_erosion
+    title: Trust boundary erosion
+    assumption: Self-updating registry self-authorizes unsafe changes.
+    evidence_needed: auto-update events that bypass policy class
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: metric_gaming_noise
+    title: Metric gaming/noise
+    assumption: Success metrics are inflated by low-value traffic.
+    evidence_needed: success-rate variance by scenario severity
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: concurrency_races
+    title: Concurrency races
+    assumption: Simultaneous lifecycle writes clobber state.
+    evidence_needed: write-conflict or lost-update incidents
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: rollback_gaps
+    title: Rollback gaps
+    assumption: Pointer updates lack reversible transaction trail.
+    evidence_needed: update events without rollback record
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: security_residue
+    title: Security residue
+    assumption: Deprecated entries retain sensitive remediation data.
+    evidence_needed: redaction misses in deprecated/archive samples
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+  - id: governance_debt
+    title: Governance debt
+    assumption: No owner/SLA causes stale backlog accumulation.
+    evidence_needed: pending items exceeding review window without owner
+    review_by: 2026-02-24
+    owner: TBD
+    decision: pending
+
+hard_policy_lines:
+  - No autonomous pointer rewrite for refactor-class changes.
+  - No chain longer than 3.
+  - No unresolved target at execution time.
+  - No telemetry, no trust.

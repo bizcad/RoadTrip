@@ -6,14 +6,14 @@
 
 ---
 
-## The Vision: A Travel Companion You Can Actually Trust
+## The Vision: A Software Development Companion You Can Actually Trust
 
-Imagine you're planning a cross-country road trip. You want an AI partner to help you:
+Imagine you're planning a complex software project. You want an AI partner to help you:
 
-- **Plan the route** using real maps and traffic data
-- **Track fuel costs** based on current gas prices  
-- **Monitor weather risks** and suggest safer alternatives
-- **Update your plans** as conditions change during your journey
+- **Plan the architecture** using real design patterns and best practices
+- **Track development progress** based on current metrics  
+- **Monitor risks** and suggest safer alternatives
+- **Update your plans** as conditions change during development
 - **Remain verifiable** — you can see exactly what it's doing at every step
 
 This sounds simple. But it requires something rare in AI development: **transparency and verifiable integrity at every layer**.
@@ -38,7 +38,14 @@ This means:
 - ✅ Deterministic code for critical decisions (file validation, authorization, logging)
 - ✅ Probabilistic reasoning for creative tasks (planning, message generation, adaptation)
 - ✅ Transparent verification for every output (test infrastructure, audit logging, end-to-end checks)
-- ✅ Controlled access to external services (APIs, maps, weather data — no unlimited internet)
+- ✅ Controlled and protected access to external services (APIs, maps, weather data, MCPs, Remote SKILLs) 
+- ✅ SOLID design principles to ensure maintainability and extensibility
+- ✅ Composition over inheritance for modularity and reusability
+- ✅ Self-improvement loops to learn and remember from mistakes so that they will not be repeated.
+- ✅ Adapt over time so that improvements are not just verifiable, but also continuously improving and evolving based on real-world feedback.
+- ✅ Maintain an inventory of vetted, and composable skills that can be safely composed together, with clear documentation, testing, verification, and fingerprinting for each.
+- ✅ A system of metrics and monitoring to track the performance, reliability, and safety of the system over time, with clear thresholds for when human intervention is required, and a clear process for how to intervene when those thresholds are crossed, and a clear process for how to learn from those metrics and to continuously improve the system's performance, reliability, and safety over time.
+  
 
 ---
 

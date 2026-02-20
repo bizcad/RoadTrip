@@ -1,0 +1,26 @@
+id: zombie-entries
+memory_class: prospective
+title: Zombie entries retirement packet
+status: pending
+priority: P1
+created_at: 2026-02-18T00:35:00Z
+review_mode: paired
+review_participants:
+  - user
+  - copilot
+problem_statement: >-
+  Deprecated entries persist indefinitely due to residual references or weak
+  retirement enforcement, increasing complexity and risk.
+assumption: Time-bounded retirement policy reduces zombie persistence.
+evidence_needed: deprecated entries older than retirement target and reactivation rate.
+review_by: 2026-02-24
+decision: pending
+required_fields:
+  - assumption
+  - evidence_needed
+  - review_by
+  - decision
+lifecycle_targets:
+  target_promote: semantic
+  target_quarantine: quarantine
+  target_reject: archive
