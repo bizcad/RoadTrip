@@ -6,7 +6,7 @@ Protect critical system components from accidental or malicious mutation while e
 
 ## Policy Statement
 
-All controlled-infrastructure components are **read-only by default** and **system-mutated by policy-controlled paths only**.
+All controlled infrastructure components are **read-only by default** and **system-mutated by policy-controlled paths only**.
 
 ## Controlled Infrastructure
 

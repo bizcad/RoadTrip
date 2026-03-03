@@ -1,0 +1,6 @@
+Implemented `rename_files.py` with:
+- `--dry-run` support
+- summary output (renamed, skipped, failed)
+- path-guard check to prevent operations outside target root
+
+Added basic tests for dry-run and boundary checks.

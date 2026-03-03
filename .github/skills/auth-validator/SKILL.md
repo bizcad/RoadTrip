@@ -1,6 +1,5 @@
 ---
 name: auth-validator
-version: specs-v1.0
 description: Evaluates user authorization across 4 layers (skill availability, execution permission, tool-level access, resource-level access). Use when you need to verify that a user can execute a skill and its associated operations. Implements enterprise-ready authorization with MFA support and role-based access control.
 license: Internal use. RoadTrip project.
 ---

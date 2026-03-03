@@ -7,6 +7,7 @@ This folder contains enforceable governance policies for controlled infrastructu
 - `Controlled_Infrastructure_Policy.md` — policy baseline for infrastructure mutation control.
 - `RBAC_Model.md` — role boundaries and permissions.
 - `Certification_Checklist.md` — testable gate criteria for candidate code artifacts.
+- `Trusted_Skill_Assembly_PRD.md` — feature PRD for contract-based multi-runtime skill execution, trusted supply chain, and incident-driven self-improvement.
 
 ## Scope
 

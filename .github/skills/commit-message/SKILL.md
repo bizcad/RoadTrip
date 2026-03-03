@@ -1,6 +1,5 @@
 ---
 name: commit-message
-version: specs-v1.0
 description: Generates semantic commit messages using cost-optimized Tier 1→2→3 approach. Tier 1 (deterministic, $0) handles 90% of commits. Tier 2 (LLM fallback) for complex cases. Tier 3 (user override). Use when you need high-quality commit messages without excess costs.
 license: Internal use. RoadTrip project.
 ---

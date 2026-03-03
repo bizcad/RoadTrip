@@ -1,6 +1,5 @@
 ---
 name: rules-engine
-version: specs-v1.0
 description: Evaluates files against safety and validation rules. Checks for exclusions, size limits, and blocked patterns. Use when you need to determine if files are safe to commit/push.
 license: Internal use. RoadTrip project.
 ---

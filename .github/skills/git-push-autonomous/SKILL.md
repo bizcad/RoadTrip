@@ -1,6 +1,5 @@
 ---
 name: git-push-autonomous
-version: specs-v1.0
 description: Autonomously stages, commits, and pushes repository changes after safety validation. Use when you need to push changes without manual approval, with automatic validation against exclusion rules and safety checks. Logs all decisions for audit trail and learning.
 license: Internal use. RoadTrip project.
 ---

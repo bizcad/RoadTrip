@@ -1,6 +1,5 @@
 ---
 name: blog-publisher
-version: specs-v1.0
 description: Publishes blog posts to the RoadTrip blog with validation and git integration. Use when you need to create and deploy blog content with automatic formatting, excerpt validation (50-160 chars), and push to roadtrip-blog repository.
 license: Internal use. RoadTrip project.
 ---

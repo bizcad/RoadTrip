@@ -1,0 +1,19 @@
+# GEPA MVP sample configuration
+# Copy to mvp_config.yaml and customize values.
+
+project_root: G:/repos/AI/RoadTrip
+session_log_path: G:/repos/AI/RoadTrip/PromptTracking/Session Log 20260226.md
+
+defaults:
+  model: claude-sonnet-4.5
+  pass_fail: pass
+  cost_usd: 0.0
+  latency_ms: 0
+
+sample_trial:
+  prompt_id: prompt_v1
+  parent_prompt_id: ""
+  response_id: rsp_v1
+  gepa_score: 0.82
+  prompt_file: G:/repos/AI/RoadTrip/evaluation/gepa_mvp/samples/prompt.txt
+  response_file: G:/repos/AI/RoadTrip/evaluation/gepa_mvp/samples/response.txt

@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../ControlPlane"
+		},
+		{
+			"path": "../roadtrip-blog"
 		}
 	],
 	"settings": {

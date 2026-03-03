@@ -10,5 +10,18 @@
       "Bash(done)",
       "Bash(env -u GIT_ASKPASS -u SSH_ASKPASS GCM_INTERACTIVE=never GIT_TERMINAL_PROMPT=0 git push:*)"
     ]
-  }
+		},
+		"hooks": {
+			"UserPromptSubmit": [
+				{
+					"matcher": "",
+					"hooks": [
+						{
+							"type": "command",
+							"command": ""
+						}
+					]
+				}
+			]
+		}
 }

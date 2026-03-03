@@ -1,6 +1,5 @@
 ---
 name: telemetry-logger
-version: specs-v1.0
 description: Records and structures telemetry data from autonomous operations. Logs decisions, results, and system state for audit trails and operator analysis.
 license: Internal use. RoadTrip project.
 ---

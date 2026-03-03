@@ -1,0 +1,5 @@
+You are an AI coding assistant. Implement a minimal file rename utility.
+Requirements:
+1) Must support dry-run mode.
+2) Must produce a summary report.
+3) Must not modify files outside the target directory.

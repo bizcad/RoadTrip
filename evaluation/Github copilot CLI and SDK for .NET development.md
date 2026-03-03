@@ -1601,3 +1601,468 @@ Below is a concise, skimmable **Markdown document** that ties each concept from 
 
 If you want, I can scaffold an **Aspire solution layout** with these services and a sample **AF + Copilot SDK** agent wired to a placeholder MCP server—ready for you to fill in the survey specifics.
 
+## Discussion with Agent Framework and Copilot SDK/CLI
+I think the approach is to do a bit more research on `gepa` and then construct a local MCP which takes a prompt > analyzes it for `gepa` > asks questions to fill in the gaps > constructs a compliant prompt > logs the versions to a db > returns the compliant prompt. I will have to figure out how to write the prompt into a textarea and then execute the prompt.  
+
+I have not figured out an automated way to record the responses yet. 
+
+If I had control over the UI I could do the prompt logging.  I keep thinking of using the new Github SDK
+
+That architecture makes a lot of sense, and it fits cleanly with what you’ve already built.
+
+Here’s how I’d structure it, keeping things concrete and implementable.
+
+## 1. Treat GEPA as a schema + MCP tool
+
+Your MCP server can expose a single high‑level tool, something like `gepa_optimize_prompt`:
+
+- **Input**:
+  - `raw_prompt` (string)
+  - optional metadata: `task_type`, `target_model`, `project_id`, etc.
+- **Pipeline inside the MCP**:
+  1. Analyze `raw_prompt` against your GEPA schema (Goal, Examples, Persona, API/Actions, Constraints, Evaluation, etc.).
+  2. Ask **clarifying questions** (via the client) for missing fields:  
+     “What is the success metric?”, “Any hard constraints on tools or cost?”, etc.
+  3. Construct a **GEPA‑compliant prompt object** (structured JSON/YAML) plus a rendered text prompt.
+  4. Log:
+     - `prompt_id`, `parent_prompt_id`
+     - `schema_version`
+     - the structured object
+     - the rendered prompt
+     into your existing GEPA trial DB / JSONL.
+- **Output**:
+  - `prompt_id`
+  - `schema_version`
+  - `structured_prompt` (JSON)
+  - `rendered_prompt` (string you can paste into any model UI)
+
+This reuses your `run_gepa_trial.py` provenance ideas, just earlier in the lifecycle (on prompts, not only on prompts+responses). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/156942379/96093af7-67e6-46cd-806c-38616bfbb8c3/PRD.md)
+
+## 2. Logging without UI control: sit “next to” the UI
+
+Since you can’t directly manipulate VS Code / Copilot / Perplexity UIs, use a **sidecar workflow**:
+
+- Before you send a prompt to any UI:
+  1. Call your MCP tool (via a CLI or small client) with the raw intent.  
+  2. Get back the **GEPA‑structured + rendered** prompt.  
+  3. Paste the rendered prompt into the target UI manually (for now).
+- Your MCP already:
+  - Logs the prompt and metadata to your GEPA store.  
+  - Issues a `prompt_id` you can reference later when you log the response.
+
+For responses, your existing pattern (`logp` / `logr` scripts, plus `run_gepa_trial.py`) already works; you can extend it so responses are logged with `prompt_id` and maybe `gepa_schema_version`. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/156942379/4fba74a3-5cdf-4cf1-84b3-24b2bb9c9568/run_gepa_trial.py)
+
+## 3. Where the GitHub SDK can help
+
+The new GitHub SDK is a nice fit for:
+
+- **Storing prompt templates and skills**:
+  - Treat each GEPA‑structured prompt as a versioned artifact in a repo (e.g., `prompts/<project>/<prompt_id>.yaml`).
+  - Your MCP can read/write these via the SDK (no manual git juggling).
+- **Automated PRs for prompt changes**:
+  - When a GEPA run finds a clearly better variant, have the MCP:
+    - Write/update the YAML prompt file.
+    - Open a PR with a summary (from your GEPA metrics).
+- **Running batch evals**:
+  - Use GitHub Actions + SDK to spin up “prompt eval” workflows that:
+    - Pull a set of GEPA candidates from your DB.  
+    - Run them against some test harness.  
+    - Log results back via `run_gepa_trial.py`.
+
+You’re essentially turning prompts into **first‑class versioned code**, which is exactly what GitHub is good at.
+
+## 4. Automating response capture (without UI hooks)
+
+Until you own the UI, there are two pragmatic options:
+
+- **Terminal‑first loop**:
+  - Use a CLI client (your own, or something like the Perplexity client / other LLM CLIs) where *you* control both ends:
+    - Your MCP returns the compliant prompt.  
+    - Your CLI sends it to the model API.  
+    - The CLI automatically logs both prompt and response using your GEPA logger.
+- **Semi‑manual with helpers**:
+  - Keep using VS Code / Copilot / Perplexity UI.  
+  - Add:
+    - A `gepa-run` alias that, when you paste the response into a temp file, calls `run_gepa_trial.py` with:
+      - `--prompt-id` from the MCP.  
+      - `--prompt-file` from your rendered prompt log.  
+      - `--response-file` from the pasted response file.
+
+This removes some friction while still giving you full provenance.
+
+***
+
+If you want, next we can:
+
+- Sketch a **GEPA prompt JSON schema** (sections + optional/required fields).  
+- Design the `gepa_optimize_prompt` MCP tool signature in detail (input/output JSON, error cases), so you can start coding the server.
+
+---
+
+yes please sketch and design. format the output for copy/paste into a markdown file. I think you do that already. I can just use the copy icon of your reponse.
+
+---
+Here’s a sketch you can drop straight into a markdown file (e.g., `GEPA-MCP-SPEC.md`).
+
+```markdown
+# GEPA MCP Design Sketch
+
+This document sketches a local MCP server that:
+
+- Takes an unstructured prompt or task description.
+- Analyzes/fills a **GEPA-structured** prompt object.
+- Optionally asks clarifying questions.
+- Returns a **compliant rendered prompt** plus metadata.
+- Logs prompt versions and lineage for analysis.
+
+---
+
+## 1. GEPA Prompt Schema
+
+GEPA = Goal, Environment, Persona, Actions/API, plus Constraints, Examples, Evaluation.
+
+This is a suggested JSON/YAML structure; versioned via `schema_version`.
+
+```yaml
+schema_version: "gepa-v1"
+
+prompt_id: "prompt_v7"
+parent_prompt_id: "prompt_v6"
+
+metadata:
+  project_id: "roadtrip-evals"
+  author: "nicholas"
+  created_at: "2026-02-26T18:45:10Z"
+  target_model: "claude-sonnet-4.5"
+  tags:
+    - "scraping"
+    - "anthropic-blog"
+    - "evals"
+
+gepa:
+  goal:
+    short: "Scrape an Anthropic engineering blog post into markdown + local images."
+    long: >-
+      Given a URL to an Anthropic engineering blog article, extract the full article
+      body, convert it into clean markdown, download and localize all images, and
+      rewrite the markdown to use local image paths.
+
+  environment:
+    user_context: "Senior dev using Windows 11, PowerShell, Python 3.11."
+    system_context: "Code runs locally with access to the filesystem and network."
+    tools_available:
+      - "Python 3.x"
+      - "PowerShell"
+      - "HTTP client"
+    constraints_hw_sw:
+      - "Windows-specific py launcher"
+      - "Respect Anthropic robots.txt and rate limits"
+
+  persona:
+    role: "AI coding assistant / agentic developer"
+    tone: "precise, implementation-focused, minimal prose"
+    preferences:
+      - "Write deterministic, idempotent functions"
+      - "Prefer standard libraries over heavy deps"
+
+  actions:
+    allowed_apis:
+      - "HTTP GET to article URL"
+      - "HTTP GET to image URLs"
+      - "Filesystem read/write"
+    disallowed_apis:
+      - "Posting to external services"
+      - "Modifying git state directly"
+    required_artifacts:
+      - "markdown_file_path"
+      - "images_folder_path"
+    entrypoint_signature: |
+      def scrape_anthropic_article(url: str, out_dir: Path) -> Path:
+
+  constraints:
+    - "No summarization; preserve article text and headings."
+    - "Output must be valid markdown."
+    - "Script must be deterministic and reusable."
+    - "Include structured error handling with clear exceptions."
+
+  examples:
+    positive:
+      - description: "Scrape demystifying-evals article successfully."
+        input_url: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        notes:
+          - "Uses div.page-wrapper."
+          - "Downloads images into <slug>-images/."
+          - "Renames images to semantic names based on context."
+    negative:
+      - description: "Summarizes instead of full extraction."
+        notes:
+          - "Do not compress content."
+          - "This violates the 'no summarization' constraint."
+
+  evaluation:
+    success_criteria:
+      - "Markdown file exists and is non-empty."
+      - "All remote Anthropic _next/image URLs are replaced with local paths."
+      - "Script runs idempotently on repeated invocations."
+    failure_modes:
+      - "Missing sections of article."
+      - "Broken image links."
+      - "Script crashes on 403 / layout change without clear error."
+    measurement:
+      - "Manual spot-check of markdown vs browser."
+      - "Automated link check on local images."
+```
+
+---
+
+## 2. MCP Tool: `gepa_optimize_prompt`
+
+### 2.1 Tool name and purpose
+
+```jsonc
+{
+  "name": "gepa_optimize_prompt",
+  "description": "Analyze a raw prompt, fill a GEPA-structured prompt object, ask clarifying questions if needed, and return a compliant rendered prompt plus metadata."
+}
+```
+
+### 2.2 Input schema
+
+Use JSON schema style (for MCP/tooling). Example:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "raw_prompt": {
+      "type": "string",
+      "description": "The raw, unstructured prompt or task description."
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Logical project identifier (e.g., 'roadtrip-evals')."
+    },
+    "target_model": {
+      "type": "string",
+      "description": "Intended model name (for metadata only)."
+    },
+    "parent_prompt_id": {
+      "type": "string",
+      "description": "Optional parent prompt id, to maintain lineage.",
+      "default": ""
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "GEPA schema version to target.",
+      "default": "gepa-v1"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["analyze_only", "interactive", "auto_fill"],
+      "description": "How aggressively to fill gaps.",
+      "default": "interactive"
+    }
+  },
+  "required": ["raw_prompt"]
+}
+```
+
+### 2.3 Output schema
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "prompt_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "parent_prompt_id": {
+      "type": "string"
+    },
+    "structured_prompt": {
+      "type": "object",
+      "description": "Full GEPA schema object (goal/env/persona/actions/constraints/examples/eval)."
+    },
+    "rendered_prompt": {
+      "type": "string",
+      "description": "The final text prompt to send to a model."
+    },
+    "missing_fields": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of GEPA fields the MCP believes are under-specified."
+    }
+  },
+  "required": ["prompt_id", "schema_version", "structured_prompt", "rendered_prompt"]
+}
+```
+
+---
+
+## 3. Interactive gap-filling flow
+
+When `mode=interactive`:
+
+1. **Analyze** `raw_prompt` → initial `structured_prompt` + `missing_fields`.
+2. If `missing_fields` non-empty:
+   - MCP returns a set of **clarifying questions** via the MCP protocol (e.g., a separate tool or an additional field like `clarification_questions`).
+3. Client (you) answers questions.
+4. Call `gepa_optimize_prompt` again with:
+   - `raw_prompt`
+   - previous `structured_prompt` (optional)
+   - answers to questions
+5. MCP merges answers, fills remaining GEPA sections, and returns final structured + rendered prompt.
+
+You can add an extended output variant:
+
+```json
+{
+  "clarification_questions": [
+    {
+      "field": "gepa.evaluation.success_criteria",
+      "question": "How will you know this task succeeded? Please list 2–3 concrete success criteria."
+    }
+  ]
+}
+```
+
+---
+
+## 4. Rendered prompt template
+
+Store a canonical render template in the MCP (or a config file), e.g.:
+
+```text
+You are a helpful AI coding assistant.
+
+# Goal
+{{gepa.goal.long}}
+
+# Environment
+{{gepa.environment.user_context}}
+System context: {{gepa.environment.system_context}}
+Tools available: {{gepa.environment.tools_available | join(", ")}}
+
+# Persona
+Role: {{gepa.persona.role}}
+Tone: {{gepa.persona.tone}}
+Preferences:
+{% for pref in gepa.persona.preferences %}
+- {{pref}}
+{% endfor %}
+
+# Actions / API
+You may use the following capabilities:
+{% for api in gepa.actions.allowed_apis %}
+- {{api}}
+{% endfor %}
+You must NOT:
+{% for api in gepa.actions.disallowed_apis %}
+- {{api}}
+{% endfor %}
+
+Entry point:
+{{gepa.actions.entrypoint_signature}}
+
+# Constraints
+{% for c in gepa.constraints %}
+- {{c}}
+{% endfor %}
+
+# Examples (non-binding)
+{% for ex in gepa.examples.positive %}
+- Positive example: {{ex.description}}
+{% endfor %}
+{% for ex in gepa.examples.negative %}
+- Negative example: {{ex.description}}
+{% endfor %}
+
+# Evaluation criteria
+The solution will be evaluated by:
+{% for crit in gepa.evaluation.success_criteria %}
+- {{crit}}
+{% endfor %}
+
+Now produce the requested implementation.
+```
+
+The MCP fills this template from `structured_prompt` to produce `rendered_prompt`.
+
+---
+
+## 5. Logging and provenance integration
+
+Each call to `gepa_optimize_prompt` should:
+
+1. Generate a `prompt_id` (e.g., `20260226-220300-gepa-v1-xyz123`).
+2. Write a **JSON artifact**:
+
+```json
+{
+  "prompt_id": "20260226-220300-gepa-v1-xyz123",
+  "parent_prompt_id": "prompt_v6",
+  "schema_version": "gepa-v1",
+  "project_id": "roadtrip-evals",
+  "metadata": {
+    "target_model": "claude-sonnet-4.5",
+    "created_at": "2026-02-26T22:03:00Z"
+  },
+  "structured_prompt": { "... full GEPA object ..." },
+  "rendered_prompt": "...\n"
+}
+```
+
+3. Append a **JSONL line** to `trials.jsonl`-style history:
+
+```jsonl
+{"timestamp":"2026-02-26T22:03:00Z","entry_type":"gepa_prompt","prompt_id":"20260226-220300-gepa-v1-xyz123","parent_prompt_id":"prompt_v6","schema_version":"gepa-v1","project_id":"roadtrip-evals"}
+```
+
+4. Optionally append a markdown entry into your existing `PromptTracking/Session Log YYYYMMDD.md` (mirroring your GEPA MVP pattern):
+
+```markdown
+## GEPA Prompt 2026-02-26 22:03:00
+
+```yaml
+entry_type: gepa_prompt
+timestamp: 2026-02-26T22:03:00Z
+prompt_id: 20260226-220300-gepa-v1-xyz123
+parent_prompt_id: prompt_v6
+schema_version: gepa-v1
+project_id: roadtrip-evals
+target_model: claude-sonnet-4.5
+```
+
+### Raw Prompt
+<!--Start Raw Prompt-->
+...original text...
+<!--End Raw Prompt-->
+
+### GEPA Rendered Prompt
+<!--Start Rendered Prompt-->
+...final prompt sent to model...
+<!--End Rendered Prompt-->
+```
+
+---
+
+## 6. Next Implementation Steps
+
+1. **Define the GEPA schema** as a Python dataclass / Pydantic model (matching the YAML above).
+2. Implement MCP tool `gepa_optimize_prompt`:
+   - Parse `raw_prompt`.
+   - Use an LLM call internally to propose `structured_prompt` + `missing_fields`.
+   - Render `rendered_prompt` using a Jinja2-like template.
+3. Wire in your existing `run_gepa_trial.py` / JSONL logging:
+   - Reuse artifact and session-log locations from `mvp_config.yaml`.
+4. Add a small CLI wrapper:
+   - `gepa-opt "<raw prompt>"` → prints `rendered_prompt` and writes all logs.
+
+This gives you a full “prob → deter” path for prompts: you never lose a good one, and every variant is structured, versioned, and analyzable.
+```
