@@ -1,0 +1,13 @@
+Principal Type,Trust Level,L0 Identity,L1 Visibility,L2 Permission,L3 Tool Access,L4 Resource Access,L5 Delegation,L6 Risk Gate,Example Actions,HITL Required
+human,untrusted,BLOCKED,n/a,n/a,n/a,n/a,n/a,n/a,none,n/a
+human,basic,PASS (password),Group check,Role check (no MFA),Read-only tools,Read-only resources,Can delegate (supervised only),Auto-approve (<15),read-logs; list-files,No
+human,verified,PASS (MFA),Group check,Role + MFA check,All authorized tools,All authorized resources,Can delegate (any autonomy level),Score-based,git-push; deploy-staging; publish-blog,If risk >= 60
+human,attested,PASS (MFA + device),Group check,Role + MFA check,All authorized tools,All authorized resources,Can delegate (any autonomy level),Score-based,deploy-production; modify-policy,If risk >= 60 or always-HITL list
+agent,untrusted,BLOCKED,n/a,n/a,n/a,n/a,n/a,n/a,none,n/a
+agent,basic,PASS (API key),Inherit parent groups,Inherit delegation role (no MFA),Within delegation scope,Within delegation scope,Requires active delegation,Auto-approve (<15),read-logs; status-check; dry-run,No
+agent,verified,PASS (SVID/attested),Inherit parent groups,Inherit delegation role + MFA,Within delegation scope,Within delegation scope,Requires active delegation,Score-based,git-push-feature; commit; stage,If risk >= 60
+agent,attested,PASS (SPIFFE + provenance),Inherit parent groups,Inherit delegation role + MFA,Within delegation scope,Within delegation scope,Requires active delegation,Score-based (autonomous ok),Full SRCGEEE cycle within scope,If risk >= 60 or always-HITL list
+code,untrusted,BLOCKED (unsigned),n/a,n/a,n/a,n/a,n/a,n/a,none,n/a
+code,basic,PASS (tests passing),Inherit invoker groups,Min(author; reviewer; invoker) role,Within invoker scope,Within invoker scope,Cannot delegate,Inherits invoker risk,Evaluate rules; generate messages,No (inherits from invoker)
+code,verified,PASS (signed),Inherit invoker groups,Min(author; reviewer; invoker) role,Within invoker scope,Within invoker scope,Cannot delegate,Inherits invoker risk,Execute skill logic; file operations,No (inherits from invoker)
+code,attested,PASS (SLSA-3 + signed + SBOM),Inherit invoker groups,Min(author; reviewer; invoker) role,Within invoker scope,Within invoker scope,Cannot delegate,Inherits invoker risk,Autonomous skill execution,No (inherits from invoker)

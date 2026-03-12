@@ -1,0 +1,30 @@
+created_at: '2026-03-05T03:46:48.368391+00:00'
+entry_id: prospective-memory-research-bridge
+promotion_criteria:
+  evidence_found: 0
+  evidence_required: 2
+  review_required: true
+salience_score: 0.5
+status: retrieve_passed
+tags:
+- memory-and-context
+- research
+- automation
+title: Prospective Memory Research Bridge
+updated_at: '2026-03-06T21:59:06.033557+00:00'
+youtube_url: https://www.youtube.com/watch?v=HD5TWE8xD7o
+youtube_retrieval:
+  status: transcript_available
+  video_id: HD5TWE8xD7o
+  source: youtube-transcript-api
+  reason: track_found
+  checked_at: '2026-03-06T21:59:06.032454+00:00'
+  details:
+    language_requested:
+    - en
+    - en-US
+    - en-GB
+    language_selected: en
+    is_generated: true
+    segment_count: 1232
+    timed_transcript_detected: true

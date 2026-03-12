@@ -1,0 +1,35 @@
+# Memory Routing Catalog
+# Maps functional tags/categories to NotebookLM Notebook IDs for "Slow Thinking" retrieval.
+
+notebooks:
+  - id: "0b27fa4a-0020-4064-b0ac-4d1247660c40"
+    title: "Automating Business Intelligence with NotebookLM and AntiGravity"
+    tags: ["#PHILOSOPHY", "#VISION", "#ROADTRIP", "#SRCGEEE", "#THOUGHTS"]
+    description: "Core vision, 27 thoughts, and the origin principles of the RoadTrip project."
+
+  - id: "TBD-SECURITY-ID"
+    title: "Safe AI Factory: Security & Identity"
+    tags: ["#SAFETY", "#SECURITY", "#ZEROTRUST", "#RBAC", "#FINGERPRINTING"]
+    description: "Deep research on agent identity, SPIFFE/SPIRE, and secure code supply chains."
+
+  - id: "TBD-DYTOPO-ID"
+    title: "Dynamic Multi-Agent Topology (DyTopo)"
+    tags: ["#DYTOPO", "#ROUTING", "#RESEARCH"]
+    description: "Research on dynamic routing between agents and multi-agent orchestration."
+
+  - id: "TBD-BLOG-ID"
+    title: "Blog Publishing & Distribution"
+    tags: ["#BLOG", "#PUBLISHING", "#DISTRIBUTION"]
+    description: "Technical details on the blog platform, adapters, and SEO."
+
+tag_definitions:
+  - tag: "#SAFETY"
+    meaning: "Security, Privacy, Identity, and Governance."
+  - tag: "#ORCHESTRATION"
+    meaning: "Workflow coordination and the CIRC-gee loop."
+  - tag: "#DYTOPO"
+    meaning: "Dynamic agent topologies and routing."
+  - tag: "#PHILOSOPHY"
+    meaning: "The vision and high-level principles of the project."
+  - tag: "#MEMORY"
+    meaning: "The 7-layer memory stack and retrieval strategies."

@@ -1,0 +1,98 @@
+{
+  "spec_id": "semantic-intelligence-evolution-model",
+  "spec_version": "1.2.0-draft",
+  "source_document": "docs/Self-Improvement/Semantic_Intelligence_Parts_1-12_Combined.md",
+  "execution_mode": "ordered",
+  "ordered_parts": [
+    {
+      "part_id": "part_1",
+      "title": "Simple Rules, Complex Behavior",
+      "goal": "Establish deterministic, policy-gated local loop",
+      "implementation_artifact": "algorithm.part_1_core_loop_v1"
+    },
+    {
+      "part_id": "part_2",
+      "title": "Collective Intelligence",
+      "goal": "Add communication primitives between agents",
+      "depends_on": ["part_1"]
+    },
+    {
+      "part_id": "part_3",
+      "title": "Self-Optimization",
+      "goal": "Add feedback-driven adaptation",
+      "depends_on": ["part_1", "part_2"]
+    },
+    {
+      "part_id": "part_4",
+      "title": "The Emergence",
+      "goal": "Define intelligence threshold metrics and checks",
+      "depends_on": ["part_1", "part_2", "part_3"]
+    },
+    {
+      "part_id": "part_5",
+      "title": "Evolution",
+      "goal": "Introduce specialization, lineage, and guild behaviors",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4"]
+    },
+    {
+      "part_id": "part_6",
+      "title": "Global Consensus",
+      "goal": "Add governance and large-scale coordination",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5"]
+    },
+    {
+      "part_id": "part_7",
+      "title": "The Real Thing",
+      "goal": "Operationalize directed synthetic evolution in running code",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6"]
+    },
+    {
+      "part_id": "part_8",
+      "title": "Tools All The Way Down",
+      "goal": "Make tools measurable, evolvable, and self-selecting",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6", "part_7"]
+    },
+    {
+      "part_id": "part_9",
+      "title": "Self-Healing Tools Through Lineage-Aware Pruning",
+      "goal": "Detect critical tool failures, prune tainted branches, and auto-regenerate from healthy ancestors",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6", "part_7", "part_8"]
+    },
+    {
+      "part_id": "part_10",
+      "title": "The DiSE Cooker",
+      "goal": "Compose and execute real multi-step workflows with adaptive tool selection and recovery",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6", "part_7", "part_8", "part_9"]
+    },
+    {
+      "part_id": "part_11",
+      "title": "Graduated Apprenticeships",
+      "goal": "Run workflows with adaptive supervision that graduates stable flows and re-engages oversight on drift",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6", "part_7", "part_8", "part_9", "part_10"]
+    },
+    {
+      "part_id": "part_12",
+      "title": "Untrustworthy Gods",
+      "goal": "Introduce trust-verification and defense-in-depth patterns for potentially deceptive model behavior",
+      "depends_on": ["part_1", "part_2", "part_3", "part_4", "part_5", "part_6", "part_7", "part_8", "part_9", "part_10", "part_11"]
+    }
+  ],
+  "algorithm": {
+    "part_1_core_loop_v1": {
+      "description": "Baseline deterministic loop with policy decision point and enforcement point",
+      "pseudocode_lines": [
+        "while true:",
+        "    next_step = agent.propose()",
+        "    auth_decision = PDP.evaluate(next_step)",
+        "    if auth_decision.requires_handoff:",
+        "        agent.emit_handoff()",
+        "        stop",
+        "    if auth_decision.deny:",
+        "        agent.emit_failure_receipt()",
+        "        stop",
+        "    result = PEP.execute(next_step)",
+        "    agent.observe(result)"
+      ]
+    }
+  }
+}

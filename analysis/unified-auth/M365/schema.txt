@@ -1,0 +1,236 @@
+Perfect—here’s a **production‑ready SpiceDB (Zanzibar‑style) schema** for your Unified Blueprint. It models **humans, groups, agents, tenants, and the Accounts Payable (AP) domain** with **delegation** (including **time‑ and scope‑bounded** caveats). Use this as your base `.zed` file. It cleanly separates **Relationships** (ReBAC) from your **Policy** layer (OPA/Cedar), and is designed for **multi‑tenant** SaaS.  
+*(Background: SpiceDB implements the Zanzibar ReBAC model; it supports contextual “caveat” checks for time/scope, and scales well for permission graphs.)*
+
+***
+
+## 📦 File: `authz/schema/unified_ap.zed`
+
+```zed
+// ===============================================
+// Unified Authorization Schema (AP domain) v0.1
+// ===============================================
+// Purpose:
+//   - Model identities (human OIDC users, groups, SPIFFE agents) as principals.
+//   - Model multi-tenant boundaries.
+//   - Model Accounts Payable capabilities: view, submit invoice, review, approve, pay.
+//   - Model explicit delegation to agents with scope + expiry (caveats).
+//
+// Notes:
+//   - Relationships (ReBAC) answer "who is related to what" globally.  (Zanzibar model)
+//   - Conditions like hours/amount/risk remain in Policy (OPA/Cedar), not here.
+//   - Caveats add contextual checks (e.g., time- or scope-bounded delegation).
+//
+// References: Google Zanzibar model, SpiceDB schema & caveats. 
+
+
+// -----------------------------------------------
+// Principals
+// -----------------------------------------------
+definition user {}
+
+definition group {}
+
+definition agent {}   // Workload identity (SPIFFE/SPIRE SVID holder); never a human.
+// Identity is an input/evidence to the PDP; authorization is separate. (Unified Blueprint)
+
+
+// -----------------------------------------------
+// Multi-tenancy
+// -----------------------------------------------
+definition tenant {
+  // Who administers the tenant
+  relation owner: user | group
+
+  // Human/agent membership in the tenant
+  relation member: user | group | agent
+
+  // Convenience permissions
+  permission administer = owner
+  permission interact   = owner + member
+}
+
+
+// -----------------------------------------------
+// AP System Anchor (per tenant)
+// -----------------------------------------------
+// Serves as the root for AP-wide capabilities in a tenant.
+definition ap_system {
+  // Each AP system is scoped to exactly one tenant
+  relation in_tenant: tenant
+
+  // Core capability relations (coarse-grained)
+  relation viewer:    user | group | agent
+  relation submitter: user | group | agent
+  relation reviewer:  user | group
+  relation manager:   user | group
+
+  // Delegated agents: explicit agent principals granted scoped abilities
+  // Caveats enforce scope and expiry at decision time.
+  relation delegated_agent: agent with has_scope_and_not_expired
+
+  // Base permissions at the AP system level
+  permission view    = viewer + submitter + reviewer + manager
+  permission submit  = submitter + delegated_agent
+  permission review  = reviewer + manager
+  permission approve = manager
+  permission pay     = manager   // final "pay" still goes through Policy gates (amount/risk/etc.)
+}
+
+
+// -----------------------------------------------
+// Invoices
+// -----------------------------------------------
+definition ap_invoice {
+  relation in_tenant: tenant
+  relation ap: ap_system
+
+  // Who created/owns the invoice (often a submitter or delegated agent)
+  relation owner: user | group | agent
+
+  // Narrow relations at the invoice level (optionally bound to AP-level roles)
+  relation viewer:    user | group | agent
+  relation submitter: user | group | agent
+  relation reviewer:  user | group
+  relation manager:   user | group
+
+  // Permissions
+  permission view   = viewer
+                    + owner
+                    + ap->view
+                    + (in_tenant->interact)  // tenant-level visibility if you want broad read
+
+  permission submit = submitter
+                    + ap->submit
+
+  permission review = reviewer
+                    + ap->review
+
+  // Approval does not equal payment; use policy for thresholds/2-person rules.
+  permission approve = manager
+                     + ap->approve
+}
+
+
+// -----------------------------------------------
+// Payments (derived from an invoice or direct-pay)
+// -----------------------------------------------
+definition ap_payment {
+  relation in_tenant: tenant
+  relation ap: ap_system
+  relation for_invoice: ap_invoice
+
+  // Roles at the payment level
+  relation viewer:   user | group | agent
+  relation approver: user | group     // human approvals recorded in app logic
+  relation payer:    user | group     // humans who can execute pay (managers)
+
+  // Read permission: either explicit viewer, or inherited from invoice/AP
+  permission view = viewer
+                  + ap->view
+                  + for_invoice->view
+                  + (in_tenant->interact)
+
+  // Approve: AP managers at system level or explicit approvers at payment
+  permission approve = approver
+                     + ap->approve
+
+  // Pay: managers at AP system (coarse) or explicit payers at payment
+  // Note: actual "pay" action still gated by Policy (amount, business hours, risk, provenance).
+  permission pay = payer
+                 + ap->pay
+}
+
+
+// -----------------------------------------------
+// Delegation Caveats
+// -----------------------------------------------
+// Caveat parameters are supplied by the caller at check time (SpiceDB caveats use CEL).
+// We require BOTH a valid scope *and* not expired.
+//
+// Example context passed from PDP for a "submit_invoice" check:
+//   {
+//     "required_scope": "submit_invoice",
+//     "granted_scopes": ["submit_invoice","read"],
+//     "now": "2026-03-04T19:30:00Z",
+//     "expires_at": "2026-03-10T23:59:00Z"
+//   }
+//
+// Docs: SpiceDB supports caveats evaluated against request context; commonly used for expiry/conditions. 
+
+caveat has_scope_and_not_expired(
+  required_scope string,
+  granted_scopes list<string>,
+  now timestamp,
+  expires_at timestamp,
+) {
+  // CEL-style list "exists" check
+  granted_scopes.exists(s, s == required_scope) && now < expires_at
+}
+```
+
+***
+
+## 🧪 Example Tuples (seed data)
+
+> Load these with `zed` or the Authzed client SDKs to illustrate tenant scoping and AP roles. *(Zanzibar/SpiceDB manage tuples as relationship facts.)*
+
+    // Tenancy
+    tenant:acme#owner@user:nicholas
+    tenant:acme#member@group:ap-team
+    tenant:acme#member@agent:ap-minion
+
+    // AP system in tenant "acme"
+    ap_system:acme-ap#in_tenant@tenant:acme
+    ap_system:acme-ap#manager@group:ap-managers
+    ap_system:acme-ap#reviewer@group:ap-reviewers
+    ap_system:acme-ap#submitter@group:ap-submitters
+    ap_system:acme-ap#viewer@group:ap-viewers
+
+    // Delegation (scoped + expiring) to agent ap-minion
+    ap_system:acme-ap#delegated_agent@agent:ap-minion[caveat:has_scope_and_not_expired:
+      {
+        "required_scope": "submit_invoice",
+        "granted_scopes": ["submit_invoice","read"],
+        "now": "2026-03-04T19:30:00Z",
+        "expires_at": "2026-03-10T23:59:00Z"
+      }
+    ]
+
+    // An invoice and payment within the tenant
+    ap_invoice:ACME-INV-1001#in_tenant@tenant:acme
+    ap_invoice:ACME-INV-1001#ap@ap_system:acme-ap
+    ap_invoice:ACME-INV-1001#owner@user:nicholas
+    ap_invoice:ACME-INV-1001#viewer@group:ap-team
+
+    ap_payment:ACME-PAY-2026-0001#in_tenant@tenant:acme
+    ap_payment:ACME-PAY-2026-0001#ap@ap_system:acme-ap
+    ap_payment:ACME-PAY-2026-0001#for_invoice@ap_invoice:ACME-INV-1001
+    ap_payment:ACME-PAY-2026-0001#approver@group:ap-managers
+    ap_payment:ACME-PAY-2026-0001#payer@group:ap-managers
+
+***
+
+## ✅ How decisions compose with Policy
+
+*   **ReBAC** (this schema) answers *“Is `principal` related to resource with the needed permission?”* fast, globally, and with delegation semantics.
+*   **ABAC/Policy** (OPA/Cedar) then adds *conditions*—amount thresholds, business hours, risk, provenance, multi‑approvals—using the **same normalized inputs** (Subject, Action, Resource, Environment, Delegation, Risk, Evidence).
+*   Use **SpiceDB’s Check/Expand/LookupResources** APIs at PEPs (gateway, queue consumer, workflow step, DB proxy). *(Zanzibar/SpiceDB are designed for this enforcement pattern.)*
+
+***
+
+## 🔁 Delegation & OBO (where your tokens fit)
+
+Keep delegation **explicit** in the graph (`delegated_agent`) and mint short‑lived scoped tokens via **OAuth 2.0 Token Exchange (RFC 8693)** for “on‑behalf‑of” calls; pass the requested `required_scope` and current time to satisfy the caveat. *(RFC 8693 standardizes actor/subject semantics and scoped token issuance.)*
+
+***
+
+## 🧩 Next steps I can deliver for you
+
+1.  **Seed/migration scripts** to create per‑tenant `ap_system` anchors and backfill roles.
+2.  **PDP integration snippets** (Envoy ext\_authz + OPA) that:
+    *   call **SpiceDB Check** → if allow, continue;
+    *   evaluate **Policy** (amount/risk/approvals/provenance);
+    *   return **obligations** (e.g., “second\_approval\_required”).
+3.  **Decision API** scaffold that normalizes every call into **Subject, Action, Resource, Environment, Delegation, Risk, Evidence**.
+
+Want me to drop **example checks** and a small **Go or C# PDP adapter** next?

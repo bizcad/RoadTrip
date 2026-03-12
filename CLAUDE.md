@@ -109,24 +109,7 @@ Available for piping and text processing:
 - `test-e2e` - Run smoke tests
 - `test-build` - Build with summary output
 
-## Repository Structure
-```
-RoadTrip/
-├── data/                      # CSV data files for road trip itinerary
-├── docs/                      # Documentation and guides
-├── infra/                     # Infrastructure (PowerShell profiles, config)
-│   └── RoadTrip_profile.ps1  # Project-specific aliases & functions
-├── PromptTracking/            # Session logs and tracking
-│   ├── session-log.ps1       # Session logging script
-│   ├── log-aliases.ps1       # Logging command aliases
-│   └── Session Log [DATE].md # Daily session logs
-├── ProjectSecrets/            # (Git-ignored) Secret configs
-├── scripts/                   # Executable scripts
-│   └── git_push.ps1          # Core git push automation script
-├── src/                       # Source code
-├── tests/                     # Test files
-├── .gitignore                # Git ignore rules
-└── RoadTrip.code-workspace   # VS Code workspace config
+ rkspace   # VS Code workspace config
 ```
 
 ## Key Features

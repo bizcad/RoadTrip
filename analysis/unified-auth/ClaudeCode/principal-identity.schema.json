@@ -1,0 +1,445 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ppa.local/schemas/principal-identity.schema.json",
+  "title": "PPA Principal Identity",
+  "description": "Unified identity envelope for human, agent, and code principals in the Purushottama Personal Assistant ecosystem.",
+  "type": "object",
+  "required": [
+    "principal_id",
+    "principal_type",
+    "display_name",
+    "status",
+    "trust_level",
+    "credential_type",
+    "groups",
+    "role",
+    "role_rank",
+    "created_at"
+  ],
+  "properties": {
+    "principal_id": {
+      "type": "string",
+      "pattern": "^(human|agent|code):[a-zA-Z0-9._-]+$",
+      "description": "Globally unique identifier. Format: {type}:{name}. Examples: human:bizcad, agent:rules-engine-v1, code:git-push-skill-1.0.3",
+      "examples": [
+        "human:bizcad",
+        "agent:git-push-orchestrator",
+        "code:rules-engine-v1.0"
+      ]
+    },
+    "principal_type": {
+      "type": "string",
+      "enum": ["human", "agent", "code"],
+      "description": "The category of security principal"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable name for display and logging"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this principal was registered"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "suspended", "revoked", "expired"],
+      "description": "Current lifecycle state of the principal"
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Group memberships used for Layer 1 (visibility) checks"
+    },
+    "role": {
+      "type": "string",
+      "description": "Role assignment used for Layer 2 (permission) checks",
+      "examples": ["Developer", "Senior-Engineer", "Staff-Engineer"]
+    },
+    "role_rank": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Numeric rank for role comparison. 0 = no role / untrusted. 1 = lowest authorized role."
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": ["untrusted", "basic", "verified", "attested"],
+      "description": "Current trust classification. Determines max autonomy and which operations are available without additional checks."
+    },
+    "credential_type": {
+      "type": "string",
+      "enum": [
+        "oidc",
+        "pat",
+        "ssh_key",
+        "api_key",
+        "spiffe_svid",
+        "mfa_session",
+        "cosign_signature",
+        "gpg_signature",
+        "none"
+      ],
+      "description": "How this principal authenticates"
+    },
+    "delegation_chain": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DelegationRecord"
+      },
+      "default": [],
+      "description": "Chain of delegations granting authority to this principal. Empty for humans acting directly."
+    },
+    "metadata": {
+      "oneOf": [
+        { "$ref": "#/$defs/HumanMetadata" },
+        { "$ref": "#/$defs/AgentMetadata" },
+        { "$ref": "#/$defs/CodeMetadata" }
+      ],
+      "description": "Type-specific attributes. Schema determined by principal_type."
+    }
+  },
+
+  "$defs": {
+    "HumanMetadata": {
+      "type": "object",
+      "description": "Attributes specific to human principals",
+      "required": ["mfa_validated", "session_id"],
+      "properties": {
+        "mfa_validated": {
+          "type": "boolean",
+          "description": "Whether MFA has been validated in the current session"
+        },
+        "mfa_method": {
+          "type": "string",
+          "enum": ["totp", "webauthn", "sms", "none"],
+          "description": "MFA method used, if validated"
+        },
+        "session_id": {
+          "type": "string",
+          "description": "Current session identifier"
+        },
+        "session_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the current session expires"
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "Client IP for risk scoring (Phase 2+)"
+        },
+        "device_trust": {
+          "type": "string",
+          "enum": ["managed", "personal", "unknown"],
+          "description": "Device trust classification"
+        },
+        "github_user": {
+          "type": "string",
+          "description": "GitHub username"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address"
+        }
+      }
+    },
+
+    "AgentMetadata": {
+      "type": "object",
+      "description": "Attributes specific to agent principals",
+      "required": [
+        "agent_version",
+        "runtime",
+        "spawn_reason",
+        "parent_principal",
+        "max_autonomy_level",
+        "ttl_minutes"
+      ],
+      "properties": {
+        "agent_version": {
+          "type": "string",
+          "description": "Semantic version of the agent"
+        },
+        "runtime": {
+          "type": "string",
+          "enum": ["claude-code", "python", "powershell", "github-actions", "other"],
+          "description": "Execution environment"
+        },
+        "model_id": {
+          "type": ["string", "null"],
+          "description": "LLM model ID if agent is LLM-backed. Null for deterministic agents.",
+          "examples": ["claude-opus-4-6", "claude-sonnet-4-6", "claude-haiku-4-5"]
+        },
+        "spawn_reason": {
+          "type": "string",
+          "enum": ["user-request", "scheduled", "event-triggered", "delegated"],
+          "description": "Why this agent was created"
+        },
+        "parent_principal": {
+          "type": "string",
+          "pattern": "^(human|agent):[a-zA-Z0-9._-]+$",
+          "description": "The principal that invoked/spawned this agent"
+        },
+        "tools_granted": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Tools explicitly granted to this agent. Starts empty (principle: agents start with minimum tools)."
+        },
+        "max_autonomy_level": {
+          "type": "string",
+          "enum": ["supervised", "semi-autonomous", "autonomous"],
+          "description": "Maximum autonomy this agent can operate at"
+        },
+        "sandbox_id": {
+          "type": ["string", "null"],
+          "description": "Execution sandbox identifier, if applicable"
+        },
+        "ttl_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440,
+          "description": "Credential lifetime in minutes. Agent must re-authenticate after expiry."
+        },
+        "memory_tier": {
+          "type": "string",
+          "enum": ["fast", "slow", "extra-slow"],
+          "description": "Current operating memory tier per SRCGEEE routing"
+        }
+      }
+    },
+
+    "CodeMetadata": {
+      "type": "object",
+      "description": "Attributes specific to code principals (signed artifacts, skills, tools)",
+      "required": [
+        "artifact_type",
+        "version",
+        "source_repo",
+        "signed",
+        "test_status"
+      ],
+      "properties": {
+        "artifact_type": {
+          "type": "string",
+          "enum": ["skill", "script", "tool", "library", "pipeline"],
+          "description": "Category of code artifact"
+        },
+        "version": {
+          "type": "string",
+          "description": "Semantic version of the artifact"
+        },
+        "source_repo": {
+          "type": "string",
+          "description": "Repository where this code lives",
+          "examples": ["bizcad/RoadTrip"]
+        },
+        "source_commit": {
+          "type": "string",
+          "description": "Git commit SHA the artifact was built from"
+        },
+        "signed": {
+          "type": "boolean",
+          "description": "Whether the artifact is cryptographically signed"
+        },
+        "signature_method": {
+          "type": "string",
+          "enum": ["cosign", "gpg", "none"],
+          "description": "Signing method used"
+        },
+        "provenance_level": {
+          "type": "string",
+          "enum": ["none", "slsa-1", "slsa-2", "slsa-3"],
+          "description": "SLSA supply-chain attestation level"
+        },
+        "sbom_present": {
+          "type": "boolean",
+          "description": "Whether an SBOM (Software Bill of Materials) is attached"
+        },
+        "test_status": {
+          "type": "string",
+          "enum": ["passing", "failing", "untested", "skipped"],
+          "description": "Current test suite status"
+        },
+        "test_coverage_pct": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Test coverage percentage, if measured"
+        },
+        "author_principal": {
+          "type": "string",
+          "description": "Principal ID of who authored/generated this code"
+        },
+        "reviewer_principal": {
+          "type": ["string", "null"],
+          "description": "Principal ID of who reviewed this code. Null if unreviewed."
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "Content hash for integrity verification. Format: algorithm:hex",
+          "examples": ["sha256:a1b2c3d4e5f6..."]
+        },
+        "build_environment": {
+          "type": ["string", "null"],
+          "description": "Build environment descriptor for provenance"
+        }
+      }
+    },
+
+    "DelegationRecord": {
+      "type": "object",
+      "description": "A scoped, time-boxed authority grant from one principal to another",
+      "required": [
+        "delegation_id",
+        "grantor",
+        "grantee",
+        "granted_at",
+        "expires_at",
+        "scope",
+        "status"
+      ],
+      "properties": {
+        "delegation_id": {
+          "type": "string",
+          "description": "Unique identifier for this delegation"
+        },
+        "grantor": {
+          "type": "string",
+          "description": "Principal ID of the entity granting authority"
+        },
+        "grantee": {
+          "type": "string",
+          "description": "Principal ID of the entity receiving authority"
+        },
+        "granted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "$ref": "#/$defs/DelegationScope"
+        },
+        "constraints": {
+          "$ref": "#/$defs/DelegationConstraints"
+        },
+        "approval": {
+          "$ref": "#/$defs/ApprovalRecord"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "expired", "revoked", "exhausted"],
+          "description": "Current state of the delegation"
+        },
+        "revocation_reason": {
+          "type": ["string", "null"],
+          "description": "Why the delegation was revoked, if applicable"
+        }
+      }
+    },
+
+    "DelegationScope": {
+      "type": "object",
+      "description": "What the delegation permits",
+      "required": ["skills", "actions"],
+      "properties": {
+        "skills": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills the grantee may invoke"
+        },
+        "actions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific actions permitted (e.g., stage, commit, push, read, write)"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "pattern"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["git-branch", "file-path", "api-endpoint", "memory-tier"]
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Glob or regex pattern for resource matching"
+              }
+            }
+          },
+          "description": "Resources the grantee may act upon"
+        },
+        "excluded_resources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "pattern"],
+            "properties": {
+              "type": { "type": "string" },
+              "pattern": { "type": "string" }
+            }
+          },
+          "description": "Resources explicitly excluded from this delegation"
+        }
+      }
+    },
+
+    "DelegationConstraints": {
+      "type": "object",
+      "description": "Guardrails on delegation usage",
+      "properties": {
+        "max_operations": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Max actions before delegation is exhausted. Null = unlimited within TTL."
+        },
+        "require_dry_run_first": {
+          "type": "boolean",
+          "default": false,
+          "description": "Must succeed in dry-run before live execution"
+        },
+        "allow_sub_delegation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the grantee can delegate to others"
+        },
+        "require_audit_log": {
+          "type": "boolean",
+          "default": true,
+          "description": "All actions must produce audit records"
+        }
+      }
+    },
+
+    "ApprovalRecord": {
+      "type": "object",
+      "description": "How the delegation was approved",
+      "required": ["method", "approval_timestamp"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["explicit-chat", "pre-approved-policy", "mfa-confirmed", "cli-flag"],
+          "description": "How the human expressed approval"
+        },
+        "approval_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "approval_context": {
+          "type": "string",
+          "description": "What the human said or did to approve. For traceability."
+        }
+      }
+    }
+  }
+}

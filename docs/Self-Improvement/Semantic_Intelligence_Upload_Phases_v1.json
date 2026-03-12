@@ -1,0 +1,58 @@
+{
+  "manifest_id": "semantic-intelligence-upload-phases",
+  "manifest_version": "1.0.0",
+  "purpose": "Split large combined corpus into upload-safe phase bundles",
+  "full_collection": {
+    "parts": "1-12",
+    "path": "docs/Self-Improvement/Semantic_Intelligence_Parts_1-12_Combined.md",
+    "size_bytes": 464491
+  },
+  "phases": [
+    {
+      "phase_id": "phase_1",
+      "parts": "1-4",
+      "path": "docs/Self-Improvement/Semantic_Intelligence_Phase_1_Parts_1-4.md",
+      "size_bytes": 57618
+    },
+    {
+      "phase_id": "phase_2",
+      "parts": "5-8",
+      "path": "docs/Self-Improvement/Semantic_Intelligence_Phase_2_Parts_5-8.md",
+      "size_bytes": 236371
+    },
+    {
+      "phase_id": "phase_3",
+      "parts": "9-12",
+      "path": "docs/Self-Improvement/Semantic_Intelligence_Phase_3_Parts_9-12.md",
+      "size_bytes": 170592
+    }
+  ],
+  "part_files": [
+    "docs/Self-Improvement/Part_1_-_Simple_Rules_Complex_Behavior.md",
+    "docs/Self-Improvement/Part_2_-_Collective_Intelligence.md",
+    "docs/Self-Improvement/Part_3_-_Self-Optimization.md",
+    "docs/Self-Improvement/Part_4_-_The_Emergence.md",
+    "docs/Self-Improvement/Part_5_-_Evolution.md",
+    "docs/Self-Improvement/Part_6_-_Global_Consensus.md",
+    "docs/Self-Improvement/Part_7_-_The_Real_Thing.md",
+    "docs/Self-Improvement/Part_8_-_Tools_All_The_Way_Down.md",
+    "docs/Self-Improvement/Part_9_-_Self-Healing_Tools.md",
+    "docs/Self-Improvement/Part_10_-_The_DiSE_Cooker.md",
+    "docs/Self-Improvement/Part_11_-_Graduated_Apprenticeships.md",
+    "docs/Self-Improvement/Part_12_-_Untrustworthy_Gods.md"
+  ],
+  "part_file_sizes_bytes": {
+    "docs/Self-Improvement/Part_1_-_Simple_Rules_Complex_Behavior.md": 11796,
+    "docs/Self-Improvement/Part_2_-_Collective_Intelligence.md": 11367,
+    "docs/Self-Improvement/Part_3_-_Self-Optimization.md": 20459,
+    "docs/Self-Improvement/Part_4_-_The_Emergence.md": 13920,
+    "docs/Self-Improvement/Part_5_-_Evolution.md": 22605,
+    "docs/Self-Improvement/Part_6_-_Global_Consensus.md": 43866,
+    "docs/Self-Improvement/Part_7_-_The_Real_Thing.md": 104365,
+    "docs/Self-Improvement/Part_8_-_Tools_All_The_Way_Down.md": 65456,
+    "docs/Self-Improvement/Part_9_-_Self-Healing_Tools.md": 54689,
+    "docs/Self-Improvement/Part_10_-_The_DiSE_Cooker.md": 40667,
+    "docs/Self-Improvement/Part_11_-_Graduated_Apprenticeships.md": 43098,
+    "docs/Self-Improvement/Part_12_-_Untrustworthy_Gods.md": 32057
+  ]
+}

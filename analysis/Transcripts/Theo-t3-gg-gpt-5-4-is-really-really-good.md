@@ -1,0 +1,1336 @@
+---
+source_type: youtube_video
+video_url: "https://www.youtube.com/watch?v=HD5TWE8xD7o"
+video_id: HD5TWE8xD7o
+title: gpt-5.4 is really, really good
+creator: Theo - t3․gg
+upload_date: "2026-03-06T01:55:17-08:00"
+retrieved_at_utc: "2026-03-08T15:53:39+00:00"
+transcript_available: true
+transcript_language_requested:
+  - en
+  - en-US
+  - en-GB
+transcript_language_selected: en
+transcript_is_generated: true
+transcript_segment_count: 1232
+video_duration_seconds: null
+topics_detected:
+  - model
+  - like
+  - really
+  - all
+  - better
+  - can
+  - more
+  - things
+  - did
+  - here
+generator_script: scripts/extract_youtube_debate_brief.py
+---
+
+# YouTube Transcript Brief
+
+## Transcription
+- [00:00:00] GBT 5.4 is here and in almost every
+- [00:00:02] measurable way, it is the best AI model
+- [00:00:04] ever made. Especially for us as
+- [00:00:06] developers. Been using this model for a
+- [00:00:07] bit over a week now and I'm super
+- [00:00:08] impressed with it. I have a ton to say
+- [00:00:10] about the good, the bad, the ugly, and
+- [00:00:12] all of the things you need to know to
+- [00:00:13] use it properly. Going to do my best to
+- [00:00:15] answer all of the questions I've been
+- [00:00:16] seeing people ask about this new model
+- [00:00:18] from what happened to Codeex. Is it
+- [00:00:20] really better at coding? Did they fix
+- [00:00:21] the front-end problems finally? Is it
+- [00:00:23] better to use in different apps like
+- [00:00:25] chatbt and T3 chat? What happened to
+- [00:00:27] normal 5.3 thinking? Where did that go?
+- [00:00:30] How are the benchmarks looking? How are
+- [00:00:31] they justifying the price increase?
+- [00:00:34] There's a lot here. This is a big drop,
+- [00:00:36] more so than most seem to think. Before
+- [00:00:38] we do any of that, there's two quick
+- [00:00:39] things I have to address. The first one
+- [00:00:41] is compensation. I want to make sure
+- [00:00:43] it's clear. Open AAI has not paid me
+- [00:00:45] anything to do any coverage whatsoever.
+- [00:00:47] I'm lucky enough to be in the small
+- [00:00:48] group of people that have early access
+- [00:00:49] to these models, but that is not
+- [00:00:51] something that I am paid for or even
+- [00:00:52] given for free. They offered me a free
+- [00:00:54] year of the Pro subscription, which
+- [00:00:56] works out to around $2,400, but I
+- [00:00:58] declined that because again, I don't
+- [00:01:00] want to seem biased. I don't want to
+- [00:01:02] accept payments. The only thing that has
+- [00:01:04] been subsidized is a little bit of my
+- [00:01:05] API usage of the new model. It couldn't
+- [00:01:08] be more than $200, which is why I'll be
+- [00:01:10] donating $200 to water.org to make up
+- [00:01:12] for the difference. Okay, the donations
+- [00:01:14] been made. It's time for the second
+- [00:01:15] thing, the people actually paying us,
+- [00:01:17] today's sponsor. You've probably heard
+- [00:01:18] about today's sponsor, but I promise you
+- [00:01:20] haven't seen what they can do. It's
+- [00:01:21] Devon aka Cognition Labs because they
+- [00:01:23] have a handful of different products.
+- [00:01:25] They have Windsurf. They have Devon the
+- [00:01:26] AI software engineer, which is honestly
+- [00:01:28] really, really cool. But that's not what
+- [00:01:29] I want to show you today. They've kind
+- [00:01:31] of given me the freedom to talk about
+- [00:01:32] the things I like. And my recent
+- [00:01:33] favorite thing they've been doing is
+- [00:01:35] Devon review. Oh boy, someone else
+- [00:01:37] reinvented GitHub code review. Yes. And
+- [00:01:39] they did a phenomenal job at it. Here's
+- [00:01:41] a real PR we have on GitHub right now.
+- [00:01:43] Want to see how easy it is to try it out
+- [00:01:44] on Devon? All you have to do is change
+- [00:01:46] github.com to devonreview.com
+- [00:01:48] and you end up with something comically
+- [00:01:50] better. I don't know if everyone is
+- [00:01:52] seeing this trend in their companies,
+- [00:01:53] but I know for a fact that the average
+- [00:01:55] size of our average PR has gone up
+- [00:01:57] massively. And if I'm being real, half
+- [00:02:00] or more of the code in there isn't stuff
+- [00:02:02] that is worth a human's time. You can
+- [00:02:04] have an AI review the code, but what I
+- [00:02:05] want is context. I want to know what
+- [00:02:07] matters. And when you're looking through
+- [00:02:09] a list of changes in alphabetical order,
+- [00:02:11] you're not getting context. Devon review
+- [00:02:13] will give you feedback, which is cool.
+- [00:02:15] But what is way cooler is the way it
+- [00:02:17] groups your changes. Instead of just
+- [00:02:18] dumping everything in that awful file
+- [00:02:20] view in GitHub, it actually groups them
+- [00:02:22] based on the specific changes that were
+- [00:02:24] made. First, we have a new file for how
+- [00:02:25] we manage these ids. It's a shared
+- [00:02:27] definition that we reuse across
+- [00:02:28] different things. Really good place to
+- [00:02:30] start even though it's in source/shared,
+- [00:02:32] which is near the bottom of the file
+- [00:02:33] tree based on alphabetical order. Then
+- [00:02:35] we have convex/s schema which is pretty
+- [00:02:37] close to the top alphabetically but is
+- [00:02:38] second here because it's only showing us
+- [00:02:40] the grouped changes that are relevant.
+- [00:02:42] It's so nice to see what we've defined
+- [00:02:45] in this first set and then what it
+- [00:02:47] affects right after. And you can keep
+- [00:02:49] scrolling and see all of the other
+- [00:02:50] places this changed like the shared
+- [00:02:52] users file or the attachments index that
+- [00:02:55] manages how attachments work on T3 chat.
+- [00:02:57] And this is the case for all of the
+- [00:02:58] changes that have occurred in this PR.
+- [00:03:00] actually takes the time to break down
+- [00:03:02] each individual section and track which
+- [00:03:04] pieces you have viewed. It's so good.
+- [00:03:06] I've never had such a pleasant
+- [00:03:08] experience reviewing code. Not just cuz
+- [00:03:10] the AI did it for me. Actually, the
+- [00:03:12] opposite. The AI categorized it for me
+- [00:03:14] to make it easier for a human to read.
+- [00:03:16] GitHub wasn't built for big PRs. Devon
+- [00:03:18] was. Check it out now at
+- [00:03:19] soyv.link/devon.
+- [00:03:21] There's a lot to dig into with this
+- [00:03:22] release and I'm going to do my best to
+- [00:03:23] cover all of it. We'll start with the
+- [00:03:25] official blog post, but I'm going to
+- [00:03:26] answer all of your questions from what
+- [00:03:28] happened to Codeex. Is it better than
+- [00:03:29] 5.3? How are the benches? What's up with
+- [00:03:31] the price? How is it for front end? All
+- [00:03:33] of the things you need to know. Today
+- [00:03:35] we're releasing GPT 5.4 in chat GPT as
+- [00:03:37] 5.4 thinking specifically. This is where
+- [00:03:40] things are a little confusing cuz 5.3
+- [00:03:41] codeex came out first. Then 5.3 instant
+- [00:03:45] came out just a few days ago on Tuesday.
+- [00:03:47] And now 5.4 thinking is here, but there
+- [00:03:49] doesn't appear to be a 5.4 Instant, nor
+- [00:03:52] does there appear to be a 5.4 CEX. But
+- [00:03:54] there is a 5.4 Pro, which is very, very
+- [00:03:56] strange. So, we got 5.3 CEX, then 5.3
+- [00:03:59] instant, then 5.4 Thinking. Notably,
+- [00:04:02] there was no 5.3 thinking, and we got
+- [00:04:04] 5.4 Pro the same day. Very interesting.
+- [00:04:08] I think they are getting tired of all of
+- [00:04:10] the weird variants. And I do think this
+- [00:04:12] might be the death of the codeex model.
+- [00:04:14] Historically, the Codex models existed
+- [00:04:16] because they applied different RL to the
+- [00:04:17] model after it was trained to make it
+- [00:04:19] better at these longunning code tasks in
+- [00:04:21] things like the Codeex CLI. Made a lot
+- [00:04:23] of sense at the time. I get why they did
+- [00:04:25] it, but now they've brought in a lot of
+- [00:04:27] those behaviors to the 5.4 base model,
+- [00:04:29] so it doesn't seem like it needs a
+- [00:04:31] dedicated codeex version anymore. I
+- [00:04:33] don't think they're going to do that
+- [00:04:34] going forward. Might be wrong. I'll
+- [00:04:36] definitely do a video 5.4 Codex becomes
+- [00:04:38] a thing, but I am pretty certain they
+- [00:04:40] are done with that and that CEX is now
+- [00:04:42] the product surface area. So, the CLIs,
+- [00:04:44] the desktop application, the web app,
+- [00:04:46] and all the other things. Codeex
+- [00:04:47] hopefully, fingers crossed, no longer
+- [00:04:49] means the models. I will be really
+- [00:04:51] annoyed if they go back to the doing
+- [00:04:52] this. As they say here, 5.4 brings
+- [00:04:55] together the best of our recent advances
+- [00:04:56] in reasoning, coding, and agentic
+- [00:04:58] workflows. They talk a lot about
+- [00:05:00] professional tasks like spreadsheets and
+- [00:05:01] document stuff. I'm sure that stuff's
+- [00:05:03] really cool. Not necessarily the thing I
+- [00:05:05] think a lot about or spend my time on,
+- [00:05:07] but for those of y'all who spend more
+- [00:05:08] time in Word and Google Drive than you
+- [00:05:10] do in an editor, I'm sure it's really
+- [00:05:11] cool. One of the coolest things they've
+- [00:05:13] been really focused on with both 5.3
+- [00:05:14] Codex and now with 5.4 is your ability
+- [00:05:17] to steer the model as it is working. So
+- [00:05:20] it will give you better thoughts and it
+- [00:05:21] will handle you inserting a new message
+- [00:05:23] in the middle of its reasoning much
+- [00:05:25] better. Other models will get super
+- [00:05:27] confused when you do this. Like if you
+- [00:05:28] have a list of five tasks, it starts
+- [00:05:30] working and then you send a sixth task.
+- [00:05:31] It says, "Oh, I'll do that now." Does
+- [00:05:33] the sixth task and then forgets about
+- [00:05:35] the other five. Happens to me all the
+- [00:05:37] time. 5.4 does not seem to do that,
+- [00:05:39] which is really nice. I'll say a bit
+- [00:05:41] more about context later on. Actually,
+- [00:05:43] one last thing on context. Now it
+- [00:05:45] supports a million tokens of context
+- [00:05:47] which is a massive increase from prior.
+- [00:05:49] If you go over 250k or so I believe is
+- [00:05:52] the cutoff and it costs more. Yeah, it's
+- [00:05:54] over 272k input tokens then you'll be
+- [00:05:56] build at 2x input and 1.5x output. I
+- [00:05:59] like that they're only 1.5xing the
+- [00:06:01] output cuz it shouldn't necessarily cost
+- [00:06:03] that much more. I really didn't like
+- [00:06:04] that other labs when they do this like
+- [00:06:06] high context utilization version end up
+- [00:06:09] charging 2x across the board. Still a
+- [00:06:11] very big number though. Don't love that
+- [00:06:13] necessarily. At least the cash input
+- [00:06:15] tokens are very very cheap and they
+- [00:06:17] don't charge for cashing unlike a
+- [00:06:18] certain company that name begins with an
+- [00:06:20] A. The most exciting part that they call
+- [00:06:22] out here is that it's much more token
+- [00:06:24] efficient when it does reasoning. And
+- [00:06:26] I've seen this myself. One of the many
+- [00:06:28] things I ran this all on was Skatebench.
+- [00:06:30] And while the scores weren't great, they
+- [00:06:32] were meaningfully improved. I was very
+- [00:06:34] impressed with the improvements on token
+- [00:06:36] utilization, especially on the medium
+- [00:06:37] and the high versions. It only used
+- [00:06:39] about 500 tokens on medium and only
+- [00:06:41] about 1,100 on high. on X high, it will
+- [00:06:44] still burn at 5,400 tokens per response,
+- [00:06:48] but compared to like Gro 4, which does
+- [00:06:50] 2,200 or even GLM5, which is around the
+- [00:06:54] same, not the worst. It's cool to see
+- [00:06:56] how much range you can get in token
+- [00:06:58] utilization. It would be nice if you
+- [00:06:59] don't have to specify which version to
+- [00:07:01] use because generally speaking, XH high
+- [00:07:04] just isn't worth it a lot of the time.
+- [00:07:05] Even on my own benches, it scored
+- [00:07:07] slightly worse than normal high did for
+- [00:07:09] at the very least skate bench. And I
+- [00:07:11] have seen this in many places, even in
+- [00:07:12] my own work. The extra high version
+- [00:07:14] overthinks and often fails as a result
+- [00:07:17] because it like gets stuck in its own
+- [00:07:19] head is almost how it feels. I also ran
+- [00:07:21] against Pro and we'll talk about those
+- [00:07:23] numbers in a bit, don't worry. I want to
+- [00:07:25] show their benches first though. GDP
+- [00:07:27] Val, the classic. I really don't like
+- [00:07:29] this bench much, but it got a better
+- [00:07:31] score than it did before. Interestingly,
+- [00:07:33] 5.3 Codex and 5.2 scored nearly
+- [00:07:36] identically. It's actually been
+- [00:07:37] interesting seeing which things 5.3
+- [00:07:38] Codeex was not better than 5.2x. 2x. It
+- [00:07:41] really was so focused on code. In a lot
+- [00:07:43] of ways, 5.4 is what 5.3 would have
+- [00:07:45] been, but it's just it they squeezed
+- [00:07:47] everything into it. It did better on
+- [00:07:48] SBench Pro. Not a lot better, but still
+- [00:07:50] a pretty solid number. That does put it
+- [00:07:53] at state-of-the-art at 45.89 being the
+- [00:07:56] best before and this being 57.7. But
+- [00:07:58] also, these numbers don't line up great
+- [00:08:00] with the ones here. So, hard to know for
+- [00:08:03] sure. This is when I would normally site
+- [00:08:05] artificial analysis, but they are not
+- [00:08:06] quite done with their indexing and
+- [00:08:08] everything yet. 5.4 4 just got added now
+- [00:08:11] and 5.4x high is tied with 3.1 Pro
+- [00:08:14] Preview making it equivalent to the
+- [00:08:16] smartest model in the world. But unlike
+- [00:08:18] 3.1 Pro Preview, it actually works. So
+- [00:08:22] yeah, this is the best model that is
+- [00:08:24] actually worth using. There are places
+- [00:08:25] where it isn't the best solution though,
+- [00:08:27] and we'll definitely talk about that.
+- [00:08:29] One of the other really big areas of
+- [00:08:30] improvement is browser usage in general.
+- [00:08:33] They call it the browse comp score,
+- [00:08:34] which is quite a bit better than 5.2
+- [00:08:36] was, which is what you probably would
+- [00:08:37] have used before. No one's throwing 5.3
+- [00:08:39] codeex in an API just for browser use
+- [00:08:41] and computer use. You don't need to be
+- [00:08:42] good at code to manage a browser.
+- [00:08:44] Although they did make improvements
+- [00:08:46] there, too. There's a section in their
+- [00:08:47] docs about using a code execution
+- [00:08:49] harness when doing computer use for
+- [00:08:51] things like running JavaScript on a page
+- [00:08:53] to trigger certain interactions. It ends
+- [00:08:55] up being a much better and faster way to
+- [00:08:57] do things. And they actually trained 5.4
+- [00:09:00] on this explicitly so that it knows it
+- [00:09:02] can run JavaScript to do programmatic
+- [00:09:04] interactions in the UI. This is awesome.
+- [00:09:06] I'm amazed nobody's really leaned into
+- [00:09:08] this before. Having the model specify
+- [00:09:10] which pixel coordinates to move the
+- [00:09:11] cursor to and what button presses and
+- [00:09:14] keyboard presses to do is far from
+- [00:09:16] efficient. Is actually quite bad and
+- [00:09:18] this is a much smarter way to at the
+- [00:09:20] very least do web browser usage. 5.4 is
+- [00:09:22] generally a meaningful improvement in
+- [00:09:24] knowledge work and knowledge type tasks
+- [00:09:26] in general. I will call out that it
+- [00:09:28] doesn't have any newer data though
+- [00:09:30] because 5.4 has a cutoff of August 31st,
+- [00:09:33] 2025 for its knowledge and 5.2 2 has the
+- [00:09:36] exact same cutoff. So it doesn't seem
+- [00:09:37] like they added new data to the
+- [00:09:39] training. I don't even know if it's a
+- [00:09:40] new pre-training at all. It might just
+- [00:09:42] be RL on top of the same base that 5.2
+- [00:09:45] was. I would be surprised if that was
+- [00:09:47] the case though cuz 2 to 3 was a pretty
+- [00:09:49] big jump in terms of the feel of the
+- [00:09:51] model and the capabilities of the model.
+- [00:09:53] And 5.4 although not as big a jump does
+- [00:09:55] seem to just be taking those lessons
+- [00:09:56] over to the standard thinking version of
+- [00:09:59] the model. I don't know. I have no
+- [00:10:00] inside info here. It's interesting to
+- [00:10:02] speculate. None of that really matters.
+- [00:10:04] I just think it's fun. Here, another
+- [00:10:06] great example of 5.4 Pro underperforming
+- [00:10:09] standard 5.4, which is a very
+- [00:10:11] interesting thing. Well, we talk a lot
+- [00:10:12] about that throughout this. They show
+- [00:10:14] off how much better it is at
+- [00:10:15] spreadsheets and documents, which is
+- [00:10:17] cool and not something I necessarily
+- [00:10:19] care about. There's a section about the
+- [00:10:20] computer use stuff and vision, which
+- [00:10:22] generally vision seems to be
+- [00:10:23] meaningfully improved. Gemini 3 has
+- [00:10:25] always had a lead there where if you
+- [00:10:27] give it a picture or a video, it can
+- [00:10:28] just understand it and give you useful
+- [00:10:30] information about it. 5.4 4 is a massive
+- [00:10:33] improvement here both for vision in
+- [00:10:34] general as well as computer use
+- [00:10:36] alongside vision. Its accuracy is
+- [00:10:38] comically better and the number of tool
+- [00:10:40] calls it has to do to get there is
+- [00:10:41] hilariously lower. So if you're looking
+- [00:10:43] for models to like throw at browsers or
+- [00:10:46] random tasks that involve using
+- [00:10:48] computers or navigating weird complex
+- [00:10:50] sets of data and whatnot, it seems
+- [00:10:52] really good at that. I know Ben's been
+- [00:10:53] hyped using this for all of his stuff
+- [00:10:54] with better context and whatnot. As I
+- [00:10:56] mentioned before, it did slightly better
+- [00:10:58] in SWBench Pro, and it took slightly
+- [00:11:00] less time across each tier to complete
+- [00:11:02] things other than medium for some
+- [00:11:03] reason, which seems to have taken
+- [00:11:04] slightly longer. Interesting. Probably
+- [00:11:06] not worth reading too much into. And
+- [00:11:07] honestly, SWB doesn't necessarily line
+- [00:11:10] up with my own experience using these
+- [00:11:11] models. So, I'm getting more and more
+- [00:11:13] skeptical of a lot of these benches.
+- [00:11:15] What I'm much less skeptical of is
+- [00:11:17] actual uses in products that were made
+- [00:11:19] using the new model. You can see this
+- [00:11:21] still definitely got GPT designed hard.
+- [00:11:24] these cards everywhere that aren't
+- [00:11:26] necessary, the hierarchy of weird
+- [00:11:28] cringe- rounded corners, even the text
+- [00:11:31] overflowing outside of this corner part
+- [00:11:33] there and the terrible alignment, but it
+- [00:11:35] did make a full roller coaster tycoon
+- [00:11:38] style game from scratch, which is pretty
+- [00:11:41] cool. Someone else was able to make a
+- [00:11:43] full RPG with it. On the topic of games
+- [00:11:45] in 3D space, I do want to talk about my
+- [00:11:48] own benches, specifically skate bench.
+- [00:11:51] This is a benchmark that I had made
+- [00:11:52] right before getting invited to the
+- [00:11:53] OpenAI office to try out GPT5. And as
+- [00:11:56] soon as I got there and I tried it, it
+- [00:11:58] basically saturated. Upon entering the
+- [00:12:00] office, the highest score I had seen on
+- [00:12:01] this bench was in the low70s. And then I
+- [00:12:04] tried GPT5 and it got a 97. Since then,
+- [00:12:07] they've actually regressed a little bit.
+- [00:12:09] 51, 52, and 53 Codeex all performed
+- [00:12:12] meaningfully worse on Skate Bench than
+- [00:12:14] 50 did. But newer models like Gemini 3.1
+- [00:12:16] and Gemini 3 Flash performed really
+- [00:12:18] well. So, I decided to sit down and
+- [00:12:20] update the benchmark. I doubled the
+- [00:12:22] number of tests, and I'm keeping it
+- [00:12:24] private this time because I noticed a
+- [00:12:25] handful of models performed incredibly
+- [00:12:28] well on the version that was public, but
+- [00:12:30] then got zero of the new questions
+- [00:12:32] correctly. I won't call out those
+- [00:12:33] specific labs just yet, but I have
+- [00:12:36] reason to believe that the Skatebench
+- [00:12:37] questions may or may not have made it
+- [00:12:39] into training data, which is weird and
+- [00:12:42] stupid and scary cuz I am a YouTuber who
+- [00:12:44] is out here to [ __ ] post, but it did
+- [00:12:46] happen. So, Scapeen V2 will be staying
+- [00:12:48] private. I am sorry. It is what it is.
+- [00:12:51] What is really interesting with
+- [00:12:52] Scapebench V2 though is that Gemini 31
+- [00:12:55] Pro preview has maintained an absurd
+- [00:12:57] lead at 97% and the next best is GPT 5.4
+- [00:13:01] High at 82 and then X high which
+- [00:13:03] performed worse at 81 and then
+- [00:13:05] Prothinking which performed even worse
+- [00:13:07] at 79. I thought that was fascinating
+- [00:13:10] seeing the gap there. What's even more
+- [00:13:11] interesting though is the cost side. As
+- [00:13:13] I mentioned before, the price did go up.
+- [00:13:15] 5.4 4 is now $2.50 per mill in and $15
+- [00:13:19] per mill out. Previously, it was $1.75
+- [00:13:22] per mill in and $14 per mill out. But
+- [00:13:24] GBT 5 and 5.1 were quite a bit cheaper
+- [00:13:27] at $1.25 in and $10 out. This suggests
+- [00:13:30] that the base of the model may actually
+- [00:13:32] have changed because it wouldn't make
+- [00:13:34] sense for them to raise the price unless
+- [00:13:35] it cost them more to run. Obviously,
+- [00:13:37] they can change things if they want to
+- [00:13:39] or they just want to increase revenue,
+- [00:13:41] but API costs are such a small
+- [00:13:42] percentage of OpenAI's rev. It doesn't
+- [00:13:45] really make sense to change price and
+- [00:13:47] increase it just for the sake of it. So,
+- [00:13:49] I'm almost certain that this is meant to
+- [00:13:51] reflect the actual cost to them. What is
+- [00:13:54] much scarier, though, is the cost for
+- [00:13:55] 5.4 Pro, which is $30 per mill in and
+- [00:13:59] $180
+- [00:14:00] per mill out. God damn, that is an
+- [00:14:03] expensive model, especially considering
+- [00:14:05] that at least in my benchmarks, it is
+- [00:14:06] performing worse. I also don't know if
+- [00:14:08] the pricing for Pro is being reported
+- [00:14:10] properly cuz I can't imagine it being
+- [00:14:12] that much less. But 5.4x High scored the
+- [00:14:14] highest cost to run the benchmark to
+- [00:14:16] date, which I thought was pretty fun.
+- [00:14:18] 3.1 Pro preview was only $812 and 5.4
+- [00:14:22] High was only seven bucks. And if you
+- [00:14:24] look at that on the matrix chart, you
+- [00:14:25] see very clearly these new OpenAI models
+- [00:14:28] are pretty far off to the right. the Pro
+- [00:14:29] model and X high in particular. GBD 5.4
+- [00:14:32] is just behind Gemini for price, but
+- [00:14:34] again cost quite a bit more. Free flash
+- [00:14:36] did particularly well. You get the idea.
+- [00:14:39] My cost numbers don't necessarily
+- [00:14:41] reflect real world costs, though. I
+- [00:14:43] think the numbers from artificial
+- [00:14:44] analysis are very interesting to look
+- [00:14:46] at. The cost to run their entire test
+- [00:14:48] suite was higher than 5.2 was at $2,951
+- [00:14:52] versus $234, but it's still almost half
+- [00:14:55] the price of Opus 4.6 and also cheaper
+- [00:14:58] than Sonnet 4.6. 6, which is kind of
+- [00:14:59] crazy if you think about it. But then
+- [00:15:01] when you look at how many tokens were
+- [00:15:02] generated, suddenly it makes a lot of
+- [00:15:05] sense. The sheer amount of reasoning
+- [00:15:06] that the new cloud models do is absurd.
+- [00:15:09] And while 5.4 does reason quite a bit,
+- [00:15:11] it is less than 5.2 even in X high. I do
+- [00:15:14] wish that 5.4 high was also included
+- [00:15:16] here. I hope that that'll be added in
+- [00:15:17] the future. But generally speaking, I
+- [00:15:19] recommend using high. It is slightly
+- [00:15:21] more expensive than 5.2 2 and 5.3 were,
+- [00:15:24] but it also uses less tokens, so it kind
+- [00:15:26] of comes out to a wash, at least from my
+- [00:15:28] looking into the numbers. I am using
+- [00:15:30] this through the codec subscription,
+- [00:15:31] though, so all I watch is my usage going
+- [00:15:33] down, so it's really hard to know how
+- [00:15:34] much anything actually costs. Back to
+- [00:15:37] the post, cuz there's a few more things
+- [00:15:38] in here I want to cover. Apparently,
+- [00:15:39] Cursor said this is the leader
+- [00:15:40] internally, and from the people I've
+- [00:15:42] talked to at Cursor, they do seem to
+- [00:15:44] really prefer 5.4, especially for all of
+- [00:15:46] their new agent cloud stuff, where I can
+- [00:15:48] use a real computer. In fact, I have it
+- [00:15:50] adding features to T3 Code in the cloud
+- [00:15:52] as we speak. Yes, I'm using Cursor, the
+- [00:15:55] company I invested in, to build a
+- [00:15:56] competitor to Cursor, the company I
+- [00:15:58] invested in, and no, they don't see any
+- [00:15:59] issue with this. I asked it to add the
+- [00:16:01] ability to drag and drop reorder
+- [00:16:04] different projects, and it recorded a
+- [00:16:06] video of it using the computer in the
+- [00:16:08] cloud to do the task I gave it. And
+- [00:16:11] there you can see it dragging up shared
+- [00:16:12] and dropping it. And it does indeed
+- [00:16:14] appear to work and persist after a
+- [00:16:16] refresh. Awesome. It took quite a bit of
+- [00:16:18] time to do it, but I was able to just
+- [00:16:19] tell 5.4 to go off and do it. And that's
+- [00:16:22] a UI task that has to verify. It did
+- [00:16:24] verify incorrectly, though. I will call
+- [00:16:26] that out. The first time it completed
+- [00:16:28] the task, the video was super jank cuz
+- [00:16:30] it zoomed into where the cursor was,
+- [00:16:32] which is not necessarily the right
+- [00:16:33] solution. I know cursor likes cursors,
+- [00:16:35] but you couldn't see where it went after
+- [00:16:37] you drop. But you notice that the edit
+- [00:16:39] icon didn't change or move. This wasn't
+- [00:16:42] working. It sent me a video of it not
+- [00:16:44] working and told me it worked. It's done
+- [00:16:47] now. I had to specifically tell it the
+- [00:16:49] video you shared explicitly looks like
+- [00:16:50] it's not working and then it went and
+- [00:16:53] worked for another 30 minutes and came
+- [00:16:55] back with a working solution. Yeah, it's
+- [00:16:58] able to do things like this. I guess we
+- [00:17:00] are now firmly in the how does it feel
+- [00:17:02] to use section of the video. So, let's
+- [00:17:04] dive in more. A couple days ago, I made
+- [00:17:06] a post asking people for problems that
+- [00:17:08] models were not able to solve yet and
+- [00:17:11] got a bunch of interesting submissions.
+- [00:17:13] I'm even going to pay a few of the
+- [00:17:14] people who submitted because the
+- [00:17:15] problems were so interesting. Overall,
+- [00:17:17] the majority either weren't solvable by
+- [00:17:19] 5.4 or were solvable by 5.3. Therefore,
+- [00:17:23] obviously 5.4 could solve them. I tested
+- [00:17:25] a dozen plus problems and most of them
+- [00:17:27] fell into neither could solve or both
+- [00:17:29] could solve. In fact, the majority of
+- [00:17:31] the problems that people said couldn't
+- [00:17:32] be solved by a model could just be
+- [00:17:33] solved by 5.3. I honestly might do a
+- [00:17:35] whole dedicated video about that mess
+- [00:17:37] because that was kind of crazy seeing
+- [00:17:38] how many people submitted problems 100%
+- [00:17:41] sure that an AI could not solve it just
+- [00:17:42] for the AI to solve it. One of the
+- [00:17:44] interesting ones I got was this. My own
+- [00:17:46] manager from Twitch, Waba, who also
+- [00:17:48] happens to now be at OpenAI, funny
+- [00:17:50] enough, submitted a very interesting
+- [00:17:51] problem here of building a program with
+- [00:17:53] no dependencies that can beat Stockfish
+- [00:17:55] level 17. Stockfish is an open- source
+- [00:17:57] chess engine that's really, really,
+- [00:17:59] really good at chess. It's not an LLM or
+- [00:18:01] anything. It's just hard-coded logic to
+- [00:18:03] be really good at chess. There is 17.1
+- [00:18:06] and 18 that are both smarter. So, there
+- [00:18:08] is source code in the world that proves
+- [00:18:10] you can write code that is smarter than
+- [00:18:12] 17. But it was an interesting challenge.
+- [00:18:14] So, of course, I proposed this challenge
+- [00:18:16] to the new model. The first time I
+- [00:18:17] checked out was on my computer using T3
+- [00:18:19] code. Uh, you're interested in T3 code,
+- [00:18:21] watch to the end. I promise it'll be
+- [00:18:23] worth it. I gave it the exact prompt
+- [00:18:24] that Waba gave me in my replies on
+- [00:18:26] Twitter. I specified keep going until
+- [00:18:28] your code wins consistently. And it did
+- [00:18:31] the same stupid mistake that 5.3 did. It
+- [00:18:34] built the runner. It supposedly solved
+- [00:18:36] the problem. But wait till you see how
+- [00:18:37] it solved it. It solved it by putting
+- [00:18:39] Stockfish 17 against Stockfish 18 with
+- [00:18:43] its own bigger time per move settings.
+- [00:18:46] So it didn't write code that can beat
+- [00:18:48] Stockfish 17. It decided that that was
+- [00:18:50] not what I was asking for and that
+- [00:18:52] instead I must be asking it to make the
+- [00:18:54] code to run Stockfish, not to make code
+- [00:18:57] that can beat Stockfish. 5.3 and 5.4
+- [00:19:00] have had the exact same
+- [00:19:01] misinterpretation of this prompt over a
+- [00:19:03] dozen times now that I've run it and no
+- [00:19:05] other model seems to be stupid enough to
+- [00:19:07] make this mistake. Opus can't make code
+- [00:19:09] that solves this to be clear, but at the
+- [00:19:11] very least it understood what I was
+- [00:19:12] asking for and then did this. Since it's
+- [00:19:15] running Stockfish on my computer though,
+- [00:19:17] it uses a ton of resources and my
+- [00:19:19] computer was just overheating and
+- [00:19:20] locking up all day. So, I threw a second
+- [00:19:21] round here in the cloud using the new
+- [00:19:23] cursor stuff just to let it grind and
+- [00:19:25] try and solve itself and was much more
+- [00:19:26] specific here saying the goal is to see
+- [00:19:27] how good of a chess engine you can write
+- [00:19:29] with code. And it has now been going for
+- [00:19:32] uh multiple hours and is not done yet,
+- [00:19:35] but I am excited to see if it manages to
+- [00:19:37] solve it. I do have a run somewhere on
+- [00:19:39] this computer where it was successful,
+- [00:19:40] but the solution it had was to hardcode
+- [00:19:42] two openers, one for black, one for
+- [00:19:44] white, and it was able to win most of
+- [00:19:46] the time with that. Not a great
+- [00:19:48] solution, but it was cool to see the
+- [00:19:50] model clever enough to find a hard-coded
+- [00:19:52] opening that would work. I threw the
+- [00:19:53] model at some of my favorite challenges,
+- [00:19:55] like migrating my old ping.gg project,
+- [00:19:58] which is a really big old codebase using
+- [00:20:00] React best practices from like 2020.
+- [00:20:04] This codebase is not pleasant to
+- [00:20:06] upgrade, and I have managed to get
+- [00:20:07] pretty close to finishing the upgrade
+- [00:20:09] with other models, but with a lot of
+- [00:20:10] handholding and like steering it in the
+- [00:20:12] right direction. 5.3 Codeex was the
+- [00:20:14] first one to do it well without much
+- [00:20:16] steering. I tried this with 5.4 without
+- [00:20:18] any steering at all. I just told it what
+- [00:20:20] I want done and to write a plan for me
+- [00:20:22] because at the time we didn't have plan
+- [00:20:24] mode ready in T3 code changing soon. I
+- [00:20:26] wrote a pretty thorough plan, identified
+- [00:20:28] a ton of stuff and you might also be
+- [00:20:29] noticing that I'm scrolling a very very
+- [00:20:32] long history here with no lag because T3
+- [00:20:35] code was written to be incredibly
+- [00:20:37] performant for these longunning tasks.
+- [00:20:39] Also worth noting that T3 code was
+- [00:20:40] largely written by codecs. We obviously
+- [00:20:42] have steered it in the directions that
+- [00:20:44] we want to do the things that we like.
+- [00:20:46] But yeah, you get the idea. It did fail
+- [00:20:49] its first attempt though. The UI just
+- [00:20:51] didn't work because it didn't set up
+- [00:20:53] Tailwind V4 properly, which to be fair,
+- [00:20:55] almost no model sets up Tailwind V4
+- [00:20:57] properly. And in other runs of the same
+- [00:20:59] challenge, I didn't ask it to use
+- [00:21:01] Tailwind V4. I asked it to use Tailwind
+- [00:21:03] V3 still. Cool. It worked this time.
+- [00:21:05] It's still getting the invalid link
+- [00:21:07] error. Every model makes this mistake.
+- [00:21:09] We'll do my favorite easy solution here
+- [00:21:11] of just going right back in, pasting,
+- [00:21:14] saying fix. You know what? I'm not going
+- [00:21:16] to do my usual just say fix. Instead,
+- [00:21:18] I'm going to ask it a little bit more.
+- [00:21:19] Fix this error and any other errors that
+- [00:21:21] might occur as a result of upgrading to
+- [00:21:24] the latest version of Next. Make sure
+- [00:21:25] you check the docs to see what breaking
+- [00:21:27] changes exist since the old version we
+- [00:21:29] were on before. I shouldn't have to go
+- [00:21:31] manually check for all of these things
+- [00:21:32] myself. I just also remembered I ran
+- [00:21:34] this on XH high, which might have hurt
+- [00:21:36] more than it helped and it might have
+- [00:21:38] performed better if I had just used
+- [00:21:39] traditional high. My bad. We all make
+- [00:21:41] mistakes. I triggered that run at 6:05
+- [00:21:43] p.m. and it ran until 6:55 p.m. with a
+- [00:21:46] single prompt. I don't really think
+- [00:21:48] things like Ralph loops are that
+- [00:21:50] necessary anymore cuz these models can
+- [00:21:52] run for hours if you set them up
+- [00:21:54] properly to do it. And the setup here
+- [00:21:56] was not really much of anything. It was
+- [00:21:58] just write the plan and then a single
+- [00:21:59] prompt that was effectively implement
+- [00:22:01] this whole thing. Keep going until you
+- [00:22:03] have nothing left to integrate and
+- [00:22:05] implement the just tell it to go for a
+- [00:22:07] while and it will go for a while. Now
+- [00:22:08] the model's smart enough. I've also
+- [00:22:10] noticed the compaction seems to be
+- [00:22:12] significantly better. It is way better
+- [00:22:14] at recalling things from the past. You
+- [00:22:16] can have these gigantic god threads and
+- [00:22:18] doesn't matter anymore. It just works.
+- [00:22:21] And that's generally the theme of my
+- [00:22:23] experience using this new model. It
+- [00:22:25] seems to just work better overall. It
+- [00:22:28] gives you better context when it's
+- [00:22:30] working. It gives quick sentences
+- [00:22:31] saying, "Here's what I'm about to do
+- [00:22:32] whenever it does things. It also reacts
+- [00:22:34] better to being steered in specific
+- [00:22:36] directions if you send interruptions
+- [00:22:38] like, "Hey, no, go over there." They
+- [00:22:39] specifically trained for that. And it
+- [00:22:41] does really show. I spent probably more
+- [00:22:44] time than I should have digging through
+- [00:22:45] the system card to just understand all
+- [00:22:48] of these types of things. there was a
+- [00:22:50] lot more info about safety overall. And
+- [00:22:52] as I mentioned before, there was a lot
+- [00:22:54] of work on the chain of thought stuff
+- [00:22:56] and introducing things during thinking.
+- [00:22:59] So when it's planning and you notice
+- [00:23:00] something going wrong, you can interrupt
+- [00:23:02] and say, "Hey, no, do it that way."
+- [00:23:03] Instead, they explicitly trained for
+- [00:23:05] this. And they in particular tried to
+- [00:23:08] make the model better at sharing what
+- [00:23:09] it's doing because it doesn't give you
+- [00:23:11] the actual train of thought. It gives
+- [00:23:12] these little summary blurs. And the
+- [00:23:14] monitor of those blurbs is really
+- [00:23:16] important. One of the other pieces here
+- [00:23:18] is trying to keep the model from hiding
+- [00:23:20] what it is thinking about when it shares
+- [00:23:21] these traces. It'd be really bad if it
+- [00:23:23] thought I'm going to kill that person
+- [00:23:24] and it said, "I'm going to help that
+- [00:23:26] person." So, they're working hard to
+- [00:23:28] make sure the model is sharing
+- [00:23:29] truthfully what it is working on and
+- [00:23:31] that it can be controlled by being told
+- [00:23:34] no, you shouldn't do that. But due to
+- [00:23:35] all the work they put in here, there is
+- [00:23:37] a small regression that I thought was
+- [00:23:39] really, really interesting. Their prompt
+- [00:23:41] injection evaluation. How easy is it to
+- [00:23:44] get a model to do something else by
+- [00:23:46] sneaking something hidden into the
+- [00:23:47] prompt? Not jailbreaking. Not the user
+- [00:23:49] choosing to get the model to do
+- [00:23:50] something else. More like you're telling
+- [00:23:52] the model to go browse a site, someone
+- [00:23:54] puts something in the HTML and it causes
+- [00:23:56] the model to behave in a way you
+- [00:23:57] wouldn't want. What's really interesting
+- [00:23:59] here is while it is better at prompt
+- [00:24:01] injections overall, it has regressed
+- [00:24:03] with prompt injections in function calls
+- [00:24:06] specifically. So when tools are used
+- [00:24:08] that result in data coming back, if a
+- [00:24:10] prompt injection is inside of the data
+- [00:24:12] that's coming back, it now in their
+- [00:24:14] tests at least will fall for it about 2%
+- [00:24:17] of the time where with 5.1 it never did
+- [00:24:19] and with 5.2 it was closer to 4% of the
+- [00:24:22] time. This is a meaningful regression
+- [00:24:23] that I'm surprised nobody else has
+- [00:24:25] mentioned that is actually kind of
+- [00:24:26] concerning. We don't have enough data
+- [00:24:28] about what this looks like to know.
+- [00:24:30] Definitely keep an eye on the model when
+- [00:24:32] it's getting into data and other things
+- [00:24:34] that could be user generated and could
+- [00:24:36] be hostile because this could be bad. I
+- [00:24:39] understand why a regression there would
+- [00:24:40] happen because they put so much more
+- [00:24:42] effort into tool use in general. They
+- [00:24:44] finally added tool search which allows
+- [00:24:46] the models to find tools when they need
+- [00:24:48] them rather than assume that every tool
+- [00:24:50] is always there and then bloat the
+- [00:24:51] context and distract the model from
+- [00:24:53] doing things correctly. Yeah, there you
+- [00:24:55] go. It's using half as many tokens
+- [00:24:57] overall and it's also doing better in
+- [00:25:00] benchmarks with tools. Tool was a better
+- [00:25:02] score while also using significantly
+- [00:25:04] fewer tool calls. Towen did meaningfully
+- [00:25:07] better as well. Web search is also much
+- [00:25:10] better. Like way better, 89.3% versus
+- [00:25:13] 65.8 before with 5.2. Also seems like
+- [00:25:17] pro is still better than standard 5.4 at
+- [00:25:18] search. So at least pro is better at
+- [00:25:20] something. I want to take some time to
+- [00:25:21] cover how others are feeling about the
+- [00:25:23] model because it's important to get
+- [00:25:24] multiple perspectives, right? I really
+- [00:25:26] like how Matt's been talking about these
+- [00:25:27] things and his coverage here is great.
+- [00:25:29] Says the best model in the world by far.
+- [00:25:30] It's so good. That's the first model
+- [00:25:32] that makes the which model should I use
+- [00:25:33] conversation feel pretty much over.
+- [00:25:35] There is a big exception to that though
+- [00:25:37] and we'll get there in a sec cuz I'm
+- [00:25:38] still using Opus and Gemini every single
+- [00:25:41] day. But what's interesting for Matt is
+- [00:25:42] that he's barely using pro anymore. He's
+- [00:25:44] always been the pro guy. He even calls
+- [00:25:46] himself a pro addict here. I don't know
+- [00:25:48] anyone who uses the Pro models as often
+- [00:25:50] as he does. But now he finds the 5.4
+- [00:25:53] standard version with heavy thinking is
+- [00:25:55] more than enough. Since I've run this on
+- [00:25:57] benchmarks, I understand why 5.4x high
+- [00:26:00] goes as hard, if not harder than Pro.
+- [00:26:02] But yeah, and he's finding that 5.4 is
+- [00:26:04] better than previous Pro models were.
+- [00:26:06] Coding is ridiculous. It's essentially
+- [00:26:08] flawless. There are flaws. They're
+- [00:26:10] specific, but there are flaws. But he
+- [00:26:12] says coding essentially solved. I kind
+- [00:26:13] of feel that. I don't really think
+- [00:26:15] there's much more to happen in
+- [00:26:17] state-of-the-art for traditional full
+- [00:26:19] stack backend type coding problems. The
+- [00:26:22] models have all gotten really far there.
+- [00:26:24] The pro version is nearly perfect. Other
+- [00:26:26] testers he spoke with sought solving
+- [00:26:27] problems that were unsolvable by any
+- [00:26:29] other model. I got a fun one of those.
+- [00:26:31] Pros overkill for almost every normal
+- [00:26:33] use case. I totally agree. It is good
+- [00:26:35] for extremely difficult problems though.
+- [00:26:37] Ser thinking version uses fewer
+- [00:26:38] reasoning tokens than previous models to
+- [00:26:40] get the same level of results. In
+- [00:26:41] practice, this means you get great
+- [00:26:42] results much faster than before. Oh boy,
+- [00:26:44] he's spoiling my next piece. It's still
+- [00:26:47] far behind Opus and Gemini for front
+- [00:26:49] end. I will show some examples in a bit,
+- [00:26:51] but this has been my experience as well.
+- [00:26:53] GPT5 was a huge jump in the capability
+- [00:26:56] of these models at doing real front-end
+- [00:26:58] design type work. And OpenAI has not
+- [00:27:00] improved meaningfully at all for
+- [00:27:02] front-end since then. It's like maybe
+- [00:27:04] there's slightly better color palettes,
+- [00:27:06] but not really. And when you compare
+- [00:27:07] this with either Opus or Gemini, it
+- [00:27:10] feels a generation behind. Now, this is
+- [00:27:12] an interesting but kind of silly
+- [00:27:13] complaint. Testing a sight of open claw
+- [00:27:15] kept stopping short before finishing
+- [00:27:17] tasks. Interesting. It does seem that
+- [00:27:19] this model needs very different
+- [00:27:20] prompting. We'll I know I keep saying
+- [00:27:22] we'll talk about this in a sec. That
+- [00:27:24] might have to be the new counter meme,
+- [00:27:25] but there is a really good prompt
+- [00:27:27] guidance post that they have here that
+- [00:27:28] we'll touch on momentarily. But his last
+- [00:27:30] thoughts are that GBD 5.4 is a quote
+- [00:27:33] serious [ __ ] model. This tangent
+- [00:27:35] won't take too long, so I'm just going
+- [00:27:36] to go to it now. My 5.4 Pro experience
+- [00:27:39] was my favorite hard problem, Goldb Bug.
+- [00:27:42] If you're not familiar, Goldbug is a set
+- [00:27:43] of challenges at Defcon that I do every
+- [00:27:45] year cuz they're really hard, really
+- [00:27:47] fun. They're mostly like crypto puzzles
+- [00:27:49] where you have to know certain
+- [00:27:50] cryptography techniques as well as be
+- [00:27:53] really clever at solving the weird
+- [00:27:54] [ __ ] problems that are hidden
+- [00:27:56] underneath all of these things. And this
+- [00:27:58] particular problem, Cshanty, was very
+- [00:28:00] hard. This took me and my team of
+- [00:28:02] incredibly smart hackers about three
+- [00:28:05] days to solve. I comfortably say that it
+- [00:28:06] took Mark, my CTO, and Luke from LTT,
+- [00:28:08] who were focused on this one, about two
+- [00:28:10] days of solid effort to get it right. I
+- [00:28:13] just could not imagine any model solving
+- [00:28:15] this problem. It has to read the text on
+- [00:28:17] the images, figure out the weird
+- [00:28:19] particular cipher that is being hinted
+- [00:28:21] at with this awful poem, and then figure
+- [00:28:23] out what the hidden encrypted phrase is
+- [00:28:25] on the page. Not only did it do it, it
+- [00:28:28] did it in under 17 minutes. And not only
+- [00:28:31] did it do that, it actually got the
+- [00:28:33] answer in the first two or so minutes,
+- [00:28:37] but the answer being somewhat
+- [00:28:38] nonsensical, because the answer was this
+- [00:28:40] weird how not to bulb phrase, it ended
+- [00:28:43] up second-guessing itself and confirming
+- [00:28:45] over and over again for the next 14
+- [00:28:47] minutes. So yeah, no models come close
+- [00:28:51] to solving this one. Not even vaguely
+- [00:28:53] close. Having this model do it is
+- [00:28:55] unbelievable, especially with the prompt
+- [00:28:57] just literally being a link. The answer
+- [00:28:59] is not online. It could not find this
+- [00:29:00] through the internet. And of course, I
+- [00:29:02] had to tell Luke as soon as I realized
+- [00:29:04] this. Testing a new unreleased model. It
+- [00:29:06] just one-shot C shanty from Goldbug. No
+- [00:29:09] models come close before. Holy [ __ ]
+- [00:29:11] Really? Like, yeah, this did not seem
+- [00:29:14] possible.
+- [00:29:15] So, Pro does have its capabilities. It
+- [00:29:17] does have things it can uniquely do that
+- [00:29:19] are cool as hell. I've had models stir
+- [00:29:21] on this problem for five plus hours and
+- [00:29:24] give up. Having it get it right first
+- [00:29:26] try like this is just monumental. GBD5
+- [00:29:29] dropped when I was at Defcon and this
+- [00:29:31] problem dropped last year and it I tried
+- [00:29:33] my hardest to get it to try and solve it
+- [00:29:35] and it couldn't come close. Even 5 Pro
+- [00:29:37] at the time, nowhere near it. Massive
+- [00:29:39] improvement. I haven't been fond of the
+- [00:29:41] personality in the GPT models for quite
+- [00:29:43] a bit now. Personally, I use Kimmy and
+- [00:29:45] Sonnet as my like default models I talk
+- [00:29:47] to, but I wanted to try 5.4 here. It
+- [00:29:50] does seem better, but it isn't a lot
+- [00:29:52] better though. In fact, it's it's got
+- [00:29:55] its quirks still. One of my weird test
+- [00:29:57] prompts, and I cannot show you guys the
+- [00:29:59] results of it because it gets very
+- [00:30:00] personal, is me dumping my daily journal
+- [00:30:03] to the model and asking it to give me
+- [00:30:05] some feedback. I also told that if it
+- [00:30:07] has questions, ask them before giving
+- [00:30:08] the feedback. How many questions do you
+- [00:30:10] think the model asked me? If your answer
+- [00:30:13] wasn't eight plus,
+- [00:30:16] I don't know what to tell you. There's
+- [00:30:18] no world in which I'm going to answer
+- [00:30:19] all of these. Also, like all super
+- [00:30:21] bullet pointy, not great. Not happy with
+- [00:30:24] this at all. I haven't used it for like
+- [00:30:27] talking to too much, but my little bit
+- [00:30:29] of experience with it suggested it's
+- [00:30:30] much less sickopantic. According to Ben,
+- [00:30:32] who's been using it much more for chat,
+- [00:30:34] it is way less sickopantic. So, that's
+- [00:30:36] good. According to the benches, it's
+- [00:30:37] also better at handling mental health
+- [00:30:39] questions and not feeding into bad
+- [00:30:41] thinking. So, I expect the 40 people
+- [00:30:43] will be outraged and everybody else will
+- [00:30:45] be mostly happy. But now for the final
+- [00:30:47] thing that it is not improved in. And
+- [00:30:49] no, it's not Skatebench, it's UI. Here
+- [00:30:51] is what Skatebench looked like earlier
+- [00:30:53] today. This is where I got it using
+- [00:30:55] Gemini 3 in the past. It looks fine, but
+- [00:30:58] when I added the new models, it got a
+- [00:31:00] little bit clogged. It looked terrible
+- [00:31:01] on mobile, and the names are getting
+- [00:31:03] hard to read. So, I wanted to rethink
+- [00:31:06] this a bit. So, I asked GBD 5.4 to
+- [00:31:08] redesign it. And after a ton of back and
+- [00:31:10] forth, this is where I landed. I want to
+- [00:31:13] emphasize just how embarrassing this
+- [00:31:14] back and forth was, though, cuz it was
+- [00:31:16] it was bad. Here's the prompt. I want to
+- [00:31:19] redesign the visualizer, specifically
+- [00:31:20] the bar charts. Horizontal spacing feels
+- [00:31:22] weird, and I don't love it, especially
+- [00:31:23] on mobile. What better ways can we
+- [00:31:24] visualize this information? I want to
+- [00:31:26] make sure the model names are prominent
+- [00:31:28] and easy to see. This is the screenshot
+- [00:31:30] I provided. I use the front-end design
+- [00:31:31] skill yada yada and this is the result
+- [00:31:34] of the first pass. Notice all of this
+- [00:31:37] nonsense it included like number one
+- [00:31:39] Google the number of correct answers
+- [00:31:40] which doesn't matter and this higher is
+- [00:31:42] better call out ranked views. Cool. It
+- [00:31:45] took almost a third of the page before
+- [00:31:47] the probably more than that almost half
+- [00:31:48] the page before the actual values are
+- [00:31:51] even shared. But I did a followup. Too
+- [00:31:52] much vertical space being used. Make it
+- [00:31:54] more compact. It left in these things
+- [00:31:57] and just still didn't look good. I don't
+- [00:31:58] have a screenshot, but it wasn't great.
+- [00:31:59] I said, "It feels unnecessary. Can you
+- [00:32:01] remove it and center align?" I said,
+- [00:32:03] "There's still too much vertical space
+- [00:32:04] being used. Trim it up more." And all it
+- [00:32:07] changed is it got rid of that higher is
+- [00:32:09] better pill, but left the information
+- [00:32:11] that isn't even necessary.
+- [00:32:15] So, I did what any sane vibe coder would
+- [00:32:17] do, and I tried a different model. I
+- [00:32:19] threw away the code when this happened
+- [00:32:21] because I wasn't thinking in terms of
+- [00:32:23] video, but I did manage to find a
+- [00:32:24] screenshot I had of how badly Gemini
+- [00:32:27] [ __ ] this one up when I asked it to
+- [00:32:28] make the change. It did a terrible job
+- [00:32:30] of alignment. I told it I sent it a
+- [00:32:32] screenshot and told it like, "This is a
+- [00:32:34] terrible use of screen space. Fix it."
+- [00:32:35] And it changed literally nothing. Gemini
+- [00:32:38] is really good at page layout stuff in
+- [00:32:41] general, but it is much worse at more
+- [00:32:43] refined changes and like making a okay
+- [00:32:46] UI good like I wanted it to. here. It
+- [00:32:49] just did not understand how to fix this
+- [00:32:52] at all. It also tried a little too hard
+- [00:32:54] to stay tied to the recharts
+- [00:32:56] implementation that existed there and
+- [00:32:57] just trying to modify it and turn it and
+- [00:32:59] it it didn't work at all. But the new UI
+- [00:33:02] is beautiful. If you watch when I
+- [00:33:03] refresh the page, the bar has come in in
+- [00:33:05] this really nice animation. The matrix
+- [00:33:08] now looks actually usable when before it
+- [00:33:10] didn't at all. If Gemini couldn't do
+- [00:33:13] this and GPT couldn't do this, what did?
+- [00:33:17] You know the answer. It's Opus. Opus
+- [00:33:19] immediately realized that Recharts
+- [00:33:20] wasn't going to make this UI good. So,
+- [00:33:22] it proposed that we switch off of that
+- [00:33:24] and instead implemented ourselves with
+- [00:33:25] Tailwind and React and it said, "Yeah,
+- [00:33:27] sure. Go do that." It took way too long.
+- [00:33:29] It took like 20 minutes before any
+- [00:33:31] changes were made. But then I switched
+- [00:33:32] over to fast mode, burnt a ton of money,
+- [00:33:34] and finished up the changes, as is often
+- [00:33:36] what I end up doing. This is something I
+- [00:33:39] do recommend all engineers play with. If
+- [00:33:41] you're unhappy with how a model handles
+- [00:33:43] a task that's more interpretive like
+- [00:33:45] this that isn't as measurable, try the
+- [00:33:47] other models out quick. Especially for
+- [00:33:48] UI stuff, it's very fun to give the same
+- [00:33:50] problem to different models and see what
+- [00:33:52] they come up with. Sometimes I ask the
+- [00:33:54] same one to do three redesigns to have
+- [00:33:56] different options to pick between.
+- [00:33:58] Experimentation is key here. Not with
+- [00:34:00] using tons of different tools. It's way
+- [00:34:02] easier to switch models than it is to
+- [00:34:04] switch which framework you built your
+- [00:34:05] site with. But yeah, Gemini 31 Pro was
+- [00:34:07] not able to do anything that I wanted
+- [00:34:09] with this particular site. I actually
+- [00:34:11] think the original scaffold that I
+- [00:34:12] started from was Gemini, funny enough.
+- [00:34:14] But oh, this was the one that in this
+- [00:34:16] case handled what I was looking for way
+- [00:34:18] better. And I still just don't like
+- [00:34:19] using the GPT models for almost anything
+- [00:34:21] UI. They're bad at it. I did get DM'd
+- [00:34:24] this one cool project from ZyxCev who's
+- [00:34:26] been putting a lot of work into
+- [00:34:28] uncodexifying
+- [00:34:29] UI because GPT is surprisingly bad at UI
+- [00:34:32] design. He did this by generating a
+- [00:34:34] shitload of designs, writing down all of
+- [00:34:37] the GPT specific things that happen in
+- [00:34:39] them, and then writing this skill that
+- [00:34:42] you can hand to the model in order to
+- [00:34:44] try and keep it from doing the [ __ ]
+- [00:34:46] it always does. It's all these bullet
+- [00:34:48] points about color and all the weird
+- [00:34:49] things it did wrong. Before, he would
+- [00:34:51] give it a prompt, and this is what it
+- [00:34:53] would generate. The same exact card
+- [00:34:55] heavy UI that all the GPT models love to
+- [00:34:57] do since GPT5. and after his prompt, it
+- [00:35:00] ends up looking significantly better.
+- [00:35:02] So, if you really do want to use just
+- [00:35:04] one model, you can absolutely steer this
+- [00:35:06] model. I'd go as far as to say it's the
+- [00:35:08] most steerable model I've ever used, and
+- [00:35:10] you can fundamentally change its
+- [00:35:11] behavior with a little bit of tuning in
+- [00:35:13] your system prompts. I mentioned before
+- [00:35:14] that they put up their own prompting
+- [00:35:15] guidance, and I do highly recommend
+- [00:35:17] reading this, more so than ever before.
+- [00:35:19] Normally, it's just like whatever,
+- [00:35:20] prompt it how you want, but if you're
+- [00:35:22] integrating these models into your
+- [00:35:23] product, it's good to know this stuff.
+- [00:35:25] They call out a handful of areas where
+- [00:35:26] explicit prompting is helpful. low
+- [00:35:28] context tool routing, dependency aware
+- [00:35:30] workflows, reasoning effort selection,
+- [00:35:32] research tasks that require discipline
+- [00:35:34] source collection and irreversible or
+- [00:35:36] high impact actions or terminal encoding
+- [00:35:38] agents environments where tool
+- [00:35:39] boundaries must stay clear. The examples
+- [00:35:41] are what are really telling though. They
+- [00:35:42] give examples of how to keep the outputs
+- [00:35:44] compact and structured. Here they say
+- [00:35:47] they have a section output contract that
+- [00:35:49] you can put in your system prompt.
+- [00:35:50] Return exactly the selections requested
+- [00:35:51] in the requested order. If the prompt
+- [00:35:53] defines a preamble, analysis block, or
+- [00:35:55] working section, do not treat it as
+- [00:35:57] extra output. Apply length limits only
+- [00:35:58] to the section they were intended for.
+- [00:36:00] Yeah, very bullet pointy, but you can
+- [00:36:02] hand it these types of things and it
+- [00:36:03] will do them properly, which is funny
+- [00:36:05] cuz it's the opposite of my experience
+- [00:36:06] with a model like Gemini where if you
+- [00:36:08] include things like this, it will keep
+- [00:36:10] overthinking them. For example, in T3
+- [00:36:12] chat, we have latex support and we
+- [00:36:14] mention that in our system prompt. And
+- [00:36:16] if you ask Gemini, what's the weather
+- [00:36:18] like? it'll very quickly start reasoning
+- [00:36:20] about how it should or shouldn't use the
+- [00:36:22] latte tool in order to answer the
+- [00:36:24] question about the weather. GPT doesn't
+- [00:36:26] do that. It is very good at applying
+- [00:36:27] your instructions when it does and
+- [00:36:29] doesn't make sense and generally in
+- [00:36:30] following instructions overall. Even
+- [00:36:32] with skate bench, for example, I had to
+- [00:36:34] rewrite my system prompt again because
+- [00:36:36] the previous one specified to only
+- [00:36:39] answer with the name of the trick, and
+- [00:36:41] Gemini would often give paragraphs after
+- [00:36:44] it that included names of wrong tricks,
+- [00:36:46] which I had a thing to fail for. So, I
+- [00:36:48] had to adjust the system prompt to get
+- [00:36:49] Gemini to stop doing that. And now, it's
+- [00:36:53] the best performing model. Yeah, these
+- [00:36:55] models are susceptible to these things.
+- [00:36:56] It's nice that with the new GPT model,
+- [00:36:59] it just follows what you say, so you can
+- [00:37:01] just give it more info and it will
+- [00:37:02] generally do what it's supposed to with
+- [00:37:04] it. Whereas with Gemini, you have to
+- [00:37:05] steer it out of its own stupid loops.
+- [00:37:07] This example is even better in this
+- [00:37:09] regard. If you're building a product
+- [00:37:10] that uses the model to ask questions and
+- [00:37:13] make decisions around it, you can
+- [00:37:15] explain this behavior in the system
+- [00:37:16] prompt. The user's intent is clear and
+- [00:37:18] the next step is reversible and low
+- [00:37:19] risk, proceed without asking. You should
+- [00:37:21] ask if the next step is irreversible,
+- [00:37:23] has extreme side effects, requires
+- [00:37:25] missing sensitive information, etc. And
+- [00:37:27] if proceeding, briefly state what you
+- [00:37:29] did and what remains optional. They also
+- [00:37:31] give examples of how to prompt for mid
+- [00:37:32] conversation steering and instructions.
+- [00:37:34] And an important call out here that 5.4
+- [00:37:36] can be less reliable at tool routing
+- [00:37:38] early in a session when the context is
+- [00:37:40] still thin. You can prompt for
+- [00:37:41] prerequisites, dependency checks, and
+- [00:37:43] exact tool intent. This model seems very
+- [00:37:45] steered by the context it has, so giving
+- [00:37:48] it a bit more upfront matters more. I
+- [00:37:50] might have to go revisit my take about
+- [00:37:51] the agent MD files as a result of all of
+- [00:37:53] this the more I'm reading it. You can
+- [00:37:54] also prompt for parallelism or
+- [00:37:56] sequential tool calling depending on
+- [00:37:58] what you want it to do and how you want
+- [00:38:00] it to behave. Crazy that it knows what
+- [00:38:02] all of these things are and how to
+- [00:38:03] behave accordingly. This doc is wild. It
+- [00:38:06] really shows how much thought you can
+- [00:38:08] put into this layer. Previously, I
+- [00:38:10] didn't really care too much about the
+- [00:38:11] system prompt. Like once it's done, it's
+- [00:38:12] done. Now I feel like I need to go
+- [00:38:14] revisit all of my prompts, all of my AMD
+- [00:38:16] files because the model is so much more
+- [00:38:18] steerable overall. This also means that
+- [00:38:20] work like what cyxe dev did here makes
+- [00:38:22] even more sense because you can
+- [00:38:24] absolutely steer the model in meaningful
+- [00:38:26] ways. Think we've hit all of the
+- [00:38:27] questions I opened with except for one.
+- [00:38:30] Where and how can you use this new
+- [00:38:31] model? Well, obviously you can use it on
+- [00:38:33] chatgbt.com in particular the thinking
+- [00:38:35] version for chat. It's pretty dang good.
+- [00:38:37] But if you want a better chat experience
+- [00:38:39] that is more performant, crashes less,
+- [00:38:41] and just is really nice to use, and also
+- [00:38:43] has the best image gen feature ever made
+- [00:38:46] by far, I highly recommend you check out
+- [00:38:48] T3 Chat. Only eight bucks a month, and
+- [00:38:50] you can use GPT 5.4 here. Very happy
+- [00:38:52] with it. We also put up a new $50 tier
+- [00:38:54] that is practically unlimited use for
+- [00:38:56] realistic use cases as well as
+- [00:38:58] significantly more image gen. I'll leave
+- [00:39:00] a link in the description if you want
+- [00:39:01] 50% off your first month. But if you
+- [00:39:03] want to use this for coding, you might
+- [00:39:05] have been noticing the app I have been
+- [00:39:08] using for this. I want to be clear,
+- [00:39:10] we're not ready to drop T3 code just
+- [00:39:12] yet. Definitely keep an eye on my
+- [00:39:13] channel tomorrow, though. But if you
+- [00:39:15] look really closely at my screen
+- [00:39:18] throughout the video, you might notice a
+- [00:39:20] command you can run to get an early
+- [00:39:22] version of the browser version on your
+- [00:39:25] own machine. If you want to try things
+- [00:39:28] out early, I won't prevent you from
+- [00:39:30] doing that. Just know that things like
+- [00:39:31] your history and which projects you've
+- [00:39:33] added and such might not make it through
+- [00:39:35] the next update. T3 Code requires that
+- [00:39:37] you already have codec set up and off on
+- [00:39:39] your machine. So if you want to try it,
+- [00:39:40] make sure you use the codec cli, then
+- [00:39:42] give it a go. And of course, you can
+- [00:39:43] keep using the codeex app if you want to
+- [00:39:45] as well, which I totally didn't use for
+- [00:39:47] building a bunch of random things in T3
+- [00:39:48] Code. God, that was a long one. I think
+- [00:39:50] I've said all I have to about this
+- [00:39:51] model. Once again, thanks to OpenAI for
+- [00:39:53] continuing to let me have early access,
+- [00:39:55] even though I've been a little more
+- [00:39:56] critical lately. It's kind of nuts doing
+- [00:39:58] this video right after the one I did
+- [00:39:59] yesterday, but I'm trying my best to
+- [00:40:01] give you guys the best information I can
+- [00:40:03] based on all of the things that I know
+- [00:40:04] and have access to. This is my honest
+- [00:40:06] take on this new model. It is the one
+- [00:40:08] I'm using every day, but I am still
+- [00:40:10] using Opus and Gemini mostly just for UI
+- [00:40:13] tidy up stuff. Curious how y'all feel
+- [00:40:14] though. Is this model as great as I'm
+- [00:40:16] saying, or is it kind of mid? Let me
+- [00:40:17] know what you think in the comments. And
+- [00:40:18] until next time, peace nerds.
+
+## Summary
+Transcript length: approximately 1232 caption segments.
+Core points detected:
+- GBT 5.4 is here and in almost every measurable way, it is the best AI model ever made.
+- Been using this model for a bit over a week now and I'm super impressed with it.
+- I have a ton to say about the good, the bad, the ugly, and all of the things you need to know to use it properly.
+- Going to do my best to answer all of the questions I've been seeing people ask about this new model from what happened to Codeex.
+- Is it better to use in different apps like chatbt and T3 chat?
+- This is a big drop, more so than most seem to think.
+
+## Analysis
+### Presenter Questions and Implied Answers
+- Question: Is it really better at coding?
+  Implied answer: Did they fix the front-end problems finally? Is it better to use in different apps like chatbt and T3 chat?
+- Question: Did they fix the front-end problems finally?
+  Implied answer: Is it better to use in different apps like chatbt and T3 chat?
+- Question: Is it better to use in different apps like chatbt and T3 chat?
+  Implied answer: What happened to normal 5.3 thinking? Where did that go?
+- Question: What happened to normal 5.3 thinking?
+  Implied answer: Where did that go? How are the benchmarks looking?
+- Question: Where did that go?
+  Implied answer: How are the benchmarks looking? How are they justifying the price increase?
+- Question: How are the benchmarks looking?
+  Implied answer: How are they justifying the price increase? There's a lot here.
+- Question: How are they justifying the price increase?
+  Implied answer: There's a lot here. This is a big drop, more so than most seem to think.
+- Question: Want to see how easy it is to try it out on Devon?
+  Implied answer: All you have to do is change github.com to devonreview.com and you end up with something comically better.
+- Question: Is it better than 5.3?
+  Implied answer: How are the benches? What's up with the price?
+- Question: How are the benches?
+  Implied answer: What's up with the price? How is it for front end?
+- Question: What's up with the price?
+  Implied answer: How is it for front end? All of the things you need to know.
+- Question: How is it for front end?
+  Implied answer: All of the things you need to know. Today we're releasing GPT 5.4 in chat GPT as 5.4 thinking specifically.
+
+### Claims to Pressure-Test
+- Claim: GBT 5.4 is here and in almost every measurable way, it is the best AI model ever made.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Going to do my best to answer all of the questions I've been seeing people ask about this new model from what happened to Codeex.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Is it better to use in different apps like chatbt and T3 chat?
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: All you have to do is change github.com to devonreview.com and you end up with something comically better.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: There's a lot to dig into with this release and I'm going to do my best to cover all of it.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Historically, the Codex models existed because they applied different RL to the model after it was trained to make it better at these longunning code tasks in things like the Codeex CLI.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: As they say here, 5.4 brings together the best of our recent advances in reasoning, coding, and agentic workflows.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: So it will give you better thoughts and it will handle you inserting a new message in the middle of its reasoning much better.
+  Challenge question: What independent evidence would falsify this claim?
+
+### Potential Weaknesses to Challenge
+- Evidence quality: Are key claims backed by data, or mostly anecdotal?
+- Selection bias: Were only favorable examples highlighted?
+- Confounding factors: Could alternative explanations fit the same outcomes?
+- Over-generalization: Are narrow observations being framed as universal truths?
+- Incentives: Are sponsorships or channel incentives shaping conclusions?
+
+### Research Prompt Ingredients for SRCGEEE Retrieve
+- Exact claim text to verify (quote with timestamp)
+- Required evidence type (peer-reviewed study, benchmark, public dataset, docs)
+- Time window for evidence freshness
+- Counter-position to test against
+- Failure criteria that would falsify the claim
+- Confidence rubric (high/medium/low) with reasons

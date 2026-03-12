@@ -1,0 +1,590 @@
+# =============================================================================
+# Unified Authorization Policy Model
+# PPA (Purushottama Personal Assistant) - All Principal Types
+# =============================================================================
+# This file shows the COMPLETE policy model for humans, agents, and code.
+# It extends the existing config/authorization.yaml with Layers 0, 5, and 6.
+# Version: 0.1-draft
+# Date: 2026-03-04
+# =============================================================================
+
+---
+
+# ---------------------------------------------------------------------------
+# LAYER 0: Identity Verification Policy
+# ---------------------------------------------------------------------------
+# Controls how each principal type proves its identity.
+
+identity_policy:
+  human:
+    require_session: true
+    session_max_ttl_hours: 8
+    require_mfa_for_session: true
+    accepted_credential_types:
+      - "oidc"
+      - "pat"
+      - "mfa_session"
+    # Phase 2: Add device_trust and ip_range checks
+    # Phase 3b: Add conditional access policies
+
+  agent:
+    require_parent_principal: true
+    max_ttl_minutes: 60               # Phase 1: conservative 1-hour max
+    accepted_credential_types:
+      - "api_key"                     # Phase 1: environment variable tokens
+      - "spiffe_svid"                 # Phase 3b: workload identity
+    require_active_parent: true       # Parent principal must be active
+    verify_runtime_attestation: false # Phase 3b: enable with SPIRE
+
+  code:
+    require_signature: false          # Phase 1: false (not yet signing)
+                                      # Phase 3a: true (cosign required)
+    require_provenance: false         # Phase 1: false
+                                      # Phase 3a: true (SLSA-2 minimum)
+    require_tests_passing: true       # Even Phase 1 requires tests
+    accepted_signature_methods:
+      - "cosign"
+      - "gpg"
+    minimum_provenance_level: "none"  # Phase 3a: bump to "slsa-2"
+    verify_fingerprint: true          # Always verify content hash
+
+# ---------------------------------------------------------------------------
+# LAYER 1: Skill Visibility (Group Membership)
+# ---------------------------------------------------------------------------
+# Unchanged from existing config/authorization.yaml.
+# Extended with agent and code group inheritance rules.
+
+visibility_policy:
+  # Which groups can see/access each skill
+  skills:
+    git-push-autonomous:
+      allowed_groups:
+        - "engineering-team"
+        - "platform-engineering"
+
+    blog-publisher:
+      allowed_groups:
+        - "engineering-team"
+        - "content-team"
+
+    rules-engine:
+      allowed_groups:
+        - "engineering-team"
+        - "platform-engineering"
+
+    telemetry-logger:
+      allowed_groups:
+        - "engineering-team"
+        - "platform-engineering"
+        - "ops-team"
+
+  # How non-human principals inherit groups
+  group_inheritance:
+    agent:
+      inherit_from: "parent_principal"   # Agent gets parent's groups
+      additional_groups: []              # Can also have explicitly assigned groups
+    code:
+      inherit_from: "invoking_principal" # Code gets invoker's groups at runtime
+
+# ---------------------------------------------------------------------------
+# LAYER 2: Permission (Role + MFA)
+# ---------------------------------------------------------------------------
+# Role hierarchy and MFA requirements.
+
+roles:
+  Developer:
+    rank: 1
+    description: "Software engineer - base authorized role"
+    max_autonomy_for_agents: "supervised"
+
+  Senior-Engineer:
+    rank: 2
+    description: "Senior software engineer"
+    max_autonomy_for_agents: "semi-autonomous"
+
+  Staff-Engineer:
+    rank: 3
+    description: "Staff engineer"
+    max_autonomy_for_agents: "autonomous"
+
+  # Future roles
+  # Operator:
+  #   rank: 2
+  #   description: "Operations/SRE role"
+  #   max_autonomy_for_agents: "semi-autonomous"
+  #
+  # Admin:
+  #   rank: 4
+  #   description: "System administrator"
+  #   max_autonomy_for_agents: "autonomous"
+
+# Skill-specific role and MFA requirements
+permission_policy:
+  git-push-autonomous:
+    minimum_role_rank: 1
+    requires_mfa: true
+    accepted_mfa_methods: ["totp", "webauthn"]
+
+  blog-publisher:
+    minimum_role_rank: 1
+    requires_mfa: false               # Blog is lower risk
+    accepted_mfa_methods: []
+
+  rules-engine:
+    minimum_role_rank: 1
+    requires_mfa: false               # Internal evaluation, no external effect
+    accepted_mfa_methods: []
+
+  deploy-staging:
+    minimum_role_rank: 2
+    requires_mfa: true
+    accepted_mfa_methods: ["totp", "webauthn"]
+
+  deploy-production:
+    minimum_role_rank: 3
+    requires_mfa: true
+    accepted_mfa_methods: ["webauthn"]  # Strongest MFA only for prod
+
+# How agents inherit MFA status
+agent_mfa_inheritance:
+  # Agent inherits MFA status from the delegating human at delegation time.
+  # If human had MFA validated when they delegated, agent is considered MFA-valid
+  # for the duration of the delegation.
+  inherit_at_delegation_time: true
+  re_validate_on_escalation: true     # Re-check MFA if risk gate triggers
+
+# How code inherits role
+code_role_policy:
+  # Code's effective role = minimum of (author role, reviewer role, invoking principal role)
+  # This prevents privilege escalation through code.
+  use_minimum_of:
+    - "author_role"
+    - "reviewer_role"
+    - "invoking_principal_role"
+
+# ---------------------------------------------------------------------------
+# LAYER 3: Tool Access (Path and Action Restrictions)
+# ---------------------------------------------------------------------------
+# Unchanged from existing. Applies uniformly to all principal types.
+
+tools:
+  git-add:
+    allowed_paths:
+      - "src/**"
+      - "docs/**"
+      - "tests/**"
+      - "config/**"
+      - "analysis/**"
+      - "PPA/**"
+      - "CLAUDE.md"
+      - "pyproject.toml"
+      - "LICENSE"
+    blocked_paths:
+      - "secrets/**"
+      - "ProjectSecrets/**"
+      - ".env"
+      - ".env.local"
+      - ".env.*.local"
+      - "credentials/**"
+      - "**/*.key"
+      - "**/*.pem"
+      - "**/*.p12"
+
+  git-commit:
+    allowed_actions: ["create", "amend"]
+    max_message_length: 500
+
+  git-push:
+    allowed_branches:
+      - "feature/*"
+      - "develop"
+      - "bugfix/*"
+      - "hotfix/*"
+    blocked_branches:
+      - "main"
+      - "production"
+
+# ---------------------------------------------------------------------------
+# LAYER 4: Resource Access
+# ---------------------------------------------------------------------------
+# Unchanged from existing. Branch and resource restrictions.
+
+resources:
+  git:
+    repository: "RoadTrip"
+    branches:
+      main:
+        allowed_roles: []
+        allowed_operations: ["read", "list"]
+        description: "Protected: use PR process"
+        min_approvals: 2
+
+      develop:
+        allowed_roles: [1, 2]
+        allowed_operations: ["read", "write", "list"]
+
+      "feature/*":
+        allowed_roles: [1, 2, 3]
+        allowed_operations: ["read", "write", "create"]
+
+      "bugfix/*":
+        allowed_roles: [1, 2, 3]
+        allowed_operations: ["read", "write", "create"]
+
+      "hotfix/*":
+        allowed_roles: [2, 3]
+        allowed_operations: ["read", "write", "create"]
+
+# ---------------------------------------------------------------------------
+# LAYER 5: Delegation Policy
+# ---------------------------------------------------------------------------
+# Rules governing how principals can delegate authority.
+
+delegation_policy:
+  # Global constraints
+  max_chain_depth: 2                  # human -> agent -> code (max 2 hops)
+  default_ttl_minutes: 60             # 1 hour default
+  max_ttl_minutes: 480                # 8 hours absolute max
+  allow_sub_delegation_default: false # Must be explicitly enabled
+
+  # Per-principal-type rules
+  human_to_agent:
+    allowed: true
+    require_explicit_approval: true   # Human must say "yes" or equivalent
+    approval_methods:
+      - "explicit-chat"               # User types approval in chat
+      - "cli-flag"                    # User passes --approve flag
+      - "mfa-confirmed"              # User re-authenticates
+    default_constraints:
+      require_dry_run_first: true
+      require_audit_log: true
+      max_operations: null            # No op limit within TTL by default
+
+  agent_to_code:
+    allowed: true
+    require_explicit_approval: false  # Agent can invoke code within its scope
+    scope_restriction: "inherit"      # Code cannot exceed agent's delegation
+    require_code_signed: false        # Phase 1: false. Phase 3a: true.
+
+  agent_to_agent:
+    allowed: false                    # Phase 1: no agent-to-agent delegation
+    # Phase 4: enable with policy-as-code governance
+
+  code_to_anything:
+    allowed: false                    # Code cannot delegate. It only executes.
+
+  # Revocation policy
+  revocation:
+    immediate_on_parent_revoke: true  # If human revokes, all downstream stops
+    immediate_on_parent_suspend: true
+    propagation_method: "pull"        # Agents check before each action
+    # Phase 3b: switch to "push" with event bus
+
+# ---------------------------------------------------------------------------
+# LAYER 6: Risk Gate Policy
+# ---------------------------------------------------------------------------
+# Risk scoring and HITL thresholds.
+
+risk_policy:
+  # Risk factor weights (must sum to 1.0)
+  weights:
+    irreversibility: 0.30
+    spend_impact: 0.25
+    reputation_risk: 0.20
+    blast_radius: 0.15
+    novelty: 0.10
+
+  # Factor scoring scales (each 0-100)
+  factor_scales:
+    irreversibility:
+      low: 10
+      medium: 40
+      high: 70
+      critical: 100
+
+    spend_impact:
+      none: 0
+      low: 20
+      medium: 50
+      high: 100
+
+    reputation_risk:
+      none: 0
+      low: 20
+      medium: 50
+      high: 100
+
+    blast_radius:
+      self: 0
+      team: 25
+      org: 60
+      public: 100
+
+    novelty:
+      routine: 0
+      known: 20
+      novel: 60
+      unknown: 100
+
+  # Thresholds
+  thresholds:
+    hitl_required: 60                 # Risk >= 60: block until human approves
+    elevated_logging: 30              # Risk >= 30: enhanced audit logging
+    auto_approve: 15                  # Risk < 15: no additional checks
+
+  # Action risk classifications
+  # These pre-classify common actions so risk scoring is fast.
+  action_risk_profiles:
+    git-push-feature:
+      irreversibility: "low"
+      spend_impact: "none"
+      reputation_risk: "none"
+      blast_radius: "self"
+      novelty: "routine"
+      # Calculated score: ~5 (auto-approve)
+
+    git-push-main:
+      irreversibility: "high"
+      spend_impact: "none"
+      reputation_risk: "medium"
+      blast_radius: "team"
+      novelty: "known"
+      # Calculated score: ~46 (elevated logging)
+
+    publish-blog-post:
+      irreversibility: "medium"
+      spend_impact: "none"
+      reputation_risk: "high"
+      blast_radius: "public"
+      novelty: "known"
+      # Calculated score: ~49 (elevated logging, close to HITL)
+
+    deploy-production:
+      irreversibility: "critical"
+      spend_impact: "medium"
+      reputation_risk: "high"
+      blast_radius: "org"
+      novelty: "known"
+      # Calculated score: ~67 (HITL required)
+
+    spend-money:
+      irreversibility: "critical"
+      spend_impact: "high"
+      reputation_risk: "medium"
+      blast_radius: "self"
+      novelty: "known"
+      # Calculated score: ~62 (HITL required)
+
+    delete-data:
+      irreversibility: "critical"
+      spend_impact: "none"
+      reputation_risk: "medium"
+      blast_radius: "team"
+      novelty: "known"
+      # Calculated score: ~53 (elevated logging, near HITL)
+
+  # Override rules
+  overrides:
+    # Some actions ALWAYS require HITL regardless of score
+    always_require_hitl:
+      - "deploy-production"
+      - "spend-money"
+      - "delete-production-data"
+      - "modify-security-policy"
+      - "revoke-principal"
+
+    # Some actions never need HITL (pure read operations)
+    never_require_hitl:
+      - "read-logs"
+      - "list-files"
+      - "dry-run"
+      - "status-check"
+
+# ---------------------------------------------------------------------------
+# PRINCIPAL REGISTRY (Phase 1: Local)
+# ---------------------------------------------------------------------------
+# Phase 2: Replace with identity provider query.
+
+principals:
+  "human:bizcad":
+    principal_type: "human"
+    display_name: "Nick Stein"
+    status: "active"
+    groups:
+      - "engineering-team"
+      - "project-omega"
+    role: "Senior-Engineer"
+    role_rank: 2
+    trust_level: "verified"
+    credential_type: "pat"
+    metadata:
+      mfa_validated: true
+      mfa_method: "totp"
+      session_id: "dev-session-001"
+      github_user: "bizcad"
+      email: "bizcad@example.com"
+
+  "agent:git-push-orchestrator":
+    principal_type: "agent"
+    display_name: "Git Push Orchestrator"
+    status: "active"
+    groups: []                         # Inherited from parent at delegation time
+    role: "Developer"                  # Base role; effective role from delegation
+    role_rank: 1
+    trust_level: "verified"
+    credential_type: "api_key"
+    metadata:
+      agent_version: "1.0.0"
+      runtime: "claude-code"
+      model_id: "claude-opus-4-6"
+      spawn_reason: "user-request"
+      parent_principal: "human:bizcad"
+      tools_granted: []
+      max_autonomy_level: "semi-autonomous"
+      sandbox_id: null
+      ttl_minutes: 60
+      memory_tier: "fast"
+
+  "code:rules-engine-v1.0":
+    principal_type: "code"
+    display_name: "Rules Engine v1.0"
+    status: "active"
+    groups: []                         # Inherited from invoking principal
+    role: "Developer"
+    role_rank: 1
+    trust_level: "basic"              # Phase 1: basic (no signing yet)
+                                       # Phase 3a: verified (after signing)
+    credential_type: "none"            # Phase 3a: cosign_signature
+    metadata:
+      artifact_type: "skill"
+      version: "1.0.0"
+      source_repo: "bizcad/RoadTrip"
+      source_commit: "5c20400"
+      signed: false
+      signature_method: "none"
+      provenance_level: "none"
+      sbom_present: false
+      test_status: "passing"
+      test_coverage_pct: 92
+      author_principal: "human:bizcad"
+      reviewer_principal: null
+      fingerprint: null
+      build_environment: null
+
+  "code:commit-message-v1.0":
+    principal_type: "code"
+    display_name: "Commit Message Generator v1.0"
+    status: "active"
+    groups: []
+    role: "Developer"
+    role_rank: 1
+    trust_level: "basic"
+    credential_type: "none"
+    metadata:
+      artifact_type: "skill"
+      version: "1.0.0"
+      source_repo: "bizcad/RoadTrip"
+      source_commit: "5c20400"
+      signed: false
+      signature_method: "none"
+      provenance_level: "none"
+      sbom_present: false
+      test_status: "untested"
+      test_coverage_pct: null
+      author_principal: "human:bizcad"
+      reviewer_principal: null
+      fingerprint: null
+      build_environment: null
+
+# ---------------------------------------------------------------------------
+# AUDIT & TELEMETRY
+# ---------------------------------------------------------------------------
+
+audit_policy:
+  log_all_decisions: true
+  log_format: "yaml"                  # yaml | json | structured-log
+  log_destination: "logs/auth-decisions/"
+  retain_days: 90
+  enhanced_logging_actions:           # Actions that get extra detail
+    - "git-push"
+    - "deploy"
+    - "publish"
+    - "delete"
+  include_in_log:
+    - "principal_id"
+    - "principal_type"
+    - "trust_level"
+    - "action"
+    - "resource"
+    - "delegation_chain"
+    - "layers_evaluated"
+    - "decision"
+    - "risk_score"
+    - "evaluation_time_ms"
+    - "srcgeee_phase"
+
+# ---------------------------------------------------------------------------
+# ERROR MESSAGES (Extended from existing)
+# ---------------------------------------------------------------------------
+
+error_messages:
+  IDENTITY_INVALID:
+    message: "Principal '{principal_id}' failed identity verification"
+    recovery: "Re-authenticate or check credential status"
+
+  IDENTITY_EXPIRED:
+    message: "Credentials for '{principal_id}' have expired"
+    recovery: "Renew session (human), respawn agent, or rebuild code artifact"
+
+  INSUFFICIENT_GROUP:
+    message: "You are not in a group authorized for this skill"
+    recovery: "Contact admin to be added to one of: {required_groups}"
+
+  INSUFFICIENT_ROLE:
+    message: "Role '{user_role}' is below minimum '{minimum_role}'"
+    recovery: "Request a role promotion or contact admin"
+
+  MFA_REQUIRED:
+    message: "This skill requires multi-factor authentication"
+    recovery: "Re-authenticate with MFA ({accepted_methods}) and try again"
+
+  TOOL_BLOCKED:
+    message: "Tool '{tool}' or path '{path}' is not permitted"
+    recovery: "Check allowed paths in policy or use an alternative tool"
+
+  RESOURCE_PROTECTED:
+    message: "Resource '{resource}' is protected"
+    recovery: "Use the alternative workflow: {suggested_alternative}"
+
+  DELEGATION_MISSING:
+    message: "Agent '{principal_id}' has no active delegation for this action"
+    recovery: "Request delegation from a human principal"
+
+  DELEGATION_EXPIRED:
+    message: "Delegation expired at {expiry}"
+    recovery: "Request a new delegation from the grantor"
+
+  DELEGATION_SCOPE_EXCEEDED:
+    message: "Action '{action}' on '{resource}' is outside delegation scope"
+    recovery: "Request expanded delegation or use an authorized resource"
+
+  HITL_REQUIRED:
+    message: "Risk score {risk_score} exceeds threshold. Human approval required."
+    recovery: "A human must approve this action before it can proceed"
+
+  UNSIGNED_CODE:
+    message: "Code artifact '{principal_id}' is not signed"
+    recovery: "Sign the artifact with cosign or GPG and rebuild"
+
+# ---------------------------------------------------------------------------
+# METADATA
+# ---------------------------------------------------------------------------
+
+version: "0.1"
+last_updated: "2026-03-04"
+phase: "Phase 1-2 (Local Deterministic Auth + Delegation Design)"
+note: >
+  This is a design-time policy model showing the complete 7-layer structure.
+  Phase 1 enforces L1-L4. L0, L5, L6 are specified for implementation in
+  Phase 2a-2b. Principals section will be replaced by identity provider in
+  Phase 3b.

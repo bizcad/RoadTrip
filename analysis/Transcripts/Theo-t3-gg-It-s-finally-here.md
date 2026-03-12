@@ -1,0 +1,484 @@
+---
+source_type: youtube_video
+video_url: "https://www.youtube.com/watch?v=hDn8-fK3XaU"
+video_id: hDn8-fK3XaU
+title: It's finally here.
+creator: Theo - t3․gg
+upload_date: "2026-03-06T19:32:44-08:00"
+retrieved_at_utc: "2026-03-08T15:53:57+00:00"
+transcript_available: true
+transcript_language_requested:
+  - en
+  - en-US
+  - en-GB
+transcript_language_selected: en
+transcript_is_generated: true
+transcript_segment_count: 394
+video_duration_seconds: null
+topics_detected:
+  - code
+  - want
+  - all
+  - like
+  - app
+  - can
+  - things
+  - other
+  - open
+  - work
+generator_script: scripts/extract_youtube_debate_brief.py
+---
+
+# YouTube Transcript Brief
+
+## Transcription
+- [00:00:00] Coding's changing faster than ever. I
+- [00:00:01] still remember all the way back in 2022
+- [00:00:03] when I first started playing with
+- [00:00:04] Copilot. I never could have imagined
+- [00:00:06] that we would have all of these agents
+- [00:00:08] running and building real software from
+- [00:00:10] scratch as well as contributing to large
+- [00:00:12] real code bases. It's unbelievable. I
+- [00:00:14] never thought we would be here. That's
+- [00:00:16] also why I never thought I would build a
+- [00:00:17] developer tool outside of things like
+- [00:00:19] libraries and infrastructure. I never
+- [00:00:21] saw myself building an IDE and I still
+- [00:00:24] don't. But something has changed. That
+- [00:00:27] something is the codeex app. There have
+- [00:00:29] been other things like it, but this one
+- [00:00:32] broke my brain. The ability to break
+- [00:00:34] your work up into different projects,
+- [00:00:36] having multiple threads running in
+- [00:00:38] parallel or sequentially, however you
+- [00:00:40] choose, changed how I write code. It
+- [00:00:42] turned my editor back into an editor
+- [00:00:44] that I go to just to look at and change
+- [00:00:46] code. And it also changed my
+- [00:00:48] relationship with the projects I'm
+- [00:00:50] working on because it became easier than
+- [00:00:51] ever to work in parallel and just get
+- [00:00:54] things done. I started chipping way more
+- [00:00:56] code when I first got access to the
+- [00:00:58] codeex app. But it quickly started
+- [00:00:59] breaking down for me and not just me,
+- [00:01:01] the rest of my team, too. From the
+- [00:01:03] performance issues to the lackluster
+- [00:01:04] workree implementation to most
+- [00:01:06] importantly the lock in on just codeex
+- [00:01:09] models. I wanted something different and
+- [00:01:12] most importantly I wanted something open
+- [00:01:14] source so that I and others could
+- [00:01:16] contribute to what we are trying to
+- [00:01:18] make. I wanted something that we could
+- [00:01:21] build on top of and trust and use at the
+- [00:01:24] very least as a starting point or a bit
+- [00:01:26] of a sandbox for where application
+- [00:01:28] development is going. And that's why
+- [00:01:30] Julius and I have spent far too much
+- [00:01:32] time building T3 Code, which we have
+- [00:01:35] just dropped the alpha for. T3 Code is
+- [00:01:38] entirely free and open- source. It is
+- [00:01:40] built to be a desktop application as
+- [00:01:42] well as a web app that you use via a
+- [00:01:44] package to make it as easy as possible
+- [00:01:46] to build in this highly concurrent way
+- [00:01:49] with agents. Your first question might
+- [00:01:51] be, well, if it doesn't cost anything,
+- [00:01:53] where does the inference come from?
+- [00:01:54] Right now, we required that you have a
+- [00:01:56] codec subscription and that you're using
+- [00:01:58] the codec CLI, but we do have plans to
+- [00:02:00] support lots of other options in the
+- [00:02:02] future from open code to cla code to
+- [00:02:05] cursor and even Gemini. I think there's
+- [00:02:07] a lot of value in supporting everything
+- [00:02:09] with an application like this. Even
+- [00:02:10] today, as I was prepping for launch, I
+- [00:02:12] found myself leaving T3 code to go work
+- [00:02:14] in cloud code in the terminal quickly to
+- [00:02:16] do like UI changes and whatnot cuz the
+- [00:02:18] codeex models still aren't great at web
+- [00:02:20] development and UI in particular. I want
+- [00:02:22] to be very clear in that this app is
+- [00:02:24] early. There's a lot of cool things
+- [00:02:26] we're trying and I couldn't be more
+- [00:02:27] excited for them, but we are still in
+- [00:02:29] the early stages of development and I
+- [00:02:31] wanted to bring it out in the open so
+- [00:02:33] that we could all work on it together.
+- [00:02:35] Our biggest focus right now is getting
+- [00:02:36] to rough feature par with existing
+- [00:02:38] options without compromising on
+- [00:02:40] performance. Our app flies. You can have
+- [00:02:42] gigantic threads with no issue. I had to
+- [00:02:44] nuke my database right before going live
+- [00:02:46] for this. So, I don't have any great
+- [00:02:48] examples, but if you watch my other
+- [00:02:49] videos, you can see this app does not
+- [00:02:52] slow down even under crazy load with
+- [00:02:54] lots of separate projects running in
+- [00:02:57] parallel. And if you want to run things
+- [00:02:58] in parallel within a given project, we
+- [00:03:00] have you covered there with the work
+- [00:03:01] tree workflows that Julius has been
+- [00:03:03] working on. absurdly hard. Ready for the
+- [00:03:06] cleanest slop workflow you've ever seen?
+- [00:03:08] This blue color around the inputs kind
+- [00:03:10] of just stayed from an early build and
+- [00:03:11] I've been too lazy to change it. Let's
+- [00:03:13] do that. Can we tone down the blue
+- [00:03:16] highlight on the input box when focused?
+- [00:03:20] And while this is running, I want to
+- [00:03:21] show you guys some other really cool
+- [00:03:22] things we did here because there's a
+- [00:03:24] different way you can launch the app. If
+- [00:03:25] you want to try this app out without
+- [00:03:27] installing anything, just as a quick
+- [00:03:28] oneoff run, you can use npxt3. Right now
+- [00:03:31] it's at alpha. I'm going to change that
+- [00:03:33] later. And with this command, you will
+- [00:03:35] spin up the package locally and it will
+- [00:03:37] launch a web view where you can use T3
+- [00:03:39] code the exact same way you would in the
+- [00:03:41] app. I personally really prefer having a
+- [00:03:43] desktop app simply because it's a
+- [00:03:44] different thing to command tab into and
+- [00:03:46] out of and I like using my browser for
+- [00:03:48] other stuff, but if you do want to try
+- [00:03:49] it out without installing everything,
+- [00:03:51] you can get the vast majority of the
+- [00:03:52] experience here. We currently only
+- [00:03:54] support the codec cli, so you're
+- [00:03:56] required to have it installed already
+- [00:03:57] and set up with O either with an API key
+- [00:03:59] or with traditional signin. That means
+- [00:04:01] that we don't charge anything. So again,
+- [00:04:03] it is free and open source. We do intend
+- [00:04:05] to support other harnesses going
+- [00:04:06] forward. This is actually one of the
+- [00:04:08] distinctions between T3 code and other
+- [00:04:10] tools. Things like open code, as much as
+- [00:04:12] we love them, are building their own
+- [00:04:14] harness from scratch. So the AI runs in
+- [00:04:17] their thing. With T3 code, we're using
+- [00:04:19] the harnesses provided by the official
+- [00:04:21] labs. So with Codex, we're using the
+- [00:04:23] official Codec CLI with the app server
+- [00:04:24] and it runs in the background on your
+- [00:04:26] computer. We're not giving the agents
+- [00:04:28] custom tools or anything to make
+- [00:04:29] changes. they are using the CLIs. We
+- [00:04:31] just built a better interface on top and
+- [00:04:34] that's why we intend to support things
+- [00:04:35] like cloud code through the agent SDK or
+- [00:04:38] the cursor through the cursor CLI, open
+- [00:04:40] code as well and even Gemini. We chose
+- [00:04:42] this path because we find the models
+- [00:04:44] work best in the harness that they were
+- [00:04:45] built around especially now that they're
+- [00:04:47] rlinging so hard on those exact
+- [00:04:49] harnesses. We also want to make sure
+- [00:04:51] that subscriptions people have for all
+- [00:04:52] of these different platforms will work
+- [00:04:54] inside of T3 code always. Rather than
+- [00:04:56] trying to steal your O credentials and
+- [00:04:58] shove them into some other tool, we are
+- [00:05:00] trying to use the existing solution with
+- [00:05:02] a better UI. A harness is the set of
+- [00:05:04] tools an agent is given access to in
+- [00:05:06] order to do things like search the web,
+- [00:05:08] edit files, run commands, and all of
+- [00:05:10] that. And the harnesses have gotten more
+- [00:05:12] and more complex, and we don't believe a
+- [00:05:14] generic one is the right solution to get
+- [00:05:16] something great for all devs with all
+- [00:05:18] models. We think this path makes more
+- [00:05:19] sense. And for any lab that doesn't have
+- [00:05:20] their own specific harness, we do intend
+- [00:05:22] to support open code in the future. This
+- [00:05:24] is part of what makes us different
+- [00:05:26] though. The Open Code desktop app
+- [00:05:27] requires you to use the Open Code
+- [00:05:29] harness. Our desktop app lets you use
+- [00:05:31] any harness. Well, it will once we get
+- [00:05:33] the parts out that will allow that. I
+- [00:05:35] want to show off the T3 code workflow a
+- [00:05:37] little bit more here. This is the change
+- [00:05:39] I just requested toning down the blue in
+- [00:05:41] the border ring. We have a little button
+- [00:05:43] that Julius added here for GitHub. And
+- [00:05:45] when you click it, it will generate a
+- [00:05:47] commit message, commit the changes, push
+- [00:05:49] to a branch, and create a PR all with
+- [00:05:51] one click with everything handled for
+- [00:05:53] you. It has never been easier to go from
+- [00:05:56] idea to PR in real code bases. And this
+- [00:06:00] combines so well with the other
+- [00:06:01] features. If you kick off some work and
+- [00:06:03] then want to go do something else or you
+- [00:06:04] notice something else you want to
+- [00:06:06] change, command shift O, you're still in
+- [00:06:07] work tree mode. I want to do something
+- [00:06:10] else. Submit that and you can go right
+- [00:06:12] back to the thread you were in. all
+- [00:06:13] running safely in their own isolated
+- [00:06:15] work trees. And you can even use command
+- [00:06:16] J to open up the terminal for that work
+- [00:06:19] tree. I've even went as far as using
+- [00:06:20] this to go do work in the terminal in
+- [00:06:23] other apps once the work tree is created
+- [00:06:24] because I really like Julius's workree
+- [00:06:26] workflows. That said, they are still
+- [00:06:28] early and we are exploring other things
+- [00:06:30] we can do with them going forward. We
+- [00:06:31] have all sorts of fun things we're
+- [00:06:33] hoping to add support for in the future
+- [00:06:34] from running your agents remotely like
+- [00:06:36] on a different box in your network like
+- [00:06:38] you know everyone's got a Mac Mini now,
+- [00:06:40] right? Or running in the cloud as well.
+- [00:06:41] We also obviously want to support all of
+- [00:06:43] the other agents that we can run through
+- [00:06:45] our UI. And to be very very clear, we
+- [00:06:48] are not building our own harness. We did
+- [00:06:50] not make our own agentic framework for
+- [00:06:53] the agents to run in because we don't
+- [00:06:55] think we can do better than the major
+- [00:06:57] labs. Rather than trying to reinvent
+- [00:06:59] everything with our own harness like
+- [00:07:00] many other solutions have, we have
+- [00:07:02] decided to use the harnesses that are
+- [00:07:04] provided by the labs. In the times where
+- [00:07:06] the labs aren't providing one, lean on
+- [00:07:07] some good standards like open code. The
+- [00:07:09] official agent harnesses have so much
+- [00:07:11] work and iteration going on in them that
+- [00:07:13] I don't really want to leave them
+- [00:07:15] behind. I just want to leave the
+- [00:07:16] terminal behind. I love the terminal.
+- [00:07:19] It's a great experience for things that
+- [00:07:21] you would normally do in a terminal. But
+- [00:07:22] as soon as you're doing things like
+- [00:07:24] hopping between threads, pasting images,
+- [00:07:26] scrolling, copy pasting, searching, all
+- [00:07:29] of those types of things just fall apart
+- [00:07:31] in a CLI interface. And I found myself
+- [00:07:33] using the terminal more as a result of
+- [00:07:35] T3 code. I know that sounds crazy, but
+- [00:07:37] the terminal going back to being a
+- [00:07:39] terminal has actually been really nice
+- [00:07:41] for me in my own development, and I bet
+- [00:07:42] a lot of you will be surprised as well.
+- [00:07:44] If you're skeptical of this project and
+- [00:07:46] you don't necessarily think it's the
+- [00:07:47] right fit for you, I implore you to give
+- [00:07:49] it a shot because I think you'll be
+- [00:07:51] surprised. We're still very early, but I
+- [00:07:53] wanted to get this out ASAP so that
+- [00:07:55] people could start using it now,
+- [00:07:56] experimenting, figuring out what does
+- [00:07:58] and doesn't work, and most importantly,
+- [00:08:00] talking with us. We built the app of our
+- [00:08:02] dreams. This is the tool we like to use
+- [00:08:04] every single day and we've been shipping
+- [00:08:06] so much code with it. But I want a tool
+- [00:08:08] that's just good for us. I want a tool
+- [00:08:10] that's good for all of developers. Since
+- [00:08:12] this is so early though, we're not
+- [00:08:13] accepting contributions just yet. If you
+- [00:08:15] write an issue that has detailed
+- [00:08:17] feedback as well as a suggested prompt
+- [00:08:19] for us to run, we'll do our best to run
+- [00:08:20] it. And if you can show us what the
+- [00:08:22] outputs look like, like if you're making
+- [00:08:23] a UI change with a screenshot in the
+- [00:08:25] app, that would be really helpful, too.
+- [00:08:27] But at this point in time, we will not
+- [00:08:29] be accepting poll requests from external
+- [00:08:31] contributors. That's very likely to
+- [00:08:32] change in the future. We're just trying
+- [00:08:33] to get this done ASAP right now. People
+- [00:08:35] are asking, do I prefer this over
+- [00:08:36] Codeex? Yes, I built it because I loved
+- [00:08:39] Codeex overall, but I found so many
+- [00:08:41] small problems with it, especially
+- [00:08:43] around performance that I just got
+- [00:08:45] frustrated. The Codex CLI is open source
+- [00:08:47] and the Codex app server that they use
+- [00:08:49] to build the Codex app, those are all
+- [00:08:50] open source, too. But the Codex desktop
+- [00:08:53] app isn't, which has made it really hard
+- [00:08:55] for us to fix the problems that we have.
+- [00:08:57] And as much as I appreciate the OpenAI
+- [00:08:58] team and how willing they are to take
+- [00:09:00] feedback and make changes, I wanted
+- [00:09:02] something that we owned. Not just we as
+- [00:09:04] in my team, but we as in the open-source
+- [00:09:07] community. I wanted something that we
+- [00:09:09] could build together that isn't
+- [00:09:10] restricted by what one specific lab
+- [00:09:12] wants, what one specific harness does,
+- [00:09:14] or even forcing us to build our own
+- [00:09:16] external subscription service. And the
+- [00:09:18] fact that Julius and I, honestly, mostly
+- [00:09:20] Julius the last few weeks, has managed
+- [00:09:21] to build this ourselves from scratch
+- [00:09:24] shows just how powerful these tools are.
+- [00:09:26] and also that something like this should
+- [00:09:28] belong to the community. If it wasn't
+- [00:09:30] for him, there is no way this project
+- [00:09:32] would have gotten good, much less
+- [00:09:34] released. I started this on a whim out
+- [00:09:36] of curiosity and frustration with the
+- [00:09:38] performance I was seeing in other apps.
+- [00:09:39] I even tried building my own native
+- [00:09:41] solution cuz I was so curious what
+- [00:09:43] causes these things to be slow. I found
+- [00:09:45] Electron was the best performance
+- [00:09:46] overall across platforms. Roast me all
+- [00:09:48] you want, you're [ __ ] wrong. And once
+- [00:09:50] I had everything built and roughly
+- [00:09:52] working, I showed it to Julius, who I
+- [00:09:54] couldn't really stop. When I streamed a
+- [00:09:57] few weeks ago, I told him, "Hey, I'm
+- [00:09:58] going to be busy today. You can take
+- [00:09:59] over the project. You can run from Maine
+- [00:10:01] here." And I never got it back. I've
+- [00:10:04] never seen someone ship quite as hard as
+- [00:10:06] Julius has, especially after he got it
+- [00:10:08] to the point where he could use T3 code
+- [00:10:09] to build T3 code. It's far from the most
+- [00:10:11] accurate thing in the world, but
+- [00:10:12] Macroscope's dashboard shows how much
+- [00:10:14] coding time it thinks devs did during a
+- [00:10:16] sprint. It thinks that in the last week,
+- [00:10:18] Julius did over 1,200 hours of code. And
+- [00:10:22] we go to other weeks, like last week,
+- [00:10:23] oh, it's only 819 hours or 923. You'll
+- [00:10:27] see that the sheer volume that Julius is
+- [00:10:29] shipping at is insane. Most of that is
+- [00:10:31] him and how well he's figured out how to
+- [00:10:33] do true agentic engineering. And he's
+- [00:10:35] built T3 Code to be the best tool in the
+- [00:10:37] world for that type of throughput. And
+- [00:10:39] I'm really proud of what we've built.
+- [00:10:40] And I'm really proud of Julius for
+- [00:10:42] making all of this possible. So, make
+- [00:10:44] sure to give him a follow. I see a lot
+- [00:10:46] of people asking about platform
+- [00:10:47] availability. This is a thing that we
+- [00:10:48] took really seriously. Wanted to make
+- [00:10:50] sure we got it right, which is why we
+- [00:10:51] support everything. There will obviously
+- [00:10:54] be bugs in certain platforms like making
+- [00:10:56] sure Windows with WSL works and all of
+- [00:10:58] those types of things is difficult.
+- [00:11:00] Please share any issues you encounter
+- [00:11:02] with the team so we can get them fixed
+- [00:11:03] ASAP. We also intend to support Linux.
+- [00:11:05] Right now, we only have an app image,
+- [00:11:07] but we're down to support other ways of
+- [00:11:09] bundling for Linux as well. And
+- [00:11:11] remember, it's fully open source and you
+- [00:11:13] have the package you can run instead
+- [00:11:14] through the npxt3 command, which should
+- [00:11:16] solve most of your problems. One last
+- [00:11:19] thing, in the spirit of open source,
+- [00:11:21] part of what we wanted to do here is
+- [00:11:23] show how we're building, which is why I
+- [00:11:25] made the decision to not wipe our
+- [00:11:27] history on GitHub. You can see
+- [00:11:29] everything here, all 877 commits of
+- [00:11:32] utter chaos. You can see Julius and I
+- [00:11:35] ramping up how much we used agents, but
+- [00:11:37] also ramping up how much attention we
+- [00:11:39] paid and how hard we were working to try
+- [00:11:40] and steer them in the directions that we
+- [00:11:42] wanted. And I'm really happy with where
+- [00:11:44] we landed. Obviously, I'm not saying you
+- [00:11:46] should go copy every single thing about
+- [00:11:48] how we're building. I just want you guys
+- [00:11:50] to see how we're building cuz I think
+- [00:11:52] there's a lot of cool lessons to learn
+- [00:11:53] from it. I am seeing one question over
+- [00:11:55] and over and I want to make sure we
+- [00:11:56] address it. T3 code is not part of T3
+- [00:11:59] Chat. This is a separate open source
+- [00:12:01] project that we built because we wanted
+- [00:12:02] it. We aren't charging any money. We
+- [00:12:04] don't know if we'll charge money in the
+- [00:12:06] future, but we could see ourselves in
+- [00:12:08] the future building some type of
+- [00:12:09] subscription that bundles multiple
+- [00:12:11] models and their harnesses and one thing
+- [00:12:13] you pay for. Not a high priority for us
+- [00:12:16] just yet. We have lots of other things
+- [00:12:17] we want to build first. We built this
+- [00:12:19] because we wanted it, not because we
+- [00:12:21] want to make money from it. If you guys
+- [00:12:23] have things you want that make sense for
+- [00:12:25] us to charge for in the future, we
+- [00:12:26] aren't opposed to it, but it is far from
+- [00:12:28] our focus right now. We just want to
+- [00:12:31] make something great. That's all I have
+- [00:12:32] for now. Let me know how y'all feel
+- [00:12:34] about this launch. And until next time,
+- [00:12:36] keep prompting.
+
+## Summary
+Transcript length: approximately 394 caption segments.
+Core points detected:
+- I still remember all the way back in 2022 when I first started playing with Copilot.
+- I never could have imagined that we would have all of these agents running and building real software from scratch as well as contributing to large real code bases.
+- That's also why I never thought I would build a developer tool outside of things like libraries and infrastructure.
+- I never saw myself building an IDE and I still don't.
+- There have been other things like it, but this one broke my brain.
+- The ability to break your work up into different projects, having multiple threads running in parallel or sequentially, however you choose, changed how I write code.
+
+## Analysis
+### Presenter Questions and Implied Answers
+- Question: Your first question might be, well, if it doesn't cost anything, where does the inference come from?
+  Implied answer: Right now, we required that you have a codec subscription and that you're using the codec CLI, but we do have plans to support lots of other options in the future from open code to cla code to cursor and even Gemini.
+- Question: Ready for the cleanest slop workflow you've ever seen?
+  Implied answer: This blue color around the inputs kind of just stayed from an early build and I've been too lazy to change it.
+- Question: Can we tone down the blue highlight on the input box when focused?
+  Implied answer: And while this is running, I want to show you guys some other really cool things we did here because there's a different way you can launch the app.
+- Question: We have all sorts of fun things we're hoping to add support for in the future from running your agents remotely like on a different box in your network like you know everyone's got a Mac Mini now, right?
+  Implied answer: Or running in the cloud as well. We also obviously want to support all of the other agents that we can run through our UI.
+- Question: People are asking, do I prefer this over Codeex?
+  Implied answer: Yes, I built it because I loved Codeex overall, but I found so many small problems with it, especially around performance that I just got frustrated.
+
+### Claims to Pressure-Test
+- Claim: I never could have imagined that we would have all of these agents running and building real software from scratch as well as contributing to large real code bases.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: That's also why I never thought I would build a developer tool outside of things like libraries and infrastructure.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Your first question might be, well, if it doesn't cost anything, where does the inference come from?
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: We just built a better interface on top and that's why we intend to support things like cloud code through the agent SDK or the cursor through the cursor CLI, open code as well and even Gemini.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: We chose this path because we find the models work best in the harness that they were built around especially now that they're rlinging so hard on those exact harnesses.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: We also want to make sure that subscriptions people have for all of these different platforms will work inside of T3 code always.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Rather than trying to steal your O credentials and shove them into some other tool, we are trying to use the existing solution with a better UI.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: It has never been easier to go from idea to PR in real code bases.
+  Challenge question: What independent evidence would falsify this claim?
+
+### Potential Weaknesses to Challenge
+- Evidence quality: Are key claims backed by data, or mostly anecdotal?
+- Selection bias: Were only favorable examples highlighted?
+- Confounding factors: Could alternative explanations fit the same outcomes?
+- Over-generalization: Are narrow observations being framed as universal truths?
+- Incentives: Are sponsorships or channel incentives shaping conclusions?
+
+### Research Prompt Ingredients for SRCGEEE Retrieve
+- Exact claim text to verify (quote with timestamp)
+- Required evidence type (peer-reviewed study, benchmark, public dataset, docs)
+- Time window for evidence freshness
+- Counter-position to test against
+- Failure criteria that would falsify the claim
+- Confidence rubric (high/medium/low) with reasons

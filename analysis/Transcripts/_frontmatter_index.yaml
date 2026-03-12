@@ -1,0 +1,67 @@
+generated_at_utc: '2026-03-08T17:55:13.395198+00:00'
+source_directory: G:\repos\AI\RoadTrip\analysis\Transcripts
+count: 4
+items:
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\ai-news-strategy-20260302-don-need-saas-system-replaced.md
+  title: You Don't Need SaaS. The $0.10 System That Replaced My AI Workflow (45 Min
+    No-Code Build)
+  creator: AI News & Strategy Daily | Nate B Jones
+  video_id: 2JiMmye2ezg
+  upload_date: '2026-03-02T07:00:06-08:00'
+  topics_detected:
+  - can
+  - memory
+  - about
+  - because
+  - every
+  - context
+  - brain
+  - system
+  - agent
+  - get
+  transcript_segment_count: 780
+  retrieved_at_utc: '2026-03-08T17:55:13+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\Theo-GPT-5_4-is-really-good.md
+  title: null
+  creator: null
+  video_id: null
+  upload_date: null
+  topics_detected: []
+  transcript_segment_count: null
+  retrieved_at_utc: null
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\Theo-t3-gg-gpt-5-4-is-really-really-good.md
+  title: gpt-5.4 is really, really good
+  creator: "Theo - t3\u2024gg"
+  video_id: HD5TWE8xD7o
+  upload_date: '2026-03-06T01:55:17-08:00'
+  topics_detected:
+  - model
+  - like
+  - really
+  - all
+  - better
+  - can
+  - more
+  - things
+  - did
+  - here
+  transcript_segment_count: 1232
+  retrieved_at_utc: '2026-03-08T15:53:39+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\Theo-t3-gg-It-s-finally-here.md
+  title: It's finally here.
+  creator: "Theo - t3\u2024gg"
+  video_id: hDn8-fK3XaU
+  upload_date: '2026-03-06T19:32:44-08:00'
+  topics_detected:
+  - code
+  - want
+  - all
+  - like
+  - app
+  - can
+  - things
+  - other
+  - open
+  - work
+  transcript_segment_count: 394
+  retrieved_at_utc: '2026-03-08T15:53:57+00:00'

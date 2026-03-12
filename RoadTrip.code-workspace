@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "../roadtrip-blog"
+		},
+		{
+			"path": "../rockbot"
+		},
+		{
+			"path": "../scratchpad"
 		}
 	],
 	"settings": {
@@ -26,7 +32,9 @@
 			".\\scripts\\git_push.ps1": true,
 			".": true,
 			"gpush-dry": true,
-			"gpush": true
-		}
+			"gpush": true,
+			"Get-Item": true
+		},
+		"powershell.cwd": "RoadTrip"
 	}
 }
