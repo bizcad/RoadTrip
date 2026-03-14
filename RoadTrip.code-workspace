@@ -4,12 +4,6 @@
 			"path": "."
 		},
 		{
-			"path": "../ControlPlane"
-		},
-		{
-			"path": "../roadtrip-blog"
-		},
-		{
 			"path": "../scratchpad"
 		}
 	],

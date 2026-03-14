@@ -192,8 +192,45 @@ if ($ProjectRoot) {
         . $bpublishPath
     }
 
+    function scrape-prompt {
+        param(
+            [string]$SourceUrl,
+            [string]$DestinationPath,
+            $PreferRaw,
+            $LocalizeImages,
+            [switch]$FromClipboard,
+            [switch]$CopyToClipboard
+        )
+
+        & (Join-Path $ProjectRoot 'infra\new-page-scrape-prompt.ps1') @PSBoundParameters
+    }
+
+    function scrape-page {
+        param(
+            [string]$SourceUrl,
+            [string]$DestinationPath,
+            $PreferRaw,
+            $LocalizeImages,
+            [switch]$FromClipboard
+        )
+
+        & (Join-Path $ProjectRoot 'infra\invoke-page-scrape.ps1') @PSBoundParameters
+    }
+
+    function scrape-page-clipboard {
+        scrape-page -FromClipboard
+    }
+
+    function scrape-prompt-clipboard {
+        scrape-prompt -FromClipboard -CopyToClipboard
+    }
+
+    function scrape-now {
+        scrape-page -FromClipboard
+    }
+
     Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
-    Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp)" -ForegroundColor Cyan
+    Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp), scrape-prompt, scrape-page, scrape-now" -ForegroundColor Cyan
 } else {
     Write-Host "ℹ Not in RoadTrip workspace - RoadTrip-specific commands disabled" -ForegroundColor Gray
 }

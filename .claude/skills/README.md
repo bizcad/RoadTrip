@@ -10,6 +10,7 @@ This directory mirrors the skills from `./skills` for **semantic discovery** by 
 4. **git-push-autonomous** - Autonomous git push with safety checks
 5. **rules-engine** - File pattern and safety rules validation  
 6. **telemetry-logger** - Structured logging for autonomous operations
+7. **page-scraper** - Scrape pages to markdown (URL or clipboard)
 
 ## Usage
 

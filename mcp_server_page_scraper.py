@@ -17,7 +17,26 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urljoin, urlparse
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ModuleNotFoundError:
+    class FastMCP:  # type: ignore[override]
+        """Fallback shim so CLI helpers can import this module without mcp installed."""
+
+        def __init__(self, _name: str) -> None:
+            self._name = _name
+
+        def tool(self):
+            def _decorator(fn):
+                return fn
+
+            return _decorator
+
+        def run(self) -> None:
+            raise RuntimeError(
+                "mcp package is not installed; server mode is unavailable. "
+                "Install MCP dependencies to run this as an MCP server."
+            )
 
 mcp = FastMCP("page-scraper")
 
@@ -134,6 +153,83 @@ def _decode_next_image_url(url: str) -> str:
     if not source:
         return url
     return unquote(source)
+
+
+def _extract_raw_endpoint_from_html(html: str, base_url: str) -> str | None:
+    match = re.search(r'href\s*=\s*["\']([^"\']*/api/raw/[^"\']+)["\']', html, flags=re.I)
+    if not match:
+        return None
+    return urljoin(base_url, match.group(1).strip())
+
+
+def _derive_raw_endpoint_from_blog_url(url: str) -> str | None:
+    parsed = urlparse(url)
+    parts = [p for p in parsed.path.split("/") if p]
+    if len(parts) < 2 or parts[0].lower() != "blog":
+        return None
+    slug = parts[-1]
+    return f"{parsed.scheme}://{parsed.netloc}/api/raw/{slug}?language=en"
+
+
+def _looks_like_markdown_article(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped:
+        return False
+    if "<html" in stripped[:500].lower():
+        return False
+    return stripped.startswith("#") or "\n## " in stripped
+
+
+def _fetch_raw_markdown_if_available(url: str, html: str) -> tuple[str | None, str | None]:
+    candidate_urls: list[str] = []
+
+    discovered = _extract_raw_endpoint_from_html(html, base_url=url)
+    if discovered:
+        candidate_urls.append(discovered)
+
+    derived = _derive_raw_endpoint_from_blog_url(url)
+    if derived and derived not in candidate_urls:
+        candidate_urls.append(derived)
+
+    for candidate in candidate_urls:
+        try:
+            text = _fetch_text(candidate)
+        except Exception:
+            continue
+        if _looks_like_markdown_article(text):
+            return text, candidate
+
+    return None, None
+
+
+def _absolutize_markdown_links(markdown: str, base_url: str) -> str:
+    def _replace(match: re.Match[str]) -> str:
+        label = match.group(1)
+        link = match.group(2).strip()
+        if not link.startswith("/"):
+            return match.group(0)
+        return f"{label}({urljoin(base_url, link)})"
+
+    return re.sub(r"(!?\[[^\]]*\])\(([^)]+)\)", _replace, markdown)
+
+
+def _polish_markdown(markdown: str, base_url: str) -> str:
+    text = markdown.strip()
+    text = re.sub(r"(?im)^\[TOC\]\s*$", "", text)
+    text = re.sub(r"(?im)^<!--\s*category--.*?-->\s*$", "", text)
+    text = re.sub(r"(?im)^<datetime[^>]*>.*?</datetime>\s*$", "", text)
+    text = _absolutize_markdown_links(text, base_url=base_url)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip() + "\n"
+
+
+def _strip_leading_h1(markdown: str) -> str:
+    lines = markdown.lstrip("\n").splitlines()
+    if lines and lines[0].startswith("# "):
+        lines = lines[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+    return ("\n".join(lines).strip() + "\n") if lines else ""
 
 
 def _html_fragment_to_markdown(fragment: str, base_url: str) -> str:
@@ -272,14 +368,29 @@ def _localize_images(markdown: str, md_path: Path, slug: str) -> tuple[str, list
     return updated, records
 
 
-def _scrape_to_markdown(url: str, output_dir: Path, localize_images: bool = True) -> dict[str, Any]:
+def _scrape_to_markdown(
+    url: str,
+    output_dir: Path,
+    localize_images: bool = True,
+    prefer_raw_markdown: bool = True,
+) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     slug = _slug_from_url(url)
 
     html = _fetch_text(url)
     title = _extract_title(html)
-    fragment = _extract_best_fragment(html)
-    body_md = _html_fragment_to_markdown(fragment, base_url=url)
+    raw_markdown: str | None = None
+    raw_markdown_url: str | None = None
+    if prefer_raw_markdown:
+        raw_markdown, raw_markdown_url = _fetch_raw_markdown_if_available(url, html)
+
+    if raw_markdown:
+        scrape_method = "raw_markdown"
+        body_md = _strip_leading_h1(_polish_markdown(raw_markdown, base_url=url))
+    else:
+        scrape_method = "html_fragment"
+        fragment = _extract_best_fragment(html)
+        body_md = _polish_markdown(_html_fragment_to_markdown(fragment, base_url=url), base_url=url)
 
     md_path = output_dir / f"{slug}.md"
     header = "\n".join(
@@ -289,6 +400,11 @@ def _scrape_to_markdown(url: str, output_dir: Path, localize_images: bool = True
             f"retrieved_at_utc: {_utc_now_iso()}",
             f"title: {title}",
             f"slug: {slug}",
+            f"scrape_method: {scrape_method}",
+            f"raw_markdown_url: {raw_markdown_url or ''}",
+            f"prefer_raw_markdown: {str(prefer_raw_markdown).lower()}",
+            "polished: true",
+            f"localized_images: {str(localize_images).lower()}",
             "generator_mcp_server: mcp_server_page_scraper.py",
             "---",
             "",
@@ -313,6 +429,11 @@ def _scrape_to_markdown(url: str, output_dir: Path, localize_images: bool = True
         "output_file": str(md_path),
         "title": title,
         "slug": slug,
+        "scrape_method": scrape_method,
+        "raw_markdown_url": raw_markdown_url,
+        "prefer_raw_markdown": prefer_raw_markdown,
+        "polished": True,
+        "localized_images": localize_images,
         "image_count": len(image_records),
         "images": image_records,
     }
@@ -323,6 +444,7 @@ def scrape_page_to_markdown(
     url: str,
     output_dir: str = "analysis/ScrapedPages",
     localize_images: bool = True,
+    prefer_raw_markdown: bool = True,
 ) -> dict[str, Any]:
     """Scrape a generic web page into markdown with optional local image localization."""
     try:
@@ -330,6 +452,7 @@ def scrape_page_to_markdown(
             url=url.strip(),
             output_dir=_resolve_path(output_dir),
             localize_images=localize_images,
+            prefer_raw_markdown=prefer_raw_markdown,
         )
     except Exception as exc:
         return {
@@ -341,18 +464,34 @@ def scrape_page_to_markdown(
 
 
 @mcp.tool()
-def scrape_page_text_only(url: str) -> dict[str, Any]:
+def scrape_page_text_only(url: str, prefer_raw_markdown: bool = True) -> dict[str, Any]:
     """Scrape a generic page and return extracted markdown text in-memory only."""
     try:
-        html = _fetch_text(url.strip())
+        url = url.strip()
+        html = _fetch_text(url)
         title = _extract_title(html)
-        fragment = _extract_best_fragment(html)
-        body_md = _html_fragment_to_markdown(fragment, base_url=url)
+        raw_markdown: str | None = None
+        raw_markdown_url: str | None = None
+        if prefer_raw_markdown:
+            raw_markdown, raw_markdown_url = _fetch_raw_markdown_if_available(url, html)
+
+        if raw_markdown:
+            scrape_method = "raw_markdown"
+            body_md = _polish_markdown(raw_markdown, base_url=url)
+        else:
+            scrape_method = "html_fragment"
+            fragment = _extract_best_fragment(html)
+            body_md = _polish_markdown(_html_fragment_to_markdown(fragment, base_url=url), base_url=url)
         return {
             "status": "ok",
             "source_url": url,
             "title": title,
             "markdown": body_md,
+            "scrape_method": scrape_method,
+            "raw_markdown_url": raw_markdown_url,
+            "prefer_raw_markdown": prefer_raw_markdown,
+            "polished": True,
+            "localized_images": False,
             "char_count": len(body_md),
         }
     except Exception as exc:
@@ -369,6 +508,7 @@ def scrape_pages_batch(
     urls_csv: str,
     output_dir: str = "analysis/ScrapedPages",
     localize_images: bool = True,
+    prefer_raw_markdown: bool = True,
 ) -> dict[str, Any]:
     """Scrape multiple pages from a comma-separated URL list into markdown files."""
     urls = [u.strip() for u in urls_csv.split(",") if u.strip()]
@@ -384,7 +524,12 @@ def scrape_pages_batch(
     ok_count = 0
 
     for url in urls:
-        item = scrape_page_to_markdown(url=url, output_dir=str(out), localize_images=localize_images)
+        item = scrape_page_to_markdown(
+            url=url,
+            output_dir=str(out),
+            localize_images=localize_images,
+            prefer_raw_markdown=prefer_raw_markdown,
+        )
         results.append(item)
         if item.get("status") == "ok":
             ok_count += 1

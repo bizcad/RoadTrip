@@ -7,6 +7,7 @@
 | Skill | Primary Use | Input | Output | Cost |
 |-------|------------|-------|--------|------|
 | **auth-validator** | Verify authorization before operations | User identity, skill, resource | APPROVED \| FORBIDDEN_LAYER_* | $0 |
+| **page-scraper** | Scrape pages into markdown (URL or clipboard) | URL/clipboard, destination, options | Markdown file + provenance metadata | $0 |
 | **git-push-autonomous** | Autonomous git push with safety | Working tree changes | SUCCESS \| BLOCKED \| ERROR | $0 |
 | **commit-message** | Generate semantic commit msgs | Staged files, diff | Message + confidence | $0-0.01 |
 | **blog-publisher** | Publish blog posts | BlogPost object | BlogPublishResult | $0 |
@@ -57,6 +58,15 @@ blog-publisher(
 )
 ```
 **Result**: Post published to https://roadtrip-blog-ten.vercel.app/
+
+### Scenario 2b: Scrape a Page
+**You say**: "I want to scrape a page from the clipboard"
+**Claude discovers**: page-scraper skill
+**Claude invokes**:
+```
+pwsh -File .\infra\invoke-page-scrape.ps1 -FromClipboard
+```
+**Result**: Markdown written to chosen or auto-generated path under ./docs
 
 ### Scenario 3: Assess Authorization
 **You say**: "can I deploy to production?"
