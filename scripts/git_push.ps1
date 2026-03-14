@@ -336,27 +336,22 @@ if (-not (git remote get-url origin 2>$null)) {
 Write-Verbose "✓ origin remote found"
 Write-SessionLog "Validated origin remote exists."
 
-# Push to origin — use PAT-embedded URL to bypass Git Credential Manager (GCM)
-# GCM hangs waiting for interactive auth even when a token is available.
-# Also refreshes the remote URL so VS Code's background git operations use the token too.
+# Push to origin — use GIT_ASKPASS to supply PAT without embedding it in the URL.
+# This keeps `git remote -v` clean and avoids token leakage in logs/history.
+# GCM is disabled for this repo via `credential.helper = ""` in .git/config (local).
 $patFile = Join-Path $PSScriptRoot "..\ProjectSecrets\PAT.txt"
-$remoteUrl = git remote get-url origin
-if ((Test-Path $patFile) -and ($remoteUrl -match "github\.com[/:]([^/]+/[^/.]+?)(?:\.git)?$")) {
-    $repoPath = $Matches[1]
-    $pat = (Get-Content $patFile -Raw).Trim()
-    $tokenUrl = "https://bizcad:$pat@github.com/$repoPath.git"
-    # Keep origin URL up-to-date so VS Code's git (fetch/sync) also bypasses GCM
-    git remote set-url origin $tokenUrl
-    Write-Host "Pushing to origin/$branch..."
-    Write-Verbose "Running: git push origin $branch (PAT auth, GCM bypassed)"
-    Write-SessionLog "Pushing to origin/$branch (PAT auth)..."
-    git -c http.connectTimeout=15 push origin "${branch}:${branch}" --quiet
+$askpassScript = Join-Path $PSScriptRoot "..\infra\git-askpass.cmd"
+if ((Test-Path $patFile) -and (Test-Path $askpassScript)) {
+    $env:GIT_ASKPASS = $askpassScript
+    $env:GIT_USERNAME = "bizcad"
+    Write-Verbose "PAT auth via GIT_ASKPASS (token not in URL)"
+    Write-SessionLog "Pushing to origin/$branch (GIT_ASKPASS auth)..."
 } else {
-    Write-Host "Pushing to origin/$branch..."
-    Write-Verbose "Running: git push origin $branch (fallback, no PAT file found)"
-    Write-SessionLog "Pushing to origin/$branch (fallback)..."
-    git -c http.connectTimeout=15 push origin $branch --quiet
+    Write-Verbose "No PAT file or ASKPASS script found — falling back to default auth"
+    Write-SessionLog "Pushing to origin/$branch (default auth)..."
 }
+Write-Host "Pushing to origin/$branch..."
+git -c http.connectTimeout=15 push origin "${branch}:${branch}" --quiet
 if ($LASTEXITCODE -ne 0) { Fail 'git push failed.' 6 }
 Write-Verbose "✓ Push successful"
 

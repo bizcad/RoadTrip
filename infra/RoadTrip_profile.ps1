@@ -231,6 +231,14 @@ if ($ProjectRoot) {
 
     Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
     Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp), scrape-prompt, scrape-page, scrape-now" -ForegroundColor Cyan
+
+    # Set GIT_ASKPASS so VS Code's background git (fetch/sync) bypasses GCM silently.
+    # Token never appears in remote URLs or git remote -v output.
+    $askpass = Join-Path $ProjectRoot "infra\git-askpass.cmd"
+    if (Test-Path $askpass) {
+        $env:GIT_ASKPASS = $askpass
+        $env:GIT_USERNAME = "bizcad"
+    }
 } else {
     Write-Host "ℹ Not in RoadTrip workspace - RoadTrip-specific commands disabled" -ForegroundColor Gray
 }
