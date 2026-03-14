@@ -336,11 +336,24 @@ if (-not (git remote get-url origin 2>$null)) {
 Write-Verbose "✓ origin remote found"
 Write-SessionLog "Validated origin remote exists."
 
-# Push to origin
-Write-Host "Pushing to origin/$branch..."
-Write-Verbose "Running: git push origin $branch (with 5s connection timeout)"
-Write-SessionLog "Pushing to origin/$branch..."
-git -c http.connectTimeout=5 push origin $branch --quiet
+# Push to origin — use PAT-embedded URL to bypass Git Credential Manager (GCM)
+# GCM hangs waiting for interactive auth even when a token is available.
+$patFile = Join-Path $PSScriptRoot "..\ProjectSecrets\PAT.txt"
+$remoteUrl = git remote get-url origin
+if ((Test-Path $patFile) -and ($remoteUrl -match "github\.com/(.+)\.git$|github\.com/(.+)$")) {
+    $repoPath = if ($Matches[1]) { $Matches[1] } else { $Matches[2] }
+    $pat = (Get-Content $patFile -Raw).Trim()
+    $pushUrl = "https://bizcad:$pat@github.com/$repoPath.git"
+    Write-Host "Pushing to origin/$branch..."
+    Write-Verbose "Running: git push <token-url> $branch (PAT auth, bypassing GCM)"
+    Write-SessionLog "Pushing to origin/$branch (PAT auth)..."
+    git -c http.connectTimeout=15 push $pushUrl "${branch}:${branch}" --quiet
+} else {
+    Write-Host "Pushing to origin/$branch..."
+    Write-Verbose "Running: git push origin $branch (fallback, no PAT file found)"
+    Write-SessionLog "Pushing to origin/$branch (fallback)..."
+    git -c http.connectTimeout=15 push origin $branch --quiet
+}
 if ($LASTEXITCODE -ne 0) { Fail 'git push failed.' 6 }
 Write-Verbose "✓ Push successful"
 
