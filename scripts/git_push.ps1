@@ -338,16 +338,19 @@ Write-SessionLog "Validated origin remote exists."
 
 # Push to origin — use PAT-embedded URL to bypass Git Credential Manager (GCM)
 # GCM hangs waiting for interactive auth even when a token is available.
+# Also refreshes the remote URL so VS Code's background git operations use the token too.
 $patFile = Join-Path $PSScriptRoot "..\ProjectSecrets\PAT.txt"
 $remoteUrl = git remote get-url origin
-if ((Test-Path $patFile) -and ($remoteUrl -match "github\.com/(.+)\.git$|github\.com/(.+)$")) {
-    $repoPath = if ($Matches[1]) { $Matches[1] } else { $Matches[2] }
+if ((Test-Path $patFile) -and ($remoteUrl -match "github\.com[/:]([^/]+/[^/.]+?)(?:\.git)?$")) {
+    $repoPath = $Matches[1]
     $pat = (Get-Content $patFile -Raw).Trim()
-    $pushUrl = "https://bizcad:$pat@github.com/$repoPath.git"
+    $tokenUrl = "https://bizcad:$pat@github.com/$repoPath.git"
+    # Keep origin URL up-to-date so VS Code's git (fetch/sync) also bypasses GCM
+    git remote set-url origin $tokenUrl
     Write-Host "Pushing to origin/$branch..."
-    Write-Verbose "Running: git push <token-url> $branch (PAT auth, bypassing GCM)"
+    Write-Verbose "Running: git push origin $branch (PAT auth, GCM bypassed)"
     Write-SessionLog "Pushing to origin/$branch (PAT auth)..."
-    git -c http.connectTimeout=15 push $pushUrl "${branch}:${branch}" --quiet
+    git -c http.connectTimeout=15 push origin "${branch}:${branch}" --quiet
 } else {
     Write-Host "Pushing to origin/$branch..."
     Write-Verbose "Running: git push origin $branch (fallback, no PAT file found)"
