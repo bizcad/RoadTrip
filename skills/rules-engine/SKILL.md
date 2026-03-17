@@ -1,8 +1,26 @@
 ---
 name: rules-engine
-version: specs-v1.0
 description: Evaluates files against safety and validation rules. Use when you need to determine if files are safe to commit/push based on exclusion patterns, size limits, and content scanning. Reads rules from configuration files; extensible for Phase 2 security scanning.
 license: Internal use. RoadTrip project.
+metadata:
+  version: "1.0.0"
+  tags:
+    - safety
+    - validation
+    - rules
+    - exclusions
+    - security
+  examples:
+    - "check if these files are safe to commit"
+    - "validate files against safety rules"
+    - "are these files allowed in git"
+    - "scan files for secrets patterns"
+    - "check exclusion rules"
+  entry_point: src/skills/rules_engine.py
+  runtime: python
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "f84506eea2f53473"
 ---
 
 # Rules Engine Skill

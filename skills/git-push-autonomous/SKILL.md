@@ -1,8 +1,30 @@
 ---
 name: git-push-autonomous
-version: specs-v1.0
-description: Autonomously stages, commits, and pushes repository changes after safety validation. Use when you need to push changes without manual approval, with automatic validation against exclusion rules and safety checks. Logs all decisions for audit trail and learning. Not for sensitive data review or code approval—safety rules must be pre-configured, and operator maintains oversight via telemetry logs.
+description: Autonomously stages, commits, and pushes repository changes after safety validation. Use when changes need to reach the remote without manual git ceremony.
 license: Internal use. RoadTrip project.
+metadata:
+  version: "1.2.0"
+  tags:
+    - git
+    - push
+    - commit
+    - version-control
+    - autonomous
+    - safety
+  examples:
+    - "push my changes"
+    - "push all the latest to the repo"
+    - "push everything to github"
+    - "commit and push"
+    - "git push"
+    - "sync my changes to remote"
+    - "push to remote"
+    - "upload my changes"
+  entry_point: src/skills/git_push_autonomous.py
+  runtime: python
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "80cca53ae777f047"
 ---
 
 # Git-Push Autonomous Skill

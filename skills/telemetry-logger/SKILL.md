@@ -1,8 +1,26 @@
 ---
 name: telemetry-logger
-version: specs-v1.0
 description: Records and structures telemetry data from autonomous operations. Use when you need to log decisions, results, and system state for audit trails, learning, and operator analysis. Integrates with logging backends (currently file-based, future Aspire/QuestionManager integration).
 license: Internal use. RoadTrip project.
+metadata:
+  version: "1.0.0"
+  tags:
+    - telemetry
+    - logging
+    - audit
+    - observability
+    - decisions
+  examples:
+    - "log this decision"
+    - "record what just happened"
+    - "write telemetry for this operation"
+    - "audit log this push"
+    - "save the decision trace"
+  entry_point: src/skills/telemetry_logger.py
+  runtime: python
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "360f6a7e2f5212d4"
 ---
 
 # Telemetry Logger Skill

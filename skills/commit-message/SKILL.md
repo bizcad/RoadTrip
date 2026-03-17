@@ -1,8 +1,26 @@
 ---
 name: commit-message
-version: specs-v1.0
 description: Generates semantic commit messages using cost-optimized Tier 1→2→3 approach. Tier 1 (deterministic, $0) handles 90% of commits. Tier 2 (LLM fallback, ~$0.001-0.01) for complex cases. Tier 3 (user override). Use when you need high-quality, consistent commit messages without excess API costs.
 license: Internal use. RoadTrip project.
+metadata:
+  version: "1.0.0"
+  tags:
+    - git
+    - commit
+    - message
+    - conventional-commits
+    - llm
+  examples:
+    - "generate a commit message"
+    - "what should my commit message be"
+    - "write a commit message for these changes"
+    - "create a semantic commit message"
+    - "auto-generate commit message"
+  entry_point: src/skills/commit_message.py
+  runtime: python
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "2de033aafed70b8e"
 ---
 
 # Commit Message Skill

@@ -1,8 +1,26 @@
 ---
 name: auth-validator
-version: specs-v1.0
 description: Evaluates user authorization across 4 layers (skill availability, execution permission, tool-level access, resource-level access). Use when you need to verify that a user can execute a skill and its associated operations. Implements enterprise-ready authorization with MFA support and role-based access control.
 license: Internal use. RoadTrip project.
+metadata:
+  version: "1.0.0"
+  tags:
+    - auth
+    - authorization
+    - security
+    - rbac
+    - mfa
+  examples:
+    - "validate user permissions"
+    - "check if I can push to main"
+    - "am I authorized to run this skill"
+    - "verify my credentials"
+    - "check authorization before push"
+  entry_point: src/skills/auth_validator.py
+  runtime: python
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "0e3c8b10c9a2a4f5"
 ---
 
 # Auth Validator Skill

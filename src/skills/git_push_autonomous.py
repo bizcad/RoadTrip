@@ -447,17 +447,34 @@ def _parse_status_paths(status_output: str) -> list[str]:
 
 
 def _match_push_prompt(prompt: str) -> bool:
-    """Return True when prompt is a push intent for latest/local changes."""
+    """Return True when prompt is a push intent for latest/local changes.
+
+    NOTE: This is a static-regex approximation of the SRCGEEE Sense phase.
+    The real solution is a PPA orchestrator that does a NN query over the
+    skill embedding space and routes to this skill without any regex.
+    Patterns here are deliberately broad to cover natural-language variants
+    until that orchestrator exists.
+    """
     normalized = (prompt or "").strip().lower()
     if not normalized:
         return False
 
     patterns = (
-        r"\bpush\s+my\s+changes\b",
-        r"\bpush\s+changes\b",
-        r"\bpush\s+the\s+latest\s+changes\b",
-        r"\bplease\s+push\s+the\s+latest\s+changes\b",
+        # Explicit git push phrases
         r"\bgit\s+push\b",
+        r"\bdo\s+a\s+(git\s+)?push\b",
+        # "push [the] [all] [my] [latest/current/recent] [changes/commits/code/stuff/work/files/everything/it]"
+        r"\bpush\b.{0,30}\b(changes?|commits?|code|stuff|work|files?|everything|latest|current|recent|all|it)\b",
+        # "push [everything/all/it] to [the] [repo/remote/github/origin]"
+        r"\bpush\b.{0,20}\bto\b.{0,20}\b(repo|remote|github|origin|upstream)\b",
+        # commit and push / stage and push / save and push
+        r"\b(commit|stage|save)\s+and\s+push\b",
+        # "upload/sync/send [my] changes/commits"
+        r"\b(upload|sync|send)\b.{0,20}\b(changes?|commits?|updates?)\b",
+        # "push to repo/github/remote/origin" (without intervening object noun)
+        r"\bpush\s+(to\s+)?(the\s+)?(repo|remote|github|origin|upstream)\b",
+        # gpush / git-push as a keyword
+        r"\bgpush\b",
     )
     return any(re.search(pattern, normalized) for pattern in patterns)
 

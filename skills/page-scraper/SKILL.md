@@ -1,9 +1,26 @@
 ---
 name: page-scraper
-description: Quickly scrape a web page into markdown using the RoadTrip page scraper MCP helpers. Supports normal URL input and clipboard URL workflows. Use for prompts like "I want to scrape a page" and "I want to scrape a page from the clipboard". Skill version: specs-v1.0.
+description: Scrapes a web page to markdown using RoadTrip MCP helpers. Supports URL input and clipboard URL workflows. Writes output to docs/ with provenance frontmatter.
 license: Internal use. RoadTrip project.
 metadata:
-  skill-version: specs-v1.0
+  version: "1.0.0"
+  tags:
+    - scrape
+    - web
+    - markdown
+    - mcp
+    - docs
+  examples:
+    - "I want to scrape a page"
+    - "I want to scrape a page from the clipboard"
+    - "scrape this url to markdown"
+    - "convert this web page to markdown"
+    - "save this page as markdown"
+  entry_point: infra/invoke-page-scrape.ps1
+  runtime: powershell
+  trust_level: verified
+  # Update fingerprint: py src/skills/skill_scanner.py stamp
+  fingerprint: "9103346584bcd286"
 ---
 
 # Page Scraper Skill
