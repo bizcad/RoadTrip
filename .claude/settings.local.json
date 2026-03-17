@@ -8,20 +8,25 @@
       "Bash(/c/Users/bizca/AppData/Local/Programs/Python/Python313/python.exe:*)",
       "Bash(grep:*)",
       "Bash(done)",
-      "Bash(env -u GIT_ASKPASS -u SSH_ASKPASS GCM_INTERACTIVE=never GIT_TERMINAL_PROMPT=0 git push:*)"
+      "Bash(env -u GIT_ASKPASS -u SSH_ASKPASS GCM_INTERACTIVE=never GIT_TERMINAL_PROMPT=0 git push:*)",
+      "Bash(powershell -Command \"Get-ChildItem ''G:\\\\repos\\\\AI\\\\RoadTrip\\\\workflows\\\\001-gpush-skill-set'' -Recurse | Select-Object FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem ''G:\\\\repos\\\\AI\\\\RoadTrip\\\\workflows\\\\012-operational-agentic-memory'' -Recurse | Select-Object FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem ''G:\\\\repos\\\\AI\\\\PPA\\\\src'' -Recurse -Filter ''*.cs'' | Select-Object FullName -First 20\")",
+      "Bash(\"g:/repos/AI/RoadTrip/PromptTracking/Session Log:*)",
+      "Bash(py -c \"from src.skills.auth_validator import AuthValidator, AuthValidationResult; print\\(''OK''\\)\")"
     ]
-		},
-		"hooks": {
-			"UserPromptSubmit": [
-				{
-					"matcher": "",
-					"hooks": [
-						{
-							"type": "command",
-							"command": ""
-						}
-					]
-				}
-			]
-		}
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ""
+          }
+        ]
+      }
+    ]
+  }
 }
