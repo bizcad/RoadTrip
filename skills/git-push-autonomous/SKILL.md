@@ -3,7 +3,7 @@ name: git-push-autonomous
 description: Autonomously stages, commits, and pushes repository changes after safety validation. Use when changes need to reach the remote without manual git ceremony.
 license: Internal use. RoadTrip project.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   tags:
     - git
     - push
@@ -24,7 +24,7 @@ metadata:
   runtime: python
   trust_level: verified
   # Update fingerprint: py src/skills/skill_scanner.py stamp
-  fingerprint: "80cca53ae777f047"
+  fingerprint: "8a5f238d3fe48e3d"
 ---
 
 # Git-Push Autonomous Skill

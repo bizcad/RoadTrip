@@ -102,7 +102,7 @@ class TestDryrun:
     def test_dryrun_never_calls_git_push(self):
         """dryrun must not call git push under any circumstances."""
         action = ComposedAction(branch="main", commit_message="")
-        with patch("src.skills.executor.GitPushSkill") as mock_skill:
+        with patch("src.skills.git_push_autonomous.GitPushSkill") as mock_skill:
             SRCGEEEExecutor().dryrun(action)
         mock_skill.assert_not_called()
 
@@ -182,7 +182,7 @@ class TestRunExecution:
         mock_skill.push.return_value = mock_push
 
         with patch("src.skills.executor.run_preflight", return_value=self._all_pass_preflight()):
-            with patch("src.skills.executor.GitPushSkill", return_value=mock_skill):
+            with patch("src.skills.git_push_autonomous.GitPushSkill", return_value=mock_skill):
                 result = SRCGEEEExecutor().run(_good_action())
 
         assert result.success is True
@@ -201,7 +201,7 @@ class TestRunExecution:
         mock_skill.push.return_value = mock_push
 
         with patch("src.skills.executor.run_preflight", return_value=self._all_pass_preflight()):
-            with patch("src.skills.executor.GitPushSkill", return_value=mock_skill):
+            with patch("src.skills.git_push_autonomous.GitPushSkill", return_value=mock_skill):
                 result = SRCGEEEExecutor().run(_good_action())
 
         assert result.success is False
@@ -214,7 +214,7 @@ class TestRunExecution:
         mock_skill.push.side_effect = RuntimeError("something exploded")
 
         with patch("src.skills.executor.run_preflight", return_value=self._all_pass_preflight()):
-            with patch("src.skills.executor.GitPushSkill", return_value=mock_skill):
+            with patch("src.skills.git_push_autonomous.GitPushSkill", return_value=mock_skill):
                 result = SRCGEEEExecutor().run(_good_action())
 
         assert result.success is False

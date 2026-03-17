@@ -33,6 +33,7 @@ import os
 
 from src.skills.auth_validator import AuthValidator
 from src.skills.commit_message import CommitMessageSkill
+from src.skills.executor import SRCGEEEExecutor, ComposedAction
 from src.skills.rules_engine import evaluate as evaluate_rules
 from src.skills.telemetry_logger import TelemetryLogger
 from src.skills.telemetry_logger_models import TelemetryEntry
@@ -404,7 +405,7 @@ class GitPushSkill:
             return False
 
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 
 def _run_git(repo_path: Path, args: list[str], timeout: int = 10) -> subprocess.CompletedProcess:
@@ -674,23 +675,28 @@ def execute(input_data: dict) -> dict:
 
         result["commit"] = commit_result
 
-        push_skill = GitPushSkill(repo_path=str(repo_path))
-        push_request = GitPushRequest(
+        # Build ComposedAction from what Compose phase produced
+        action = ComposedAction(
             branch=branch,
             remote=remote,
-            force=force,
-            dry_run=dry_run,
-            push_timeout_seconds=push_timeout_seconds,
+            commit_message=commit_result.get("message", ""),
         )
-        push_result = push_skill.push(push_request)
-        result["push"] = push_result.to_dict()
-        result["decision"] = push_result.decision
-        result["success"] = push_result.success
-        result["warnings"].extend(push_result.warnings)
-        result["errors"].extend(push_result.errors)
 
-        log_decision = "APPROVED" if push_result.success else "DENIED"
-        _log(log_decision, f"Push decision: {push_result.decision}", {"push": result["push"]})
+        executor = SRCGEEEExecutor(repo_path=str(repo_path))
+        exec_result = executor.dryrun(action) if dry_run else executor.run(action)
+
+        result["exec"] = exec_result.to_dict()
+        result["success"] = exec_result.success
+        result["decision"] = "APPROVE" if exec_result.success else "REJECT"
+
+        if exec_result.escalate_to:
+            result["escalate_to"] = exec_result.escalate_to
+            result["errors"].append(
+                exec_result.context.get("reason", exec_result.context.get("failed_check", "unknown"))
+            )
+
+        log_decision = "APPROVED" if exec_result.success else "DENIED"
+        _log(log_decision, f"Exec decision: {result['decision']}", {"exec": result["exec"]})
         return result
 
     except Exception as exc:
@@ -700,9 +706,9 @@ def execute(input_data: dict) -> dict:
 
 
 def main():
-    """CLI entry point: python git_push_autonomous.py [options]"""
+    """CLI entry point — always emits JSON so Claude can parse stdout."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="Autonomous git push to remote repository"
     )
@@ -710,44 +716,25 @@ def main():
     parser.add_argument("--remote", default="origin", help="Remote name (default: origin)")
     parser.add_argument("--repo", help="Repository path (default: current directory)")
     parser.add_argument("--force", action="store_true", help="Force push with lease")
-    parser.add_argument("--dry-run", action="store_true", help="Simulate push without executing")
-    parser.add_argument("--push-timeout-seconds", type=int, default=60, help="Timeout for git push (default: 60)")
-    parser.add_argument("--json", action="store_true", help="Output as JSON")
-    
+    parser.add_argument("--dry-run", action="store_true", help="Preflight only, never pushes")
+    parser.add_argument("--preflight", action="store_true", help="Alias for --dry-run")
+    parser.add_argument("--message", help="Commit message (auto-generated if omitted)")
+    parser.add_argument("--push-timeout-seconds", type=int, default=60)
+
     args = parser.parse_args()
-    
-    # Create skill and execute push
-    skill = GitPushSkill(repo_path=args.repo)
-    request = GitPushRequest(
-        branch=args.branch,
-        remote=args.remote,
-        force=args.force,
-        dry_run=args.dry_run,
-        push_timeout_seconds=args.push_timeout_seconds,
-    )
-    result = skill.push(request)
-    
-    # Output result
-    if args.json:
-        print(json.dumps(result.to_dict(), indent=2))
-    else:
-        print(f"Decision: {result.decision}")
-        print(f"Success: {result.success}")
-        print(f"Confidence: {result.confidence:.2f}")
-        print(f"Commits pushed: {result.commit_count}")
-        print(f"Remote URL: {result.remote_url}")
-        
-        if result.commit_hashes:
-            print(f"Commit hashes: {', '.join(result.commit_hashes)}")
-        
-        if result.warnings:
-            print(f"Warnings: {result.warnings}")
-        
-        if result.errors:
-            print(f"Errors: {result.errors}")
-            sys.exit(1)
-    
-    sys.exit(0 if result.success else 1)
+
+    result = execute({
+        "branch": args.branch,
+        "remote": args.remote,
+        "repo_path": args.repo or ".",
+        "force": args.force,
+        "dry_run": args.dry_run or args.preflight,
+        "message": args.message or "",
+        "push_timeout_seconds": args.push_timeout_seconds,
+    })
+
+    print(json.dumps(result, indent=2))
+    sys.exit(0 if result.get("success") else 1)
 
 
 if __name__ == "__main__":

@@ -23,8 +23,8 @@ from pathlib import Path
 from typing import Any, Literal
 
 from src.skills.preflight import run_preflight, CheckName, PreflightResult
-from src.skills.git_push_autonomous import GitPushSkill, GitPushRequest
 from src.skills.commit_message import CommitMessageSkill
+# GitPushSkill imported lazily in _execute() to avoid circular import
 
 
 # ---------------------------------------------------------------------------
@@ -224,6 +224,7 @@ class SRCGEEEExecutor:
         Any failure here is unexpected — escalate to Evaluate.
         """
         try:
+            from src.skills.git_push_autonomous import GitPushSkill, GitPushRequest  # lazy
             skill = GitPushSkill(repo_path=self._repo_path)
             request = GitPushRequest(
                 branch=action.branch,
