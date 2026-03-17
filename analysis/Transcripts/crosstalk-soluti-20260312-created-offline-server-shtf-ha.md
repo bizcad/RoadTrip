@@ -1,0 +1,391 @@
+---
+source_type: youtube_video
+video_url: "https://www.youtube.com/watch?v=P_wt-2P-WBk"
+video_id: P_wt-2P-WBk
+title: I Created an Offline AI Server for When SHTF Happens
+creator: Crosstalk Solutions
+upload_date: "2026-03-12T09:00:43-07:00"
+retrieved_at_utc: "2026-03-15T18:33:43+00:00"
+transcript_available: true
+transcript_language_requested:
+  - en
+  - en-US
+  - en-GB
+transcript_language_selected: en
+transcript_is_generated: true
+transcript_segment_count: 287
+video_duration_seconds: null
+topics_detected:
+  - can
+  - nomad
+  - right
+  - want
+  - going
+  - project
+  - all
+  - got
+  - now
+  - also
+generator_mcp_server: mcp_server_youtube_transcript.py
+---
+
+# YouTube Transcript Brief
+
+## Transcription
+- [00:00:00] The way things are going right now, let
+- [00:00:01] me ask you a question. If you lost the
+- [00:00:04] internet tomorrow, you know, not for an
+- [00:00:06] hour, but permanently, how are you going
+- [00:00:08] to look up medical information for
+- [00:00:10] grandma? How are you going to navigate
+- [00:00:12] without GPS? And how are you going to
+- [00:00:15] educate your kids? Most people don't
+- [00:00:17] have an answer for that, but now you do.
+- [00:00:20] This is Project Nomad. It's free, it's
+- [00:00:24] open source, and it's built right here
+- [00:00:26] at Cross Talk Solutions. Let's check it
+- [00:00:28] out.
+- [00:00:32] All right. So, I'm not trying to be
+- [00:00:33] dramatic here, but whether it's a
+- [00:00:34] natural disaster, if it's a cyber attack
+- [00:00:37] on infrastructure, or if you're just
+- [00:00:38] living off-rid somewhere, the reality is
+- [00:00:41] that a lot of what we rely on today
+- [00:00:43] lives in the cloud. Medical information,
+- [00:00:46] AI, chat bots, how-to guides, maps, all
+- [00:00:49] of that requires an internet connection.
+- [00:00:51] And when that internet connection goes
+- [00:00:53] away, it all goes away. Now, I wanted to
+- [00:00:56] find a way to save a copy of that
+- [00:00:58] information locally. And since we're all
+- [00:01:00] now used to AIS like Chat GPT, I also
+- [00:01:04] wanted it to have a local LLM. There are
+- [00:01:07] some products out there that have kind
+- [00:01:09] of tried to solve this. You've got
+- [00:01:10] prepper disk, you've got the Doombox,
+- [00:01:13] you've got Ready, but these are all
+- [00:01:15] basically just Raspberry Pies with
+- [00:01:17] Wikipedia and maybe some, you know,
+- [00:01:19] survival PDFs loaded onto them. and
+- [00:01:22] they're going to cost you anywhere from
+- [00:01:23] 150 to 700 bucks. In my opinion, you can
+- [00:01:28] do a lot better and you can do it for
+- [00:01:30] free. Well, other than the cost of the
+- [00:01:33] hardware, Project Nomad is an offline
+- [00:01:35] knowledge server that you can install
+- [00:01:37] onto any computer. Many PCs are
+- [00:01:40] excellent for this, but you can also
+- [00:01:41] just dig up an old laptop or desktop.
+- [00:01:44] Whatever you've got is perfectly fine as
+- [00:01:46] long as it can run Ubuntu. But there is
+- [00:01:49] a huge caveat here in that your
+- [00:01:51] experience with a local AI chatbot is
+- [00:01:54] very much going to be dependent on
+- [00:01:56] having good hardware. You know, plenty
+- [00:01:58] of RAM as well as a decent GPU. But even
+- [00:02:01] without that, you still get a complete
+- [00:02:03] self-contained library of knowledge,
+- [00:02:06] offline maps, and educational tools, all
+- [00:02:09] accessible from any device on your
+- [00:02:11] network through a web browser. Now, I do
+- [00:02:13] want to be clear about something right
+- [00:02:14] up front. This is a passion project of
+- [00:02:17] mine. I'm not trying to sell you
+- [00:02:18] anything. Project Nomad is 100% free and
+- [00:02:21] open source under the Apache 2.0
+- [00:02:24] license. You can go to GitHub right now
+- [00:02:27] and download it. We don't have paid
+- [00:02:29] tiers. We don't have subscriptions. We
+- [00:02:30] don't have accounts. There's no
+- [00:02:32] telemetry. All right? Nothing like that.
+- [00:02:34] This also isn't vibe coded. All right?
+- [00:02:36] My developer and I have been working on
+- [00:02:38] Project Nomad for over a year now
+- [00:02:41] because I believe that everyone should
+- [00:02:43] have access to knowledge even without an
+- [00:02:46] internet connection. And I wanted
+- [00:02:47] something that actually runs serious AI
+- [00:02:50] models, not just a chatbot on a
+- [00:02:52] Raspberry Pi that takes, you know, 30
+- [00:02:54] seconds to answer a simple question.
+- [00:02:56] Project Nomad is designed for real
+- [00:02:58] hardware. If you throw a GPU at it,
+- [00:03:00] you're going to get GPU accelerated AI
+- [00:03:03] inference. We're talking hundreds of
+- [00:03:05] tokens per second running models that
+- [00:03:07] can actually help you with complex
+- [00:03:10] questions. This is a home lab's dream
+- [00:03:13] project. All right, so let me show you
+- [00:03:14] what it looks like. This is the command
+- [00:03:17] center. This is your home base. Every
+- [00:03:18] service that you've installed shows up
+- [00:03:20] here as a tile. You've got the
+- [00:03:22] information library, AI assistant, maps,
+- [00:03:25] education, notes, data tools. Click on
+- [00:03:28] any of these and they're going to open
+- [00:03:29] up that service. You've also got this
+- [00:03:31] little chat button down in the corner.
+- [00:03:33] That is your AI assistant. And it's
+- [00:03:35] always just one click away. You can even
+- [00:03:37] name it whatever you want. I called mine
+- [00:03:42] only pawn in game of life.
+- [00:03:46] >> When you first install Nomad, you get
+- [00:03:48] this easy setup wizard that walks you
+- [00:03:51] through everything step by step. You can
+- [00:03:53] pick the capabilities that you want like
+- [00:03:55] information library, education, AI
+- [00:03:57] assistant. Each one tells you what it
+- [00:03:59] includes and what it needs. And every
+- [00:04:02] one of these services is containerized
+- [00:04:05] for easy modular deployment. Then you
+- [00:04:08] pick out your content. Project Nomad has
+- [00:04:10] curated collections of information
+- [00:04:12] organized into different tiers.
+- [00:04:14] Essential, standard, and comprehensive.
+- [00:04:17] On the low side, essential is going to
+- [00:04:18] give you the basics without eating up
+- [00:04:20] your hard drive. And then comprehensive
+- [00:04:22] gives you absolutely everything. We've
+- [00:04:25] even got a nifty little storage bar up
+- [00:04:27] at the top that shows you exactly how
+- [00:04:29] much disk space you're going to need
+- [00:04:31] before you commit to anything. Once you
+- [00:04:33] select what you want, the progress bars
+- [00:04:36] show you all of your downloads in
+- [00:04:37] progress. And these happen in the
+- [00:04:39] background. A full copy of Wikipedia
+- [00:04:42] with pictures is almost 100 gigs, so
+- [00:04:45] it's going to take a while. All right,
+- [00:04:46] so this here is the information library.
+- [00:04:48] This is powered by Kwix. You've got full
+- [00:04:51] Wikipedia, Project Gutenberg with
+- [00:04:53] thousands of books. You got medical
+- [00:04:55] references, developer documentation, as
+- [00:04:58] well as survival guides. The content
+- [00:05:00] explorer lets you browse available
+- [00:05:02] information, and then download what you
+- [00:05:04] want. You can also go into the content
+- [00:05:05] manager to see what's installed as well
+- [00:05:08] as manage your library. All of the
+- [00:05:10] information is organized into categories
+- [00:05:12] like medicine, education, survival,
+- [00:05:14] computing, and reference. You pick a
+- [00:05:16] category. You pick a tier that you want.
+- [00:05:19] How much data do you want from that
+- [00:05:20] category? And then it downloads straight
+- [00:05:22] to your Nomad server. Then we have our
+- [00:05:25] AI assistant. The AI assistant is a full
+- [00:05:28] chat interface running on your hardware.
+- [00:05:30] You can then pick out and download
+- [00:05:32] different AI models. Anything from
+- [00:05:34] small, fast models up to 70 billion
+- [00:05:37] parameter models if your hardware can
+- [00:05:39] handle it. You can even download
+- [00:05:41] uncensored models if that's your kind of
+- [00:05:43] thing. My server right here is a Minis
+- [00:05:45] Forum MSO2 Ultra with a GeForce RTX 5060
+- [00:05:50] and it can run models up to about 30
+- [00:05:52] billion parameters, though it does get
+- [00:05:54] pretty sluggish at that size. But models
+- [00:05:57] in the 7 to 10 billion parameter range
+- [00:06:00] run almost as fast on this server as
+- [00:06:02] using chat GPT. Okay, but also check
+- [00:06:05] this out. This is really cool. You see
+- [00:06:07] this knowledgebased button? You can
+- [00:06:09] upload your own documents, right? PDFs,
+- [00:06:12] text files, whatever you want. And the
+- [00:06:14] AI indexes those uploads and now you can
+- [00:06:18] ask it questions based on your own
+- [00:06:21] content. So, let's say you've got a
+- [00:06:23] stack of proprietary repair manuals or a
+- [00:06:25] medical field guide or, you know, your
+- [00:06:28] homestead documentation. You upload your
+- [00:06:30] documentation here and now you can ask
+- [00:06:33] the AI questions specific to your
+- [00:06:36] documents. It'll site the source and
+- [00:06:38] it'll tell you exactly where it found
+- [00:06:40] the answer. This is known as rag or
+- [00:06:43] retrieval augmented generation. It's
+- [00:06:45] basically like your own little local
+- [00:06:47] notebook LM. We've also got offline
+- [00:06:50] maps. You pick out the regions that you
+- [00:06:52] want to download and you get full open
+- [00:06:55] street map data. This all works with no
+- [00:06:57] internet, no cell service, nothing.
+- [00:07:00] Right? If you're off-rid or in an
+- [00:07:02] emergency situation, you've now got
+- [00:07:04] detailed maps of your area on your local
+- [00:07:07] network. The education platform is
+- [00:07:09] powered by Calibri. This gives you full
+- [00:07:11] con academy courses, educational videos,
+- [00:07:14] interactive lessons. It's a complete K
+- [00:07:17] through2 curriculum available offline.
+- [00:07:20] So, if you're homeschooling or if you
+- [00:07:22] live in a community that doesn't have
+- [00:07:23] reliable internet, this gives your kids
+- [00:07:26] access to world-class educational
+- [00:07:28] content with no internet required. And
+- [00:07:31] because we're tech people and we can't
+- [00:07:33] help ourselves, I also built in a fullon
+- [00:07:36] benchmarking tool. So, the benchmarking
+- [00:07:38] tool is going to test your CPU, the
+- [00:07:40] memory, the disk, as well as AI
+- [00:07:43] performance, and it's going to come up
+- [00:07:45] with your Nomad score. You can then
+- [00:07:48] share your Nomad score to the community
+- [00:07:50] leaderboard and see how your build
+- [00:07:52] stacks up against everyone else. Now,
+- [00:07:55] I'm currently top of the leaderboard
+- [00:07:56] with a Nomad score of 90.2, but if you
+- [00:08:00] think you can do better, give it a shot.
+- [00:08:02] And you can always check the current
+- [00:08:03] leaderboards at benchmark.pronomad.us.
+- [00:08:07] We've also built in some extra tools
+- [00:08:09] like Cyershe and Flatnotes. And we've
+- [00:08:11] got a ton of ideas for expanding Project
+- [00:08:14] Nomad's functionality in the future. And
+- [00:08:16] all of this, every single thing that I
+- [00:08:18] just showed you runs in Docker
+- [00:08:20] containers, which means you get clean
+- [00:08:22] upgrades and easy rollbacks. I really
+- [00:08:24] wanted to build this to be a
+- [00:08:25] professional containerized deployment,
+- [00:08:28] just like a piece of enterprise
+- [00:08:30] software. All right, so what do you need
+- [00:08:32] to get started? The first thing you're
+- [00:08:34] going to need is a Linux computer,
+- [00:08:36] right? Iuntu or Debian. This could be a
+- [00:08:39] mini PC. It can be an old desktop. It
+- [00:08:41] can be a, you know, an Intel Nook,
+- [00:08:42] right? Whatever. If you want decent AI
+- [00:08:45] performance though, you're also going to
+- [00:08:47] want a GPU. Now, I recommend an Nvidia
+- [00:08:50] RTX 3060 or better for decent
+- [00:08:53] performance on the AI models. But don't
+- [00:08:55] let that scare you away, right? All of
+- [00:08:57] this will run without a GPU. It's just
+- [00:08:59] going to be a little bit slower on the
+- [00:09:01] AI side. The install is just one
+- [00:09:04] command. You download the install
+- [00:09:05] script, you run it, and it sets
+- [00:09:07] everything up. Docker, the database, the
+- [00:09:10] web interface, absolutely everything.
+- [00:09:12] From there, you just open up a browser.
+- [00:09:14] You go to the IP address or host name of
+- [00:09:16] your Nomad Box that's running on port
+- [00:09:18] 8080. And then the easy setup wizard
+- [00:09:21] walks you through the rest. You pick out
+- [00:09:23] your content, you download it, and
+- [00:09:25] you're off and running. The whole setup
+- [00:09:27] takes maybe 10 or 15 minutes, plus
+- [00:09:29] however long your content takes to
+- [00:09:31] download. If you've already got spare
+- [00:09:33] hardware sitting around, you can run
+- [00:09:36] Project Nomad right now. You do not need
+- [00:09:39] to buy anything. So, what's next for
+- [00:09:42] Project Nomad? We have some really cool
+- [00:09:45] things on the road map. Our family food
+- [00:09:47] planner is a separate project that lets
+- [00:09:48] you plan out weeks of food storage based
+- [00:09:51] on your family size and your budget. And
+- [00:09:53] that's eventually going to integrate
+- [00:09:54] right into Nomad. We've also got more
+- [00:09:57] curated content collections coming such
+- [00:09:59] as entertainment. And we're also trying
+- [00:10:02] to grow our Nomad community. So, if you
+- [00:10:04] want to stay in the loop, if you want to
+- [00:10:05] check out the details, head over to
+- [00:10:07] projectnomad. us. You can sign up for
+- [00:10:10] email updates. Now, I am not advertising
+- [00:10:12] to you. This is just for release
+- [00:10:14] announcements as well as new content.
+- [00:10:16] And if you want to get involved, the
+- [00:10:18] GitHub repo is fully open. You can file
+- [00:10:21] issues, you can suggest features, you
+- [00:10:23] can contribute code. Uh any contribution
+- [00:10:26] is welcome. And if you want to hang out
+- [00:10:28] with other Nomad builders, we've got a
+- [00:10:30] Project Nomad channel in the Cross Talk
+- [00:10:33] Discord. The link is in the description.
+- [00:10:35] So, come share your build. I want to see
+- [00:10:37] your Nomad score. I want to hear about
+- [00:10:39] your use cases and I really want to see
+- [00:10:41] what people do with this project. So
+- [00:10:44] that's Project Nomad. It's a free
+- [00:10:46] open-source offline knowledge server
+- [00:10:49] with local AI. It's everything those
+- [00:10:51] $700 survival Raspberry Pies can do
+- [00:10:54] except it's completely free. Links to
+- [00:10:56] everything down in the description and
+- [00:10:58] we will see you in the next video. Well,
+- [00:11:00] assuming that the internet still exists,
+
+## Summary
+Transcript length: approximately 287 caption segments.
+Core points detected:
+- The way things are going right now, let me ask you a question.
+- If you lost the internet tomorrow, you know, not for an hour, but permanently, how are you going to look up medical information for grandma?
+- Most people don't have an answer for that, but now you do.
+- It's free, it's open source, and it's built right here at Cross Talk Solutions.
+- So, I'm not trying to be dramatic here, but whether it's a natural disaster, if it's a cyber attack on infrastructure, or if you're just living off-rid somewhere, the reality is that a lot of what we rely on today lives in the cloud.
+- Medical information, AI, chat bots, how-to guides, maps, all of that requires an internet connection.
+
+## Analysis
+### Presenter Questions and Implied Answers
+- Question: If you lost the internet tomorrow, you know, not for an hour, but permanently, how are you going to look up medical information for grandma?
+  Implied answer: How are you going to navigate without GPS? And how are you going to educate your kids?
+- Question: How are you going to navigate without GPS?
+  Implied answer: And how are you going to educate your kids? Most people don't have an answer for that, but now you do.
+- Question: And how are you going to educate your kids?
+  Implied answer: Most people don't have an answer for that, but now you do. This is Project Nomad.
+- Question: All right?
+  Implied answer: Nothing like that. This also isn't vibe coded.
+- Question: All right?
+  Implied answer: My developer and I have been working on Project Nomad for over a year now because I believe that everyone should have access to knowledge even without an internet connection.
+- Question: How much data do you want from that category?
+  Implied answer: And then it downloads straight to your Nomad server. Then we have our AI assistant.
+- Question: You see this knowledgebased button?
+  Implied answer: You can upload your own documents, right? PDFs, text files, whatever you want.
+- Question: You can upload your own documents, right?
+  Implied answer: PDFs, text files, whatever you want. And the AI indexes those uploads and now you can ask it questions based on your own content.
+- Question: Right?
+  Implied answer: If you're off-rid or in an emergency situation, you've now got detailed maps of your area on your local network.
+- Question: All right, so what do you need to get started?
+  Implied answer: The first thing you're going to need is a Linux computer, right?
+- Question: The first thing you're going to need is a Linux computer, right?
+  Implied answer: Iuntu or Debian. This could be a mini PC.
+- Question: It can be a, you know, an Intel Nook, right?
+  Implied answer: Whatever. If you want decent AI performance though, you're also going to want a GPU.
+
+### Claims to Pressure-Test
+- Claim: and they're going to cost you anywhere from 150 to 700 bucks.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: In my opinion, you can do a lot better and you can do it for free.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Well, other than the cost of the hardware, Project Nomad is an offline knowledge server that you can install onto any computer.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: And because we're tech people and we can't help ourselves, I also built in a fullon benchmarking tool.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: So, the benchmarking tool is going to test your CPU, the memory, the disk, as well as AI performance, and it's going to come up with your Nomad score.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Now, I'm currently top of the leaderboard with a Nomad score of 90.2, but if you think you can do better, give it a shot.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: And you can always check the current leaderboards at benchmark.pronomad.us.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Now, I recommend an Nvidia RTX 3060 or better for decent performance on the AI models.
+  Challenge question: What independent evidence would falsify this claim?
+
+### Potential Weaknesses to Challenge
+- Evidence quality: Are key claims backed by data, or mostly anecdotal?
+- Selection bias: Were only favorable examples highlighted?
+- Confounding factors: Could alternative explanations fit the same outcomes?
+- Over-generalization: Are narrow observations being framed as universal truths?
+- Incentives: Are sponsorships or channel incentives shaping conclusions?
+
+### Research Prompt Ingredients for SRCGEEE Retrieve
+- Exact claim text to verify (quote with timestamp)
+- Required evidence type (peer-reviewed study, benchmark, public dataset, docs)
+- Time window for evidence freshness
+- Counter-position to test against
+- Failure criteria that would falsify the claim
+- Confidence rubric (high/medium/low) with reasons

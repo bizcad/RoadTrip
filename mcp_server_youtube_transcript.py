@@ -38,6 +38,8 @@ from scripts.extract_youtube_debate_brief import (  # pylint: disable=import-err
 
 mcp = FastMCP("youtube-transcript")
 
+DEFAULT_TRANSCRIPTS_DIR = str((Path(__file__).resolve().parent / "analysis" / "Transcripts").resolve())
+
 
 def _resolve_path(path_value: str) -> Path:
     return Path(path_value).resolve()
@@ -93,7 +95,7 @@ def check_transcript(url_or_video_id: str, languages_csv: str = "en,en-US,en-GB"
 @mcp.tool()
 def extract_brief(
     url_or_video_id: str,
-    output_dir: str = "analysis/Transcripts",
+    output_dir: str = DEFAULT_TRANSCRIPTS_DIR,
     languages_csv: str = "en,en-US,en-GB",
     cleanup_transcript_only: bool = True,
     refresh_index: bool = True,
@@ -181,7 +183,7 @@ def extract_brief(
 @mcp.tool()
 def extract_transcript_only(
     url_or_video_id: str,
-    output_dir: str = "analysis/Transcripts",
+    output_dir: str = DEFAULT_TRANSCRIPTS_DIR,
     languages_csv: str = "en,en-US,en-GB",
 ) -> dict[str, Any]:
     """Extract transcript only into a markdown file with frontmatter + Transcription section."""

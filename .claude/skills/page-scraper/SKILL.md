@@ -1,7 +1,8 @@
 ---
 name: page-scraper
-version: specs-v1.0
-description: Route page-scrape intents to RoadTrip prompt helper or direct runner. Supports normal URL mode and clipboard URL mode.
+description: Route page-scrape intents to RoadTrip prompt helper or direct runner. Supports normal URL mode and clipboard URL mode. Skill version: specs-v1.0.
+metadata:
+	skill-version: specs-v1.0
 ---
 
 # Claude Skill: Page Scraper

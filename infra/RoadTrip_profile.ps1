@@ -229,8 +229,53 @@ if ($ProjectRoot) {
         scrape-page -FromClipboard
     }
 
+    function ppa {
+        param(
+            [Parameter(ValueFromRemainingArguments = $true)]
+            [string[]]$Question,
+            [ValidateSet('memory-search', 'echo')]
+            [string]$Skill = 'memory-search',
+            [switch]$Json
+        )
+
+        if (-not $Question -or $Question.Count -eq 0) {
+            Write-Host 'Usage: ppa "question text" [-Skill memory-search|echo] [-Json]' -ForegroundColor Yellow
+            return
+        }
+
+        $args = @((Join-Path $ProjectRoot 'scripts\ppa_ask.py'), ($Question -join ' '), '--skill', $Skill)
+        if ($Json.IsPresent) {
+            $args += '--json'
+        }
+
+        & py @args
+    }
+
+    function ws-roots {
+        param(
+            [ValidateSet('full', 'roadtrip-only')]
+            [string]$Mode = 'full'
+        )
+
+        Push-Location $ProjectRoot
+        try {
+            & ".\scripts\set_workspace_roots.ps1" -Mode $Mode
+        }
+        finally {
+            Pop-Location
+        }
+    }
+
+    function ws-min {
+        ws-roots -Mode 'roadtrip-only'
+    }
+
+    function ws-full {
+        ws-roots -Mode 'full'
+    }
+
     Write-Host "✓ RoadTrip development aliases loaded" -ForegroundColor Green
-    Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp), scrape-prompt, scrape-page, scrape-now" -ForegroundColor Cyan
+    Write-Host "  Available commands: head, tail, wc, grep, gpush, gpush-dry, gpush-log, bpublish (bp), scrape-prompt, scrape-page, scrape-now, ppa, ws-roots, ws-min, ws-full" -ForegroundColor Cyan
 
     # Set GIT_ASKPASS so VS Code's background git (fetch/sync) bypasses GCM silently.
     # Token never appears in remote URLs or git remote -v output.

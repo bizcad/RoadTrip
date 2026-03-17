@@ -1,0 +1,1402 @@
+---
+source_type: youtube_video
+video_url: "https://www.youtube.com/watch?v=K9Wzyrg5OaM"
+video_id: K9Wzyrg5OaM
+title: "Build AI Agents That Remember: Agentic Memory with Valkey | Databases for AI"
+creator: AWS Events
+upload_date: "2026-03-05T22:42:28-08:00"
+retrieved_at_utc: "2026-03-17T02:07:48+00:00"
+transcript_available: true
+transcript_language_requested:
+  - en
+  - en-US
+  - en-GB
+transcript_language_selected: en
+transcript_is_generated: true
+transcript_segment_count: 1298
+video_duration_seconds: null
+topics_detected:
+  - know
+  - like
+  - can
+  - going
+  - right
+  - want
+  - memory
+  - about
+  - then
+  - memories
+generator_mcp_server: mcp_server_youtube_transcript.py
+---
+
+# YouTube Transcript Brief
+
+## Transcription
+- [00:00:00] Heat. Heat. [music]
+- [00:00:05] [music]
+- [00:00:13] [music]
+- [00:00:27] >> [music]
+- [00:00:35] >> Hello everybody and welcome back once
+- [00:00:37] again to a weekly show that we run
+- [00:00:40] called Databases for AI here at AWS. Uh
+- [00:00:43] if you haven't joined us before, let me
+- [00:00:45] know what you just t I'll let you know
+- [00:00:46] what you just tuned into. This is a show
+- [00:00:48] where every week we deep dive into uh
+- [00:00:51] the the very hot space of AI and we show
+- [00:00:53] you uh different techniques for how you
+- [00:00:56] can improve your AI applications built
+- [00:00:57] on top of database primitives uh in this
+- [00:01:01] case database primitive from AWS. So uh
+- [00:01:03] really excited for today's show. If we
+- [00:01:05] haven't met before, my name is Trevor
+- [00:01:06] Spires. I am a solutions architect here
+- [00:01:08] at AWS and I am joined by the wonderful
+- [00:01:11] the the the great and powerful uh Civa.
+- [00:01:14] Civa, would you please introduce
+- [00:01:16] yourself to the folks that have tuned in
+- [00:01:17] today?
+- [00:01:18] >> Thanks for the energetic introduction.
+- [00:01:21] Yeah, my name is Civa. I'm a specialist
+- [00:01:23] essay here in AWS. Um, I do elasticash,
+- [00:01:26] memory DB and everything in between and
+- [00:01:29] agent AI and stuff like that. Uh, been
+- [00:01:31] with AWS for little over four and a half
+- [00:01:33] years. Excited to talk uh to you guys
+- [00:01:36] about agent AI today, especially uh
+- [00:01:38] memory management.
+- [00:01:41] >> Love it. Love to hear. Yeah, it's a very
+- [00:01:42] it's a super important topic, right? So,
+- [00:01:44] like I guess if you if you're watching
+- [00:01:47] um what you should kind of expect from
+- [00:01:48] today's show is, you know, um we're
+- [00:01:50] going to obviously talk a little bit
+- [00:01:52] about agentic memory. We'll dig more
+- [00:01:53] into that into a second, but by the end
+- [00:01:55] of the episode, you should have a basic
+- [00:01:56] understanding of, you know, what do we
+- [00:01:58] mean when we say agentic memory? We're
+- [00:02:00] going to dig into short-term versus
+- [00:02:02] long-term memory. And you're also going
+- [00:02:04] to have a sense of h uh why this is
+- [00:02:07] important, right? And I I'll just I'm
+- [00:02:08] not going to bury the lead. I'll just
+- [00:02:10] tell you why this is important right off
+- [00:02:11] the bat is um LLMs are great at
+- [00:02:13] inferring things. They're not so great
+- [00:02:15] at remembering things though. Um and
+- [00:02:17] that's probably a good place to start uh
+- [00:02:20] for us today. Civa is um but like when
+- [00:02:24] you know I I think folks that are
+- [00:02:25] watching they may have heard of agentic
+- [00:02:27] memory before as a concept but um it'd
+- [00:02:29] be good to get your take off the bat of
+- [00:02:32] kind of where agentic memory fits in and
+- [00:02:35] why it's so important um to people that
+- [00:02:37] are considering building an AI agent.
+- [00:02:40] >> Absolutely. And a lot of us use chat
+- [00:02:42] bots, you know, they're perive. They're
+- [00:02:45] everywhere. Um, so the last time you
+- [00:02:48] used a chatbot, uh, I'm sure you're
+- [00:02:50] frustrated because now you keep having
+- [00:02:53] to repeat yourself all the time. And
+- [00:02:56] it's crazy now. It doesn't, you remember
+- [00:02:59] most of your preferences. It doesn't
+- [00:03:00] remember, you know, what you need. And
+- [00:03:04] let's say you know you you're shopping
+- [00:03:06] for your wedding or vacation and and
+- [00:03:09] then you know you have a 30 long 30
+- [00:03:12] minute long conversation uh talking
+- [00:03:14] about okay this is what I'm planning
+- [00:03:16] this is what I need and then you have to
+- [00:03:19] go pick up your daughter and you come
+- [00:03:21] back and then your session again your
+- [00:03:24] browser exited you create a new browser
+- [00:03:26] session boom everything is gone and uh
+- [00:03:30] it's it's it's and [snorts] that's where
+- [00:03:33] you HDKI where you can actually have
+- [00:03:36] short-term and long-term memories uh
+- [00:03:38] tied to your user profiles. It enhances
+- [00:03:40] the user experience quite a bit.
+- [00:03:43] >> Absolutely. Yeah. I think um it may I
+- [00:03:45] think as in general, you know, if I
+- [00:03:48] think about, you know, we work at
+- [00:03:49] Amazon, so I think a good example to
+- [00:03:50] think about for us is always like um an
+- [00:03:53] e-commerce application. If I'm chatting
+- [00:03:56] with a bot or a service that runs on an
+- [00:03:59] e-commerce website, I kind of expect
+- [00:04:02] that application to have understanding
+- [00:04:04] of like what are the things that I
+- [00:04:06] bought previously? What are the
+- [00:04:08] questions that I asked previously? Um,
+- [00:04:11] you know, uh, you know, I I we were
+- [00:04:13] talking about a use case the other day,
+- [00:04:14] S, where it's like you might be you
+- [00:04:17] might want to be able to go in and say
+- [00:04:19] like, I'm planning a vacation, uh, and I
+- [00:04:21] need to buy some things and maybe to
+- [00:04:22] your point, you step away and you need
+- [00:04:24] to come back the next day. You don't
+- [00:04:25] want to have to constantly reprompt and
+- [00:04:27] reexplain and re copy and paste in all
+- [00:04:29] your context. The expectation these days
+- [00:04:32] from customers is that your the agents
+- [00:04:35] that you expose to them do have some
+- [00:04:38] context and memory so they can
+- [00:04:39] personalize their uh their
+- [00:04:40] recommendations. So I think that's a I
+- [00:04:43] think that's a pretty good like
+- [00:04:44] highlevel overview for folks and uh for
+- [00:04:47] folks that are in the chat by the way um
+- [00:04:49] uh one thing I one thing I forgot to do
+- [00:04:51] today is let you all know um I'm dialing
+- [00:04:53] in from the great state of Maine and I
+- [00:04:55] always love seeing where our guests are
+- [00:04:57] dialing in from. Looks like we've got
+- [00:04:58] folks from a few different spots here
+- [00:05:00] today. Um, where are you coming at from
+- [00:05:02] in the world today? So,
+- [00:05:04] >> I am from the great state of Texas.
+- [00:05:07] >> Oh, the best state, right? That's what I
+- [00:05:09] hear. That's what I hear from you
+- [00:05:10] Texans. It is the best state. Yes,
+- [00:05:12] that's right. [laughter]
+- [00:05:14] >> Amazing. Amazing. If you're joining us,
+- [00:05:17] two things, right? Let us know where
+- [00:05:18] you're coming in from. We'd love to know
+- [00:05:19] where folks are are joining us from
+- [00:05:21] before we dig into the technology. And
+- [00:05:23] of course, this is a live show, so that
+- [00:05:25] means if you were to say something in
+- [00:05:27] the chat, like uh like, "Hi, I'm I'm
+- [00:05:29] from Brazil," like our friend just did.
+- [00:05:31] Or maybe you have a question along the
+- [00:05:33] way for uh Civa as it relates to agentic
+- [00:05:36] memory. That's why we do these live.
+- [00:05:38] We'd love to we'd love to field your
+- [00:05:40] questions. So, uh don't be shy. Uh let
+- [00:05:43] us know um if you have anything you'd
+- [00:05:45] like to to dig into throughout today's
+- [00:05:48] uh show. Um I think um Civa I I I I'm
+- [00:05:54] thinking I know we have some PowerPoint
+- [00:05:56] we want to show before we do that I want
+- [00:05:58] to pull up an architecture um and I want
+- [00:06:01] to your take on it because
+- [00:06:03] >> I feel like you know from a technical
+- [00:06:06] and by the way if you're if you're not
+- [00:06:07] an engineer and you're not an architect
+- [00:06:09] and you're tuning in that's okay we're
+- [00:06:10] going to walk you through at a system
+- [00:06:12] level kind of how agentic memory would
+- [00:06:14] work. So, I'm going to go ahead and pull
+- [00:06:15] up um this is a great uh for me a really
+- [00:06:19] great diagram from um a blog actually
+- [00:06:22] that uh we'll we'll post this blog in
+- [00:06:24] the chat soon. Uh I would definitely
+- [00:06:25] encourage folks to check this out after
+- [00:06:27] today's stream. It's it's basically a
+- [00:06:29] blog that walks you through how to do a
+- [00:06:30] lot of what we're doing today. Um how to
+- [00:06:32] implement agenting memory um for your
+- [00:06:35] own application with something like
+- [00:06:36] Elasticash or Valky. Um so uh before we
+- [00:06:40] get into the the kind of how uh in the
+- [00:06:42] slides um let let's talk let's talk over
+- [00:06:45] this for a second right uh of kind of
+- [00:06:47] like the the building blocks especially
+- [00:06:50] for those people that maybe um are
+- [00:06:53] experimenting with agentic SDKs so they
+- [00:06:56] can understand some of the terminology
+- [00:06:58] and the things that we're going to um
+- [00:06:59] walk them through today.
+- [00:07:02] >> Absolutely. So um essentially you know
+- [00:07:05] whenever you're building any agent-based
+- [00:07:08] applications um the the central to that
+- [00:07:11] is the strands framework right that's
+- [00:07:13] where you use to orchestrate any of your
+- [00:07:17] applications creating agents you know uh
+- [00:07:20] whether it's agent talking u to an agent
+- [00:07:24] or agent talking to an application um
+- [00:07:28] strands is a central theme and then we
+- [00:07:31] have our bedrock Amazon bedrock which is
+- [00:07:33] where you can select pick and choose
+- [00:07:36] your model of your choice and and then
+- [00:07:39] strands can interact with it. And now
+- [00:07:43] the main piece that we're going to talk
+- [00:07:45] today about is is a mem zero framework
+- [00:07:48] which is where you know the short-term
+- [00:07:51] memory long-term memory uh how to manage
+- [00:07:55] that memory and how do you actually uh
+- [00:07:58] interact with uh elastic cache because
+- [00:08:01] elastic cache is a database that we're
+- [00:08:03] going to use to store and retrieve
+- [00:08:06] memories. Um so essentially strands you
+- [00:08:10] have a agent platform and which is
+- [00:08:13] basically your shopping cart whatever
+- [00:08:14] you build a shopping cart now know you
+- [00:08:16] have an interface where you can actually
+- [00:08:18] chat uh now within that framework now
+- [00:08:21] you have mem zero which is sitting
+- [00:08:23] between that and and the databases and
+- [00:08:26] mem is responsible for basically um
+- [00:08:30] storing and retrieving all your memories
+- [00:08:35] of me I'm sorry. Think of memory as
+- [00:08:39] every little thing that when you're
+- [00:08:41] interacting using a chatbot. Um, hey, I
+- [00:08:45] love I'm I'm looking for running shoes
+- [00:08:47] or um I'm wearing size 10.5.
+- [00:08:52] All those things are are in pieces of
+- [00:08:55] information that actually you would want
+- [00:08:57] to store because you don't want to be
+- [00:08:58] repeating yourself all the time.
+- [00:09:02] >> Absolutely. Yeah. And and I and uh one
+- [00:09:04] thing I would say to folks here is like
+- [00:09:07] uh what's like we're showing you an
+- [00:09:09] architecture really built on AWS
+- [00:09:11] services in today's show. Um but what's
+- [00:09:14] really interesting if you all are are
+- [00:09:15] building agents yourself uh you you may
+- [00:09:18] be using strands which by the way
+- [00:09:19] strongly recommend strands is one of the
+- [00:09:20] easiest ways to get an agent up and
+- [00:09:22] running. Um but you may also have heard
+- [00:09:24] of frameworks like um Langchain, Lang
+- [00:09:27] Smith. There's there's a a suite of
+- [00:09:30] agentic frameworks and plus one to what
+- [00:09:32] seems like MIM zero is this really
+- [00:09:35] popular uh framework if you will it kind
+- [00:09:38] of plugs into these agentic frameworks
+- [00:09:40] to provide a nice developer experience
+- [00:09:43] you can wrap these memory services in.
+- [00:09:45] And so like for like for example I you
+- [00:09:47] know I'm I'm one of the many uh many uh
+- [00:09:50] you know techies who have spent the last
+- [00:09:52] couple of weeks experimenting with uh
+- [00:09:54] the the the open source project known as
+- [00:09:56] openclaw and I set up mim zero for my
+- [00:09:59] openclaw deployment to be able to
+- [00:10:01] remember all the context of the
+- [00:10:02] conversations that we've had right and
+- [00:10:04] so I want to set that context for folks
+- [00:10:06] so they understand like um you if you're
+- [00:10:09] looking to learn this topic nim zero is
+- [00:10:11] a really strong standard across the
+- [00:10:13] industry and of course if you're an
+- [00:10:14] Amazon customer or you work with the AWS
+- [00:10:17] uh teams already in your day job. We
+- [00:10:18] have a full stack of solutions to help
+- [00:10:20] you build out the agentic memory but
+- [00:10:22] also even the underlying um agentic
+- [00:10:25] orchestration that you would need to
+- [00:10:26] deliver on a on um your your AI use
+- [00:10:30] case. Anything else that you would um
+- [00:10:32] you think is worth highlighting on this
+- [00:10:35] SMA?
+- [00:10:35] >> Yeah, nowadays most databases come up
+- [00:10:38] with their uh vector vector search
+- [00:10:41] capabilities, right? Imag um sometimes
+- [00:10:44] depending upon which database you
+- [00:10:45] choose, which uh solution you choose,
+- [00:10:48] it's really difficult to kind of like
+- [00:10:50] manage your vector embeddings, uh doing
+- [00:10:53] the retrievalss, doing semantic search.
+- [00:10:57] Um Mezzero framework is the right
+- [00:11:00] framework because it abstracts out
+- [00:11:02] pretty much everything and then you just
+- [00:11:04] run a bunch of API calls around it and
+- [00:11:06] it simplifies all that management for
+- [00:11:08] you.
+- [00:11:11] With that said, um I guess we can get
+- [00:11:13] started. Um the way I would like to um
+- [00:11:17] start this is you know talked about you
+- [00:11:22] know why actually what is the problem
+- [00:11:23] that we actually we are trying to solve
+- [00:11:24] here right and and then the solution
+- [00:11:28] comes about you know the architecture of
+- [00:11:31] how we built uh the short how to build a
+- [00:11:34] short-term and long-term memory and then
+- [00:11:35] walk you through different examples of
+- [00:11:37] how to actually do that. Awesome.
+- [00:11:43] Yeah, makes sense. By the way, actually,
+- [00:11:45] one other thing we should probably take
+- [00:11:46] one second to mention. Uh, and I bet
+- [00:11:49] you'll be I bet you'll be happy to
+- [00:11:50] mention this one, Civa. I've I've got it
+- [00:11:52] behind me. Maybe you can answer the
+- [00:11:53] question. Uh, because we're going to be
+- [00:11:55] talking about Valky as a service that we
+- [00:11:58] are building uh, agentic memory on top
+- [00:12:00] of. Maybe give people your elevator
+- [00:12:02] pitch of Valkyrie for those who haven't
+- [00:12:04] haven't heard about it before. For those
+- [00:12:06] who are not familiar with Valky, it is a
+- [00:12:09] highly popular open-source key value
+- [00:12:12] store which uh it's a fork of radius
+- [00:12:14] crop and replacement of radius open
+- [00:12:16] source. Um it is also supported by our
+- [00:12:20] services elastic cache and memory DB and
+- [00:12:22] it's um we have launched recently we
+- [00:12:25] have launched 8.2 and short to be we are
+- [00:12:26] going to launch 9 but uh it's very
+- [00:12:30] performant highly popular with open
+- [00:12:31] source community. Uh it's a key value
+- [00:12:33] store. It has all the features that you
+- [00:12:35] are used to with Reddis open source.
+- [00:12:37] >> Absolutely a great a really awesome
+- [00:12:39] option if you need um low latency memory
+- [00:12:44] for your agents. Um and it just so
+- [00:12:46] happens you one of the reasons Valkyrie
+- [00:12:47] is really popular with customers and the
+- [00:12:49] open source community is it's got a
+- [00:12:52] really great cost profile for a service
+- [00:12:54] like this as well. A lot of customers
+- [00:12:55] I've seen using other similar solutions
+- [00:12:57] have been migrating to Valky just
+- [00:12:59] because they can get a a general lower
+- [00:13:01] cost of ownership. So, um, yeah, back to
+- [00:13:04] you, Civa.
+- [00:13:06] >> This this goes back to our first
+- [00:13:07] conversation about, okay, you know, we
+- [00:13:09] all use chat bots. You know, they they
+- [00:13:13] suck. Uh, they don't uh remember us. You
+- [00:13:16] know, what you're chatting about. Uh,
+- [00:13:18] and an example here is, okay, uh, you're
+- [00:13:20] looking for running shoes, size 10.5. I
+- [00:13:23] apparently have the same example here,
+- [00:13:24] too. Um, and then you come back, you
+- [00:13:28] know, your browser got killed, you know,
+- [00:13:30] you went to drop your daughter, come
+- [00:13:32] back, and then show me more shoes. And
+- [00:13:34] then it's going to ask you exactly what
+- [00:13:36] you don't want to hear, which is what
+- [00:13:37] size do you want to wear? And this is
+- [00:13:39] frustrating for a lot of users, right?
+- [00:13:41] This is a problem statement. You
+- [00:13:43] >> and I'll even add like this is a this is
+- [00:13:45] a very simple example too, right? Like
+- [00:13:48] this is something that you know maybe
+- [00:13:50] you could provide your shoe size again
+- [00:13:51] but like when you're using an if you if
+- [00:13:53] you're a daily user of an application
+- [00:13:55] you want it to remember a lot you wanted
+- [00:13:58] to remember a lot of the conversations
+- [00:14:00] that you've had right so um yeah I just
+- [00:14:01] want to plus one to that this can be
+- [00:14:03] really frustrating user experience
+- [00:14:05] >> it's a frustrating user experience you
+- [00:14:07] know and thankfully we we have solutions
+- [00:14:10] for it and if you look at what we're
+- [00:14:13] going to do here is okay how can we
+- [00:14:15] enable the agents uh so that you know
+- [00:14:18] they can remember our conversations you
+- [00:14:20] know remember our past interactions um
+- [00:14:23] and this is where you know we're going
+- [00:14:25] to look at short-term and long-term
+- [00:14:26] memory right imagine that you're
+- [00:14:28] interacting with uh with your chatbot of
+- [00:14:31] your choice and then you're giving in
+- [00:14:33] all your preferences and every single
+- [00:14:35] interaction it remembers um it can
+- [00:14:38] remember shortterm which is basically at
+- [00:14:40] the session level or it can remember
+- [00:14:42] longterm which is basically you know it
+- [00:14:45] gets stuck to your user your profile and
+- [00:14:47] it can remember you come back after a
+- [00:14:49] week, it'll still remember what your,
+- [00:14:50] you know, what your, you know, profile
+- [00:14:52] is.
+- [00:14:54] So next time when you have a chatbot
+- [00:14:56] with these capabilities, you don't have
+- [00:14:58] to repeat yourself and you're going to
+- [00:14:59] have a much better experience.
+- [00:15:01] >> Absolutely. And and just a as as a
+- [00:15:03] reminder, uh, I see some folks are are
+- [00:15:05] just starting to tune in. Uh, first of
+- [00:15:06] all, this is live. You know, ask your
+- [00:15:08] questions in the chat if you have any
+- [00:15:09] questions along the way, but this is the
+- [00:15:11] solution we're going to walk you through
+- [00:15:12] today. you should leave with a really
+- [00:15:14] good understanding of how you would
+- [00:15:15] implement something like this to improve
+- [00:15:16] your agent or your application um
+- [00:15:19] leveraging uh Valkyian and and something
+- [00:15:21] like Min Zero. Now, this is this is the
+- [00:15:24] interesting part for me Sea as
+- [00:15:25] especially as a builder. I've always
+- [00:15:27] I've always been a little confused about
+- [00:15:29] short-term and long-term memory and
+- [00:15:31] maybe you can just walk folks through,
+- [00:15:33] you know, the high level and importance
+- [00:15:34] of of having each of these in your app.
+- [00:15:37] >> Yes. Um short-term memory is you know
+- [00:15:42] limited to you open a chat session and
+- [00:15:44] you're talking you're conversing. Um it
+- [00:15:48] sometimes what happens is 15 minutes
+- [00:15:50] into the conversation.
+- [00:15:52] um you sometimes you have asked so many
+- [00:15:55] questions you don't remember you know
+- [00:15:58] some of the things minute details and
+- [00:16:00] you want to recall okay what did I
+- [00:16:04] remind me what I actually talked about
+- [00:16:05] you know was I looking for um
+- [00:16:08] lightweight shows or why I need more
+- [00:16:10] cushion um then it'll help you recall
+- [00:16:13] you know what you actually talked within
+- [00:16:14] that uh scope of your session right
+- [00:16:17] it'll also it'll also say okay um I
+- [00:16:20] added something in in the cart remind me
+- [00:16:23] what I added uh like an hour ago uh if
+- [00:16:27] the session is still open. So short-term
+- [00:16:30] conversations are short-term memory
+- [00:16:33] basically stores um
+- [00:16:36] information related to that session
+- [00:16:38] which can be leveraged you know during
+- [00:16:41] your conversation. Now long-term memory
+- [00:16:43] is now it goes beyond sessions. Okay,
+- [00:16:47] you're planning for your vacation. I'm
+- [00:16:48] going to go back to the same example.
+- [00:16:50] You know, vacation planning is not easy.
+- [00:16:52] You know, you go, you plan multiple
+- [00:16:54] things and you go back, you come back,
+- [00:16:57] you want your uh information to persist
+- [00:17:00] beyond sessions. So, it has to basically
+- [00:17:03] uh somehow associate uh this data points
+- [00:17:07] to your user. So you authenticate you
+- [00:17:09] know you have a chatbot what whatever
+- [00:17:10] you have um uh Amazon or whatever your
+- [00:17:14] your e-commerce application you log in
+- [00:17:16] and you start having your conversation.
+- [00:17:18] So this information uh has to be
+- [00:17:21] actually scoped and preserved at the
+- [00:17:24] user level. Now what what kind of
+- [00:17:27] information? So it's specifically your
+- [00:17:30] preferences when you specifically say
+- [00:17:32] that okay I I have to have lightweight
+- [00:17:35] shoes or you know I need to have you
+- [00:17:38] know neutral colors uh my budget is just
+- [00:17:41] uh $200. So those are specific things
+- [00:17:44] that you want to it to be remembered
+- [00:17:46] beyond right so that is basically
+- [00:17:48] long-term memory
+- [00:17:50] >> that makes a lot of sense. Um, and you
+- [00:17:52] know, one thing I'm I one great thing I
+- [00:17:54] bet about building something like this
+- [00:17:56] on Amazon is I bet as a builder, you
+- [00:17:58] have a lot of control over what you want
+- [00:18:02] to remember, right? Because if you sell
+- [00:18:05] shoes, of course, you want to remember
+- [00:18:06] people's shoe size. You want to remember
+- [00:18:08] the styles that they like, like uh, of
+- [00:18:09] course, but there's such a range of
+- [00:18:11] applications uh, and memory. Um, the
+- [00:18:14] ability to to really be specific about
+- [00:18:17] what you remember and what's important
+- [00:18:19] based on your app. I I I I feel like um
+- [00:18:22] you know makes this really valuable for
+- [00:18:24] customers that are are looking to build
+- [00:18:25] something like this with Amazon.
+- [00:18:28] >> I agree.
+- [00:18:28] >> Oh, speaking of we've got a
+- [00:18:30] classification logic. I'm I'm getting
+- [00:18:31] ahead of myself. Why don't you tell
+- [00:18:33] folks more about that?
+- [00:18:34] >> Yeah, exactly. So, I was about to say,
+- [00:18:36] you know, they're right in the next
+- [00:18:37] slide. So, um you have control. There
+- [00:18:41] are certain things that are pretty
+- [00:18:43] obvious like when I talked about your
+- [00:18:45] personal preferences, those generally
+- [00:18:48] are tagged to long-term. Uh but you get
+- [00:18:51] the flexibility when you're building the
+- [00:18:53] app to kind of like say okay you can
+- [00:18:56] create a rules engine and that says okay
+- [00:18:58] these are some of the things that I want
+- [00:18:59] to tag as shortterm and these are
+- [00:19:02] certain things that you know I want to
+- [00:19:03] tag as longterm. Um but you don't want
+- [00:19:06] it to be you know uh you don't want some
+- [00:19:09] of the things to go long-term. Uh one of
+- [00:19:12] the things that we have to specifically
+- [00:19:14] focus on is categories. You don't want
+- [00:19:16] to mix and match. So as part of this
+- [00:19:19] logic is categories. For example, shoes
+- [00:19:22] will come under
+- [00:19:24] uh I don't know shoes category. Apparel
+- [00:19:28] for example you're buying a jacket that
+- [00:19:30] comes under apparel category. You also
+- [00:19:32] want to make sure that you know you
+- [00:19:33] categorize you know this data because at
+- [00:19:36] some point when you're having wide
+- [00:19:38] variety of uh data points you know it
+- [00:19:42] can get really really bad from
+- [00:19:43] especially when you're retrieving these
+- [00:19:44] memories um back to your back to the
+- [00:19:46] user. So examples, right? Show sizes,
+- [00:19:49] budgets, uh those are all long-term like
+- [00:19:52] I mentioned. Um and then you are you you
+- [00:19:55] you start conversing with with with the
+- [00:19:57] chatbot and you you say you just say
+- [00:20:01] show me more. So show me more requires
+- [00:20:05] some context, right? Uh show me more
+- [00:20:08] means many things. So show me more means
+- [00:20:10] right now you're talking about shows.
+- [00:20:12] Maybe an hour later you may be talking
+- [00:20:14] about, you know, jackets. So those are
+- [00:20:17] the minute details that you can save as
+- [00:20:20] short-term um short-term memory.
+- [00:20:23] >> Yeah, that may that makes a lot of
+- [00:20:24] sense. It's like the it's like the
+- [00:20:25] difference between actually like saving
+- [00:20:29] user preferences and context and things
+- [00:20:31] you can remember about the user to
+- [00:20:32] personalize the experience along with
+- [00:20:35] almost I'm almost thinking of short-term
+- [00:20:37] memory at least in this context as like
+- [00:20:40] um remembering intent from the from the
+- [00:20:43] current session. Um, yeah, I'm a I Yeah,
+- [00:20:46] that this is I'm picking up what you're
+- [00:20:48] putting down. See if I'm picking up what
+- [00:20:50] you're putting down. Hopefully folks in
+- [00:20:51] the audience are are too.
+- [00:20:54] >> Yeah. Now, here's a simple example,
+- [00:20:57] right? You know, show me running shoes.
+- [00:20:59] So, I just go in and say, "Show me
+- [00:21:01] running shoes." And then the chatbot is
+- [00:21:03] going to display a bunch of running
+- [00:21:05] shoes and all that. Now the key detail
+- [00:21:08] here is whenever you know internally
+- [00:21:12] when you're storing as a as a memory
+- [00:21:14] short-term memory
+- [00:21:16] this kind of this information has to be
+- [00:21:19] tagged with your session because that's
+- [00:21:21] what is going to be again used to filter
+- [00:21:24] out the memories and then return back
+- [00:21:26] the information to you. So short-term
+- [00:21:29] memories the rule of the thumb is
+- [00:21:30] short-term memories is session ID
+- [00:21:32] long-term memories is user ID. Just just
+- [00:21:34] think of it that way. So coming back to
+- [00:21:37] this example um you know it spits out
+- [00:21:39] all these different uh nicel looking
+- [00:21:41] running shoes um and then somewhere down
+- [00:21:45] the line you're going to say tell me
+- [00:21:46] about the first one. So now it has to
+- [00:21:49] remember you know what it actually sent
+- [00:21:52] you and what was the sequence and then
+- [00:21:55] what's the first one right
+- [00:21:57] >> this is I feel like this is also very
+- [00:21:58] this is I I bet you know this is
+- [00:22:00] something that customers care about when
+- [00:22:02] it comes to things like um you know this
+- [00:22:05] is the same mechanism you would use to
+- [00:22:06] kind of control security between two
+- [00:22:09] different customers right so because
+- [00:22:10] effectively that uh in this case your
+- [00:22:13] example of using the customer ID as like
+- [00:22:15] a filter or like index to do the lookup
+- [00:22:18] on is what allows you to have probably
+- [00:22:21] one vector database that has um contexts
+- [00:22:24] for many different users but make sure
+- [00:22:27] that you're only showing Trevor Trevor's
+- [00:22:29] preferences and Civ Civas's preferences.
+- [00:22:32] >> That is correct. And the other thing is
+- [00:22:35] you have to filter out because you may
+- [00:22:37] over time you may have built up so many
+- [00:22:40] memories memory data points and tell me
+- [00:22:43] about the first one. It should not
+- [00:22:45] return you totally unrelated uh
+- [00:22:47] information. So it it should tag all
+- [00:22:51] your memories with specific user ID
+- [00:22:54] which user ID can be session ID or
+- [00:22:56] actual user ID uh so that it can give
+- [00:22:58] you the relevant information when it's
+- [00:22:59] actually doing the semantic search.
+- [00:23:04] makes sense to me. Um the long-term
+- [00:23:06] memory now you start conversing, you're
+- [00:23:10] chatting and you're putting in all your
+- [00:23:12] preferences. Like I said, you know, like
+- [00:23:13] we talked about uh now in long-term
+- [00:23:16] memory, what it does is basically takes
+- [00:23:19] all this information and uses your user
+- [00:23:22] ID. Now it now we have the rule book
+- [00:23:26] that says, okay, it looks like this has
+- [00:23:28] to be long-term memory. The moment it
+- [00:23:30] categorizes this as a long-term memory,
+- [00:23:33] then it's going to tag the user ID and
+- [00:23:35] then send it back um um to to basically
+- [00:23:40] store uh in your vector database like a
+- [00:23:42] vector embedding, right? It goes to
+- [00:23:44] bedrock, creates a vector embedding and
+- [00:23:47] then saves it um uh as as a vector uh in
+- [00:23:51] elastic cache, right? So internally that
+- [00:23:52] happens. We we I know we're going to
+- [00:23:54] jumping ahead, but you know that I'm
+- [00:23:56] going to walk through the process later
+- [00:23:57] on in the later set of sides. So now you
+- [00:24:00] you gave all your preferences
+- [00:24:02] um and then you came back after two
+- [00:24:04] weeks and you said uh I need new running
+- [00:24:07] shows. So it will remember and as you
+- [00:24:10] can see here uh it says now the code
+- [00:24:13] here is ST short-term memory LT
+- [00:24:16] long-term memory. So, it remembers all
+- [00:24:17] the stuff that you told it uh five
+- [00:24:19] memories from week one and then it says,
+- [00:24:22] "Okay, you're looking for running shows.
+- [00:24:23] I remember you're looking for
+- [00:24:24] lightweight running shows under under
+- [00:24:26] 150 and it's just going to give you all
+- [00:24:28] that." So, this gives you a better
+- [00:24:30] experience overall, right? Versus, you
+- [00:24:33] know, having to repeat yourself all over
+- [00:24:35] again.
+- [00:24:37] >> Yeah. Yeah. I I can really see how this
+- [00:24:39] enables people that are building agents
+- [00:24:42] to provide a much more rich experience.
+- [00:24:46] And again, I mean, I I love this example
+- [00:24:48] that we have of like a basically a we
+- [00:24:52] could call this like an like an
+- [00:24:54] athletics commerce company, right? They
+- [00:24:55] might sell shoes, they might sell tents,
+- [00:24:57] they might sell outdoor equipment or
+- [00:24:59] whatever. Um, you know, I I I could, if
+- [00:25:04] I'm thinking about how this ties back to
+- [00:25:05] like the business, I could I could
+- [00:25:07] legitimately see this leading to you
+- [00:25:10] selling more things, right? Because
+- [00:25:11] you're able to um provide that
+- [00:25:14] personalized, you know, a lot like, you
+- [00:25:16] know, I'm guilty I'm guilty of going on
+- [00:25:18] Amazon.com and seeing them recommend
+- [00:25:20] another product and and throwing it in
+- [00:25:21] the cart. And I think this is uh almost
+- [00:25:24] another version or could enable another
+- [00:25:26] version of that with um with an agentic
+- [00:25:29] approach.
+- [00:25:30] Absolutely.
+- [00:25:32] Now
+- [00:25:34] here is the here's a technical challenge
+- [00:25:35] behind it. I know it's all sounds really
+- [00:25:38] great and all that. Um what is a
+- [00:25:40] technical challenge? Okay, we gave an
+- [00:25:44] example of Amazon.com millions of users.
+- [00:25:47] Now you have to store thousands of
+- [00:25:48] memories. Now the speed has to be really
+- [00:25:52] the performance has to be really there,
+- [00:25:53] right? Uh so elastic cache as a
+- [00:25:57] in-memory key value data store with val
+- [00:25:59] key is a perfect example where it can
+- [00:26:01] scale um to to you know gigabytes and
+- [00:26:05] terabytes of data at inmemory speed and
+- [00:26:10] searching and getting relevant memories
+- [00:26:11] you know it takes under 300
+- [00:26:13] milliseconds. So you don't want it to
+- [00:26:16] keep searching and giving you a bad
+- [00:26:17] experience. The users get frustrated you
+- [00:26:19] know they just want to leave the chat if
+- [00:26:20] just you come back after 5 seconds. uh
+- [00:26:22] you want to make sure that it's fast,
+- [00:26:25] it's it's instantaneous whenever you're
+- [00:26:27] giving the responses. You don't want it
+- [00:26:28] to, you know, wait for number of
+- [00:26:31] seconds. Um the other thing is cost,
+- [00:26:34] right? Efficient storage and retrieval
+- [00:26:36] at scale. You want to make sure it's
+- [00:26:38] cost efficient as well. The memories,
+- [00:26:40] you know, millions of users, thousands
+- [00:26:41] of memories, it can get quite expensive,
+- [00:26:43] you know, if you don't control. So cost
+- [00:26:45] is a big factor. Privacy again like we
+- [00:26:47] talked about you want to make sure you
+- [00:26:50] know the data is you know restricted
+- [00:26:52] it's it basically one one user's data
+- [00:26:55] cannot be seen by other users you want
+- [00:26:56] to have isolation um and then relevance
+- [00:27:00] um so how do we do it you know we use no
+- [00:27:03] vector embeddings we use semantic
+- [00:27:05] caching and then the most importantly we
+- [00:27:08] use Amazon elastic cache
+- [00:27:18] I'm talking on mute. Geez Louise. Hey, I
+- [00:27:20] I was just saying somebody in the in the
+- [00:27:22] in the chat had a really good question
+- [00:27:24] for you. I think it'd be good to get
+- [00:27:25] your take on is like it's kind of a
+- [00:27:28] twofold question like who and also what
+- [00:27:32] uh determines exactly what gets
+- [00:27:34] classified as short and long. I think
+- [00:27:36] you touched on this a little bit, but
+- [00:27:37] it'd be good to um reiterate that for
+- [00:27:40] for them, especially as they're as
+- [00:27:42] they're um looking to learn more about,
+- [00:27:44] you know, just integrating Mim Zero with
+- [00:27:46] with Valkyrie like we're talking about.
+- [00:27:48] >> Yeah. U so first question was um who
+- [00:27:52] decides, right? um as a builder you know
+- [00:27:55] um we have the flexibility to kind of
+- [00:27:57] like classify which is short-term and
+- [00:27:59] long-term but you know there are certain
+- [00:28:02] obvious choices that you you want to
+- [00:28:04] absolutely have it as long-term memory
+- [00:28:06] uh like I mentioned about you know user
+- [00:28:08] preferences absolutely you know it's
+- [00:28:11] it's an obvious choice because um those
+- [00:28:14] are certain things for example I don't
+- [00:28:16] want to be keep repeating no I want
+- [00:28:18] shoes 10.5 no I want this and that those
+- [00:28:21] are certain things that long-term. Now
+- [00:28:23] short-term those can also go into short
+- [00:28:26] term and that's not a big deal but
+- [00:28:28] things that are in short term for
+- [00:28:30] example um
+- [00:28:33] list out uh talk to me more about the
+- [00:28:36] first result right
+- [00:28:38] those things cannot be going into
+- [00:28:41] longterm because long-term if you go
+- [00:28:43] come back after two weeks you know hey
+- [00:28:46] tell me about you know the first one
+- [00:28:47] doesn't make sense right um [snorts] So
+- [00:28:52] again we get to define the rules because
+- [00:28:54] as a builder you know we we define what
+- [00:28:56] goes into short-term and what goes into
+- [00:28:58] long-term and you know those rules are
+- [00:29:01] basically your domain knowledge you know
+- [00:29:02] what what works uh for that again you
+- [00:29:05] have to work backwards from the user
+- [00:29:07] experience what provides the best user
+- [00:29:10] experience and then build off of it
+- [00:29:13] what was the second question Trevor
+- [00:29:18] you know what we got a question in the
+- [00:29:19] chat that's That's a lowhanging fruit
+- [00:29:21] question and I'm I'm I I'll take this
+- [00:29:23] one. It looks like we got uh somebody
+- [00:29:25] tuning in who maybe hasn't heard of
+- [00:29:27] Elasticash before, right? And so uh ju
+- [00:29:29] just so you know if you haven't before,
+- [00:29:31] think of Elasticash as a service that
+- [00:29:35] you can leverage to manage um low
+- [00:29:38] latency database systems, key value
+- [00:29:41] database systems on AWS. So um it it as
+- [00:29:44] far as um the options available valky is
+- [00:29:47] like a is probably the option that we
+- [00:29:49] talk to customers about most these days
+- [00:29:51] you can also run mim cachd and reddus on
+- [00:29:53] top of that think of it as it's funny
+- [00:29:55] before AI elasticasheach was actually
+- [00:29:57] used as a caching layer right I mean
+- [00:30:00] it's still used broadly as a caching
+- [00:30:02] layer across the industry so think of
+- [00:30:04] that as you know you go to a website you
+- [00:30:06] load up image um you don't want to send
+- [00:30:08] that same image um a million times you
+- [00:30:11] might cache that at the edge So that way
+- [00:30:13] it can be delivered cheaper, faster,
+- [00:30:14] better for customers. Um, and it just so
+- [00:30:17] happens that in the world of generative
+- [00:30:19] AI, the same properties that you want
+- [00:30:22] from something like memory uh are are
+- [00:30:24] also the same properties that you would
+- [00:30:25] want from something uh like a cache at a
+- [00:30:27] systems level. So um definitely check
+- [00:30:30] out uh Elasticash um for your vector DB
+- [00:30:32] needs if you if you hadn't had the
+- [00:30:34] opportunity to to dig into it yet. And I
+- [00:30:36] guess you're you're the you're the
+- [00:30:38] elastic specialist here. So did did I
+- [00:30:40] did I did I do it justice? Would you
+- [00:30:41] would you correct anything I said there?
+- [00:30:44] >> You did a great job and uh you should be
+- [00:30:46] doing my job but um um so elasticashe
+- [00:30:50] you know people who are coming from a
+- [00:30:52] traditional databases relational
+- [00:30:53] databases you know they kind of like
+- [00:30:56] it's it's tricky for them to understand
+- [00:30:58] how the NoSQL world works. So in in
+- [00:31:01] NoSQL world there are so many different
+- [00:31:03] flavors you know we have key value we
+- [00:31:05] have document we have wide column store
+- [00:31:09] uh like Cassandra so on and so forth so
+- [00:31:12] elasticasheach you know it's engines if
+- [00:31:14] you look at these three engines while
+- [00:31:16] key radius and memcachd they're all
+- [00:31:17] basically inmemory key value data data
+- [00:31:20] stores so key value is you supply a key
+- [00:31:23] you get an value you can you get an
+- [00:31:24] object it's a key simple key value store
+- [00:31:26] right and fundamental traditionally it
+- [00:31:29] was used primarily for to cache uh your
+- [00:31:32] your queries. Uh databases cannot scale
+- [00:31:36] uh as quickly as NoSQL relational
+- [00:31:39] databases. I mean so if you want to
+- [00:31:41] improve the performance of your of your
+- [00:31:43] queries, one way to do that is cache
+- [00:31:45] them. Um we we the second thing is the
+- [00:31:48] second most common use case is um
+- [00:31:50] session store. So users uh use user
+- [00:31:54] preferences we we've been talking about
+- [00:31:55] user preferences. You can store the user
+- [00:31:58] preferences. Traditionally those
+- [00:31:59] preferences the the session stores were
+- [00:32:01] stored at the application uh application
+- [00:32:04] server level but then you know it's that
+- [00:32:07] has become uh an antiython now you want
+- [00:32:10] to store that in a centralized uh remote
+- [00:32:13] cache like an elastic cache where you
+- [00:32:14] can store the user sessions because
+- [00:32:17] imagine you have a big application
+- [00:32:18] server with 10 nodes and if you restart
+- [00:32:20] one node what happens to the user
+- [00:32:22] experience of the users that have the
+- [00:32:24] session stored in that one node uh it
+- [00:32:26] becomes a really bad experience for the
+- [00:32:28] user. you want to have a centralized a
+- [00:32:30] fully managed service like Elasticas
+- [00:32:31] that can manage the user sessions for
+- [00:32:33] you.
+- [00:32:35] >> Love it. Love it. Um and you know just
+- [00:32:37] uh so you're not surprised for the sake
+- [00:32:39] of time I'm going to jump forward a
+- [00:32:40] little bit on the PowerPoint.
+- [00:32:42] >> Um and I I think we've got a really nice
+- [00:32:45] uh this is a lower level diagram but I
+- [00:32:48] think something that we should kind of
+- [00:32:49] walk people through so that way they can
+- [00:32:52] have a sense for uh we talked a little
+- [00:32:55] bit about you know how you would
+- [00:32:56] implement this. I don't think we need to
+- [00:32:57] go in live into the details of how you
+- [00:33:00] perform vector embeddings and stuff. I
+- [00:33:01] think people can check out the blog if
+- [00:33:02] they want to learn more about that. But
+- [00:33:04] um maybe at a at a high level you can
+- [00:33:06] start walking folks through how a memory
+- [00:33:09] system architecture would work for an
+- [00:33:12] example like this.
+- [00:33:13] >> So um high level right? So you you build
+- [00:33:16] an a chatbot you know example of in this
+- [00:33:20] example you know we have a react the
+- [00:33:22] front end is on react and the back end
+- [00:33:26] know we are using fast API python uh
+- [00:33:29] python application now the framework mem
+- [00:33:32] zero uh the framework sits in between so
+- [00:33:35] we have used uh uh for example in this
+- [00:33:38] example we have two models uh one is one
+- [00:33:41] using cloud 4.5 sonnet uh that's the
+- [00:33:44] foundational model that's going to
+- [00:33:46] basically uh gets plugged in behind it.
+- [00:33:49] It's the brain behind your your chatbot.
+- [00:33:52] Uh we also have an embedding model. We
+- [00:33:54] use Amazon Titan embeddings version two.
+- [00:33:56] That's your embedding model and I'm
+- [00:33:58] going to get to that in a second. Now
+- [00:33:59] what happens whenever you enter when you
+- [00:34:02] log in and you enter a chat session um
+- [00:34:05] the front end basically takes your
+- [00:34:07] messages and now behind the scenes what
+- [00:34:10] happens is the very first time when you
+- [00:34:13] actually enter a message there are a few
+- [00:34:15] things that happen now you you you can
+- [00:34:19] you can be on a fresh brand new session
+- [00:34:21] or you're actually conversing you know
+- [00:34:23] it's been 30 minutes so whenever you
+- [00:34:26] enter a message the back end takes that
+- [00:34:28] and sees are there any memories
+- [00:34:30] associated with you know what you're
+- [00:34:32] asking me. So it's going to do two
+- [00:34:34] things. It's going to go and look at um
+- [00:34:36] okay are there any memories associated
+- [00:34:39] with this particular session and this
+- [00:34:40] particular user. So it's going to go and
+- [00:34:42] look up uh short-term and long-term
+- [00:34:45] memories. How does it look up? That's
+- [00:34:47] where the MAM zero comes into play.
+- [00:34:49] Right? The M0ero is a framework that
+- [00:34:52] interacts with Amazon Elastic which is
+- [00:34:54] basically a vector data. In this case,
+- [00:34:57] it's a vector data store and and it has
+- [00:35:00] the vector embeddings. So, it's going to
+- [00:35:02] do an a lookup um based on uh the HNS
+- [00:35:07] HNSW algorithm. And I'm going to get to
+- [00:35:09] that again the high level. You know,
+- [00:35:10] it's going to do a lookup and say, "Oh,
+- [00:35:12] okay. This particular message that you
+- [00:35:14] sent me has, you know, two short-term
+- [00:35:17] memories and then, you know, three
+- [00:35:19] long-term memories." It's going to go
+- [00:35:20] and return all of that to you. And it
+- [00:35:24] doesn't return everything. It it turns
+- [00:35:25] that it on when once you get that it
+- [00:35:28] then returns that information to the
+- [00:35:30] foundational model. So foundational
+- [00:35:31] model takes the message, takes the
+- [00:35:34] memories, put them together, and then
+- [00:35:36] gives you that context aware response
+- [00:35:39] that you're looking for, right? Because
+- [00:35:41] uh that's that's that's where uh the
+- [00:35:44] beauty of this is, right? You you have a
+- [00:35:47] message and if you just plug that
+- [00:35:49] message to directly to an LLM without
+- [00:35:52] any memories, it's going to keep asking
+- [00:35:54] you. It's going to it's going to play
+- [00:35:55] dumb. What you're what what we're doing
+- [00:35:57] here is okay before the the LLM responds
+- [00:36:01] to your message we're going to see store
+- [00:36:04] memories retrieve memories and plug
+- [00:36:06] those memories to the message and send
+- [00:36:08] them to the LLM. Now the LLM has
+- [00:36:10] context. So we are we are creating the
+- [00:36:13] context uh for the LLM and then LLM will
+- [00:36:16] better respond to your queries.
+- [00:36:18] >> Amazing. Yeah, thank you for that. That
+- [00:36:20] actually makes a lot. I would my big the
+- [00:36:22] big question mark in my mind was, you
+- [00:36:24] know, precisely, you know, what is
+- [00:36:26] responsible for determining like
+- [00:36:27] short-term versus long-term. And your
+- [00:36:28] explanation of how Mimzero um kind of
+- [00:36:32] fits into this really helps me, I think,
+- [00:36:33] wrap my head around how this works. Hey,
+- [00:36:35] we we got a couple of uh more really
+- [00:36:37] interesting questions from the chat. I
+- [00:36:39] want to I want to get your take on. This
+- [00:36:40] one is a I can tell we got engineers in
+- [00:36:43] the chat today because people are asking
+- [00:36:44] questions that engineers want to ask. Uh
+- [00:36:46] somebody asked um you know h how how do
+- [00:36:50] you think about the size of something
+- [00:36:52] like this like is there um
+- [00:36:54] >> I guess there's a world where if this is
+- [00:36:56] in production running for a long time
+- [00:36:57] maybe you um really fill up that is
+- [00:36:59] there h how would you how would you
+- [00:37:01] manage um something like that if if a
+- [00:37:04] customer had a lot of data getting
+- [00:37:05] stored um in
+- [00:37:07] >> yeah absolutely and actually you know I
+- [00:37:09] know this you know if you go to the very
+- [00:37:11] last slide of of this deck we we have
+- [00:37:13] the exact same question. Oh, perfect,
+- [00:37:14] perfect.
+- [00:37:15] >> You know, all engineers think alike. So,
+- [00:37:17] um,
+- [00:37:18] [laughter] so just to answer that
+- [00:37:20] question, right, um, elastic cache can
+- [00:37:23] store a lot of data. Now, it you can can
+- [00:37:26] store millions and millions of data
+- [00:37:28] points. Um, and you can actually size
+- [00:37:30] the clusters to store millions and
+- [00:37:31] millions of data points. Um, now vector
+- [00:37:34] embeddings, you know, vector store, you
+- [00:37:36] know, we have vector embeddings. Um,
+- [00:37:38] they're all stored as caches and then
+- [00:37:40] indexed. Um you can size the clusters
+- [00:37:43] accordingly. Initially we had some
+- [00:37:45] limitations about sizings but now that's
+- [00:37:46] gone with elasticashe you know you can
+- [00:37:49] scale your cluster add more shards as
+- [00:37:51] your data grows and that's not a
+- [00:37:53] problem.
+- [00:37:54] >> Got it. Yeah that makes perfect sense.
+- [00:37:55] So you can scale um at the DB level you
+- [00:37:58] can scale it and I'm sure there's
+- [00:37:59] probably um there's probably some uh
+- [00:38:03] aspect of like cleaning up old memories
+- [00:38:05] for certain um instances and I'm sure
+- [00:38:08] that can all be orchestrated on top of
+- [00:38:10] um on top of something like this. Um
+- [00:38:12] here's a here's another question. I
+- [00:38:14] think I know the answer, but I want to
+- [00:38:15] hear what you think to see if if I if
+- [00:38:17] I've got it right. Um by the way, great
+- [00:38:20] username Crispy Pro. Krispy Pro asks um
+- [00:38:23] why would you use something like this
+- [00:38:24] versus like an MCP? Um and I I think
+- [00:38:28] it's a it's an interesting question for
+- [00:38:30] somebody that's exploring MCPS and MCPS
+- [00:38:31] are pretty popular, but um yeah, what's
+- [00:38:34] your thought on that one? So,
+- [00:38:35] >> so MC u you take your first shot and
+- [00:38:38] then I will
+- [00:38:39] >> Okay. All right. All right. I'll tell
+- [00:38:40] you what I think it is. So the the
+- [00:38:42] reason I feel like an MCP wouldn't make
+- [00:38:44] sense for this use case is um if you
+- [00:38:47] think about what an MCP does, it is um
+- [00:38:49] it's pulling uh context into a model um
+- [00:38:53] in a in a kind of automated fashion. But
+- [00:38:55] um I think fundamentally to deliver a
+- [00:38:58] memory service, you need some mechanism,
+- [00:39:02] some pipeline to constantly be be taking
+- [00:39:04] the context of the conversation and
+- [00:39:06] loading it into a system, right? So,
+- [00:39:09] while of course I guess in theory you
+- [00:39:11] could take conversation history um load
+- [00:39:14] it into like a structured or
+- [00:39:16] semiructured database and then use an
+- [00:39:17] MCP to query that I feel like the uh and
+- [00:39:22] and our producers helping us out by the
+- [00:39:24] way by the way if if you if you're not
+- [00:39:25] familiar MCP is model context protocol
+- [00:39:28] something that if you're an AI builder
+- [00:39:29] you need to know about um but back to
+- [00:39:31] why I feel for memory specifically
+- [00:39:34] something like Mimcache is a better fit
+- [00:39:36] is you know that's a system that's
+- [00:39:38] really designed designed to have memory
+- [00:39:40] loaded in a way that it can actually be
+- [00:39:42] queried
+- [00:39:43] effectively in semantically
+- [00:39:46] um with you know something like MIM
+- [00:39:48] zero. Um so that that's my thought but
+- [00:39:51] but I don't know what what's your take.
+- [00:39:53] >> The key word is you know re uh real time
+- [00:39:56] and uh the keyword is uh user specific
+- [00:40:00] you know.
+- [00:40:01] >> Ah yes that's a good point.
+- [00:40:03] >> Yeah. So um it has to be real time you
+- [00:40:06] know when you're creating these memories
+- [00:40:08] uh it is basically it has to be specific
+- [00:40:11] in the context of that particular user
+- [00:40:13] that you're talking to or interacting
+- [00:40:14] with the chatbot or any application. uh
+- [00:40:17] MCPs are are great they can do but you
+- [00:40:20] know what happens is you know you have
+- [00:40:23] MCP servers and you have domain
+- [00:40:25] knowledge and it they can do certain
+- [00:40:27] things but it is not like you know in in
+- [00:40:31] in real time as in they cannot in real
+- [00:40:34] time specific to that question they can
+- [00:40:36] store and retrieve memories. So that's
+- [00:40:38] the fundamental difference.
+- [00:40:40] >> I love it. I love it. I love it. Hey, um
+- [00:40:43] folks, if if you're tuning in late, just
+- [00:40:45] so you know, um this is a weekly show
+- [00:40:46] that we run every every week. So, if you
+- [00:40:48] want to see something like this again,
+- [00:40:50] uh come back to the same time, uh same
+- [00:40:52] place next Thursday. Um I I I I won't uh
+- [00:40:56] I won't break the news here, but it's an
+- [00:40:57] exciting show next week as well. Um and
+- [00:41:00] uh and we got about 10 minutes left. So
+- [00:41:02] if folks have any extra questions um a
+- [00:41:04] little less than 10 minutes, make sure
+- [00:41:05] to throw them in the chat and uh and
+- [00:41:07] we'll make sure to try to take care of
+- [00:41:08] any interesting questions you all throw
+- [00:41:09] our way over the next um few minutes.
+- [00:41:13] And and okay, so so uh Kod agrees. He
+- [00:41:15] says, "Yeah, by the time MCP gets that
+- [00:41:17] like like the context is probably uh
+- [00:41:19] changed." Oh, and we've got we've got
+- [00:41:21] Leon. He said he's coming back next
+- [00:41:22] week. Thank you, Leon. We would love to
+- [00:41:24] we'd love to have you as one of our
+- [00:41:26] regular viewers. It's always fun to have
+- [00:41:27] people that come back to learn with us
+- [00:41:28] every
+- [00:41:28] >> Hey Trevor, do you want to basically go
+- [00:41:30] over the storage and retrieval of
+- [00:41:32] memories because that's a very good
+- [00:41:34] thing for the users to take away. Uh
+- [00:41:36] there's a flow that actually is there in
+- [00:41:38] the deck that I definitely want to
+- [00:41:40] >> the query and retrieval. Is that the one
+- [00:41:41] you're talking about?
+- [00:41:42] >> Yes.
+- [00:41:43] >> Let me let me throw it up and make sure
+- [00:41:44] I got the right one for you because I
+- [00:41:46] was going to ask you the same thing.
+- [00:41:47] What do you think the the the last few
+- [00:41:49] things that we should cover with folks
+- [00:41:50] are? So, let me pull it up here. Is that
+- [00:41:52] would this be the one you're you're
+- [00:41:54] talking about?
+- [00:41:55] Yes.
+- [00:41:56] >> Amazing. Yeah.
+- [00:41:57] >> Spot on. Yeah. Now, one of the things
+- [00:42:01] right when we actually first enter a
+- [00:42:03] chat session and you when you talk about
+- [00:42:06] it um in this example, you know, we
+- [00:42:09] giving a example of, you know, you
+- [00:42:11] actually are a user, you logged in,
+- [00:42:13] you're talking about it, you came back
+- [00:42:14] after two weeks. Just imagine that,
+- [00:42:16] right? You you you're conversing using a
+- [00:42:18] chatbot. You you talked about all your
+- [00:42:20] preferences and then you came back after
+- [00:42:22] uh after a couple of weeks. Now when you
+- [00:42:26] you you come back after a couple of
+- [00:42:27] weeks and you start conversing and you
+- [00:42:30] say uh what are my shoe preferences so
+- [00:42:34] then okay if the chatbot is smart enough
+- [00:42:37] it has memories stored for you the first
+- [00:42:40] thing it is going to do is it's going to
+- [00:42:41] say okay it's asking for shoe
+- [00:42:43] preferences so I need to go and retrieve
+- [00:42:45] all the memories how does it do that so
+- [00:42:48] the two key pieces of information right
+- [00:42:50] one is the session ID and one is the
+- [00:42:52] user ID it's going to use that two
+- [00:42:54] pieces of information when you first
+- [00:42:56] chart the stat. Now second thing is okay
+- [00:42:59] categories. This is very very important
+- [00:43:01] because it is important for filtering.
+- [00:43:03] You want to make sure that you get only
+- [00:43:05] the relevant uh matches. To get the
+- [00:43:08] relevant matches you need to you need
+- [00:43:09] some kind of filtering. Uh so when I say
+- [00:43:12] shoe it's going to categorize that as
+- [00:43:14] footwware. Uh and then what it's going
+- [00:43:16] to do is going to do bunch of searches.
+- [00:43:19] Where does it search? It's going to go
+- [00:43:20] to elasticasheach as a as a vector
+- [00:43:23] database. It's going to go and look at
+- [00:43:25] those embeddings. Uh so it's going to go
+- [00:43:28] because like I said the use case is
+- [00:43:30] you're coming back after a couple of
+- [00:43:32] weeks. So if you rewind back uh two
+- [00:43:35] weeks back what it was doing is it was
+- [00:43:37] saving your memories. So it what it does
+- [00:43:39] is it takes your message it creates a
+- [00:43:43] vector embedding. But before it does
+- [00:43:45] that it tags in your user ID. If it is a
+- [00:43:48] long-term memory, it tags in your
+- [00:43:50] session ID if it's a short-term memory.
+- [00:43:52] Creates a vector embedding and then
+- [00:43:54] stores it in elastic. Right? Keep that
+- [00:43:56] in mind. Now, short-term now coming back
+- [00:43:58] to two weeks. Short-term memory, it's
+- [00:44:01] going to say, okay, for this user, for
+- [00:44:03] this user ID, let's go and see for
+- [00:44:05] short-term, it's going to go with
+- [00:44:07] session ID, right? So, it's not going to
+- [00:44:08] go with user. So, it's going to see um
+- [00:44:12] go and check for this session ID, are
+- [00:44:14] there any memories that are stored?
+- [00:44:17] Guess what? It's going to return zero
+- [00:44:19] because it's a new session, you're
+- [00:44:20] coming back after two weeks. So
+- [00:44:22] short-term memory is going to be cleaned
+- [00:44:23] out, right? The moment you kill the
+- [00:44:25] browser, the short-term memories are
+- [00:44:26] gone. The session ID ended, there's no
+- [00:44:29] memories uh to record or to report. So
+- [00:44:32] then it says, "Okay, no short-term
+- [00:44:34] memories. Let me go and go to the
+- [00:44:36] long-term memory search." So it takes
+- [00:44:39] that information, what are my true
+- [00:44:40] preferences? It tags in the user ID and
+- [00:44:43] then goes and look up looks up using a
+- [00:44:46] vector similarity search because it
+- [00:44:48] stored the vector embeddings. It's going
+- [00:44:49] to go uh and do a vector similarity
+- [00:44:52] search. It has the vector index and it
+- [00:44:54] uses um uh vector for those of you who
+- [00:44:58] are not familiar with vector similarity
+- [00:45:00] search. It is basically when when you
+- [00:45:02] store everything in vectors um it uses
+- [00:45:06] HNSW algorithm which is basically u a
+- [00:45:09] graph. it traverses through the graph.
+- [00:45:11] It calculates the distance between two
+- [00:45:13] vectors and you can actually set the
+- [00:45:16] relevancy score. So the distance between
+- [00:45:18] two vectors um is close enough. It's
+- [00:45:22] going to say it's a close match, right?
+- [00:45:24] So it's going to go to the long-term
+- [00:45:27] memory here for that user ID and bingo,
+- [00:45:30] it sees five different memories that are
+- [00:45:32] being stored. It's going to then you
+- [00:45:35] know use that five memories. If you go
+- [00:45:36] back to the next, if you go to the next
+- [00:45:38] slide,
+- [00:45:40] what it does is now this basically tells
+- [00:45:43] the internal details of know how it
+- [00:45:44] happens. It does the vector search. So
+- [00:45:46] then what happens is it got those five
+- [00:45:48] memories. It will then take the message
+- [00:45:52] that you sent combine that with those
+- [00:45:54] five memories and send it to the LLM.
+- [00:45:57] The LLM will take this and then send you
+- [00:45:59] the ultimate response because now it has
+- [00:46:02] the context of those five memories.
+- [00:46:05] So this is the retrieval flow. Um we can
+- [00:46:08] also do a similar thing for the storing
+- [00:46:10] the storing part.
+- [00:46:12] >> Got it. Yeah. No, this is this is super
+- [00:46:14] helpful. I I'm I'm really excited that
+- [00:46:16] we we got to jump on and share this with
+- [00:46:17] folks today because it's like a I again
+- [00:46:19] like even as an SA who's building this
+- [00:46:21] stuff every day. You know, I I started
+- [00:46:22] with Vector DB MCP and then this memory
+- [00:46:25] idea is something that customers have
+- [00:46:26] been talking about with me for the last
+- [00:46:27] year. I feel like I'm leaving with a
+- [00:46:29] much better understanding of kind of um
+- [00:46:31] not just why it's important, but like
+- [00:46:33] how I would um suggest a customer
+- [00:46:36] integrated into their app. Um maybe
+- [00:46:38] we'll maybe we'll wrap up with just a
+- [00:46:40] couple more questions that we have in
+- [00:46:41] the in the chat here. Um Civa, uh so
+- [00:46:44] first and foremost, I'll take this one.
+- [00:46:46] Somebody says, "Can we watch the
+- [00:46:47] replay?" Yes, these always go on um
+- [00:46:49] YouTube and Twitch. So, uh, for sure if
+- [00:46:51] you want to watch the replay, highly
+- [00:46:53] encourage you just come back to actually
+- [00:46:54] it'll be the same link on YouTube that
+- [00:46:56] you're on right now if you wanted to,
+- [00:46:58] uh, save that link and, um, and watch
+- [00:47:00] the recording. Um,
+- [00:47:03] let's see here.
+- [00:47:05] Yeah. So, Krispy Pro asks, um, uh, I I
+- [00:47:09] think basically what it's asking is, um,
+- [00:47:13] maybe something about deconlicting
+- [00:47:15] short-term and long-term. I'll let you
+- [00:47:17] read the question and you can interpret
+- [00:47:18] it how you how you see fit.
+- [00:47:24] >> Yeah. Um [clears throat]
+- [00:47:28] that that's where you know how you
+- [00:47:30] actually tag and classify the memories
+- [00:47:32] is very very important. Right.
+- [00:47:34] >> Um so this is where categorizing and
+- [00:47:37] then making sure uh and it takes some
+- [00:47:40] work, right? It's it's an art more than
+- [00:47:42] a specific design. Uh in order for you
+- [00:47:45] to be able to get the true memories uh
+- [00:47:48] especially if it is a short term because
+- [00:47:51] long-term is pretty easy. You know long
+- [00:47:53] terms are think about your your user
+- [00:47:56] profile preferences. Okay, I'm looking
+- [00:47:59] for running shoes or I'm looking for
+- [00:48:00] hiking shoes. Those are all going to
+- [00:48:02] straight away going to the long-term
+- [00:48:04] memory. Um so it will retrieve pretty
+- [00:48:07] much because the second angle to this is
+- [00:48:10] your vector search. You want to make
+- [00:48:12] sure that you know when you're doing the
+- [00:48:14] vector search you know it only gives you
+- [00:48:17] the most relevant. So it can filter
+- [00:48:19] certain times you know it can filter out
+- [00:48:21] unwanted stuff. So that's by design. So
+- [00:48:24] to answer your question if it's only
+- [00:48:26] returning so then you have the control
+- [00:48:29] you can say if I I don't want this to be
+- [00:48:32] such limited I want it to uh be more I
+- [00:48:35] want more information then you can
+- [00:48:37] actually tweak uh your your your
+- [00:48:40] semantic your your vector index right
+- [00:48:42] you can tweak your vector index the
+- [00:48:44] second thing you can do is uh define how
+- [00:48:47] we are actually storing the long-term
+- [00:48:48] memories those are the two areas that we
+- [00:48:50] can actually tweak and play around to
+- [00:48:52] get the the most relevant memories that
+- [00:48:54] you need.
+- [00:48:56] >> Uh, awesome, dude. Uh, Se, I just want
+- [00:48:58] to say thank you so much for putting
+- [00:48:59] this together and for spending the time
+- [00:49:00] with everybody today. Um, folks, uh,
+- [00:49:03] just as a reminder, we do this every
+- [00:49:05] week. Uh, so if you enjoyed the session,
+- [00:49:07] please come back. Um, you can watch the
+- [00:49:08] recording, um, and check out some of our
+- [00:49:11] our our previous episodes. Um, and any
+- [00:49:15] any any last words of wisdom, things you
+- [00:49:17] you'd encourage people to try out, uh,
+- [00:49:19] Civa before we let them go about the the
+- [00:49:21] rest of their day?
+- [00:49:22] We are going to put up u this entire
+- [00:49:24] project and in GitHub. Uh we're going to
+- [00:49:27] do that shortly. So feel free to play
+- [00:49:29] around you know with everything that we
+- [00:49:31] have actually built this demo for. Um
+- [00:49:33] this entire end to end you can create
+- [00:49:35] the chatbot and look at you know
+- [00:49:37] short-term and long-term memories play
+- [00:49:38] along with it and then use them for your
+- [00:49:40] applications. So yeah this is coming up
+- [00:49:42] in GitHub.
+- [00:49:43] >> I love it. I love it. Yeah. Make sure to
+- [00:49:44] let us know when that's live and we'll
+- [00:49:45] put it in the description so folks
+- [00:49:46] watching on YouTube later can check it
+- [00:49:48] out. Everybody thank you so much for
+- [00:49:50] joining in today. It's been a super fun
+- [00:49:52] session. We will catch you uh same time,
+- [00:49:55] same place next week. Um and enjoy the
+- [00:49:57] rest of your day. All right. Goodbye
+- [00:49:59] everybody.
+- [00:50:07] >> [music]
+
+## Summary
+Transcript length: approximately 1298 caption segments.
+Core points detected:
+- [music] [music] [music] >> [music] >> Hello everybody and welcome back once again to a weekly show that we run called Databases for AI here at AWS.
+- Uh if you haven't joined us before, let me know what you just t I'll let you know what you just tuned into.
+- This is a show where every week we deep dive into uh the the very hot space of AI and we show you uh different techniques for how you can improve your AI applications built on top of database primitives uh in this case database primitive from AWS.
+- If we haven't met before, my name is Trevor Spires.
+- I am a solutions architect here at AWS and I am joined by the wonderful the the the great and powerful uh Civa.
+- Civa, would you please introduce yourself to the folks that have tuned in today?
+
+## Analysis
+### Presenter Questions and Implied Answers
+- Question: Civa, would you please introduce yourself to the folks that have tuned in today?
+  Implied answer: >> Thanks for the energetic introduction. Yeah, my name is Civa.
+- Question: Yeah, it's a very it's a super important topic, right?
+  Implied answer: So, like I guess if you if you're watching um what you should kind of expect from today's show is, you know, um we're going to obviously talk a little bit about agentic memory.
+- Question: We'll dig more into that into a second, but by the end of the episode, you should have a basic understanding of, you know, what do we mean when we say agentic memory?
+  Implied answer: We're going to dig into short-term versus long-term memory. And you're also going to have a sense of h uh why this is important, right?
+- Question: And you're also going to have a sense of h uh why this is important, right?
+  Implied answer: And I I'll just I'm not going to bury the lead. I'll just tell you why this is important right off the bat is um LLMs are great at inferring things.
+- Question: If I'm chatting with a bot or a service that runs on an e-commerce website, I kind of expect that application to have understanding of like what are the things that I bought previously?
+  Implied answer: What are the questions that I asked previously? Um, you know, uh, you know, I I we were talking about a use case the other day, S, where it's like you might be you might want to be able to go in and say like, I'm planning a vacation, uh, and I need to buy some things and maybe to your point, you step away and you need to come back the next day.
+- Question: What are the questions that I asked previously?
+  Implied answer: Um, you know, uh, you know, I I we were talking about a use case the other day, S, where it's like you might be you might want to be able to go in and say like, I'm planning a vacation, uh, and I need to buy some things and maybe to your point, you step away and you need to come back the next day.
+- Question: Um, where are you coming at from in the world today?
+  Implied answer: So, >> I am from the great state of Texas. >> Oh, the best state, right?
+- Question: >> Oh, the best state, right?
+  Implied answer: That's what I hear. That's what I hear from you Texans.
+- Question: If you're joining us, two things, right?
+  Implied answer: Let us know where you're coming in from. We'd love to know where folks are are joining us from before we dig into the technology.
+- Question: Anything else that you would um you think is worth highlighting on this SMA?
+  Implied answer: >> Yeah, nowadays most databases come up with their uh vector vector search capabilities, right?
+- Question: >> Yeah, nowadays most databases come up with their uh vector vector search capabilities, right?
+  Implied answer: Imag um sometimes depending upon which database you choose, which uh solution you choose, it's really difficult to kind of like manage your vector embeddings, uh doing the retrievalss, doing semantic search.
+- Question: And then it's going to ask you exactly what you don't want to hear, which is what size do you want to wear?
+  Implied answer: And this is frustrating for a lot of users, right? This is a problem statement.
+
+### Claims to Pressure-Test
+- Claim: I think um it may I think as in general, you know, if I think about, you know, we work at Amazon, so I think a good example to think about for us is always like um an e-commerce application.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: So I think that's a I think that's a pretty good like highlevel overview for folks and uh for folks that are in the chat by the way um uh one thing I one thing I forgot to do today is let you all know um I'm dialing in from the great state of Maine and I always love seeing where our guests are dialing in from.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: So um essentially you know whenever you're building any agent-based applications um the the central to that is the strands framework right that's where you use to orchestrate any of your applications creating agents you know uh whether it's agent talking u to an agent or agent talking to an application um strands is a central theme and then we have our bedrock Amazon bedrock which is where you can select pick and choose your model of your choice and and then strands can interact with it.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Um and it just so happens you one of the reasons Valkyrie is really popular with customers and the open source community is it's got a really great cost profile for a service like this as well.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: A lot of customers I've seen using other similar solutions have been migrating to Valky just because they can get a a general lower cost of ownership.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: So next time when you have a chatbot with these capabilities, you don't have to repeat yourself and you're going to have a much better experience.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: I've always I've always been a little confused about short-term and long-term memory and maybe you can just walk folks through, you know, the high level and importance of of having each of these in your app.
+  Challenge question: What independent evidence would falsify this claim?
+- Claim: Now the key detail here is whenever you know internally when you're storing as a as a memory short-term memory this kind of this information has to be tagged with your session because that's what is going to be again used to filter out the memories and then return back the information to you.
+  Challenge question: What independent evidence would falsify this claim?
+
+### Potential Weaknesses to Challenge
+- Evidence quality: Are key claims backed by data, or mostly anecdotal?
+- Selection bias: Were only favorable examples highlighted?
+- Confounding factors: Could alternative explanations fit the same outcomes?
+- Over-generalization: Are narrow observations being framed as universal truths?
+- Incentives: Are sponsorships or channel incentives shaping conclusions?
+
+### Research Prompt Ingredients for SRCGEEE Retrieve
+- Exact claim text to verify (quote with timestamp)
+- Required evidence type (peer-reviewed study, benchmark, public dataset, docs)
+- Time window for evidence freshness
+- Counter-position to test against
+- Failure criteria that would falsify the claim
+- Confidence rubric (high/medium/low) with reasons

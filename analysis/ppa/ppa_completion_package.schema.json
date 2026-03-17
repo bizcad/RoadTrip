@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roadtrip.local/schemas/ppa_completion_package.schema.json",
+  "title": "PPA Completion Package",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "question_id",
+    "skill",
+    "request_class",
+    "question",
+    "mode",
+    "path",
+    "confidence",
+    "completion",
+    "completion_state",
+    "answer",
+    "completion_package"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "ppa-v0"
+    },
+    "question_id": {
+      "type": "string"
+    },
+    "skill": {
+      "type": "string",
+      "enum": ["echo", "memory-search", "assistance-request"]
+    },
+    "request_class": {
+      "type": "string",
+      "enum": [
+        "chat-question",
+        "memory-query",
+        "known-skill-execution",
+        "assistance-request",
+        "invention-request"
+      ]
+    },
+    "question": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["fast", "slow", "slower", "clarify", "deferred"]
+    },
+    "path": {
+      "type": "string",
+      "enum": ["fast-path", "thinking-slow-path", "invention-path"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "completion": {
+      "type": "boolean"
+    },
+    "completion_state": {
+      "type": "string",
+      "enum": [
+        "completed_answer",
+        "completed_non_answer",
+        "completed_escalation",
+        "completed_deferred_work"
+      ]
+    },
+    "answer": {
+      "type": "string"
+    },
+    "top_approaches": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "score": { "type": "number" },
+          "source_file": { "type": ["string", "null"] },
+          "timestamp": { "type": ["string", "null"] },
+          "event_kind": { "type": ["string", "null"] },
+          "approaches": {
+            "type": ["array", "null"],
+            "items": { "type": "string" }
+          },
+          "stance": { "type": ["string", "null"] },
+          "text": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "scores": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "triage_packet": {
+      "type": ["string", "null"]
+    },
+    "deferred_work": {
+      "type": ["object", "null"]
+    },
+    "completion_package": {
+      "type": "object",
+      "required": ["request", "sense", "retrieve", "compose", "gate", "execute", "evaluate", "evolve"],
+      "properties": {
+        "request": { "$ref": "#/$defs/stagePayload" },
+        "sense": { "$ref": "#/$defs/stagePayload" },
+        "retrieve": { "$ref": "#/$defs/stagePayload" },
+        "compose": { "$ref": "#/$defs/stagePayload" },
+        "gate": { "$ref": "#/$defs/stagePayload" },
+        "execute": { "$ref": "#/$defs/stagePayload" },
+        "evaluate": { "$ref": "#/$defs/stagePayload" },
+        "evolve": { "$ref": "#/$defs/stagePayload" }
+      }
+    }
+  },
+  "$defs": {
+    "stagePayload": {
+      "type": "object",
+      "required": ["stage", "status"],
+      "properties": {
+        "stage": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

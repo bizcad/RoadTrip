@@ -1,6 +1,6 @@
-generated_at_utc: '2026-03-08T17:55:13.395198+00:00'
+generated_at_utc: '2026-03-15T17:07:35.602896+00:00'
 source_directory: G:\repos\AI\RoadTrip\analysis\Transcripts
-count: 4
+count: 6
 items:
 - file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\ai-news-strategy-20260302-don-need-saas-system-replaced.md
   title: You Don't Need SaaS. The $0.10 System That Replaced My AI Workflow (45 Min
@@ -21,6 +21,43 @@ items:
   - get
   transcript_segment_count: 780
   retrieved_at_utc: '2026-03-08T17:55:13+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\ai-news-strategy-20260314-made-every-company-10x-more-pr.md
+  title: AI Made Every Company 10x More Productive. The Ones Cutting Headcount Are
+    Telling on Themselves.
+  creator: AI News & Strategy Daily | Nate B Jones
+  video_id: u-giatW9mYU
+  upload_date: '2026-03-14T08:01:26-07:00'
+  topics_detected:
+  - can
+  - going
+  - people
+  - about
+  - because
+  - get
+  - now
+  - need
+  - all
+  - right
+  transcript_segment_count: 536
+  retrieved_at_utc: '2026-03-15T17:07:35+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\spine-ai-20260220-spine-swarm-agents-work.md
+  title: 'Spine Swarm: Agents that work for you'
+  creator: Spine AI
+  video_id: vylx9rzC388
+  upload_date: '2026-02-20T08:01:30-08:00'
+  topics_detected:
+  - spine
+  - agents
+  - about
+  - one
+  - how
+  - work
+  - research
+  - real
+  - every
+  - actually
+  transcript_segment_count: 70
+  retrieved_at_utc: '2026-03-14T04:52:31+00:00'
 - file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\Theo-GPT-5_4-is-really-good.md
   title: null
   creator: null

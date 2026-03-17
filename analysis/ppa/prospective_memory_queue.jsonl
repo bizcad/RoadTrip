@@ -1,0 +1,1 @@
+{"queued_at": "2026-03-15T21:11:22Z", "question_id": "q_20260315T211122786631Z", "request_class": "assistance-request", "status": "queued", "question": "Need AR bot credit check before order acceptance", "depends_on": "external-assistant-or-bot", "completion_target": "complete-original-request-after-async-result"}

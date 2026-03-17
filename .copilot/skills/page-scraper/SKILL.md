@@ -1,7 +1,8 @@
 ---
 name: page-scraper
-version: specs-v1.0
-description: Handle RoadTrip page scrape intent using interactive PowerShell helpers. Supports clipboard-first URL capture.
+description: Handle RoadTrip page scrape intent using interactive PowerShell helpers. Supports clipboard-first URL capture. Skill version: specs-v1.0.
+metadata:
+  skill-version: specs-v1.0
 ---
 
 # Copilot Skill: Page Scraper

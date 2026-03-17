@@ -111,3 +111,107 @@ The goal is practical reliability improvement through retrieval governance and e
 - Hybrid retrieval engineering references:
   - Elastic: https://www.elastic.co/what-is/hybrid-search
   - Pinecone: https://www.pinecone.io/learn/hybrid-search/
+
+## Addendum (2026-03-16): AWS Multi-Tier Memory Pattern + SeaweedFS for PPA
+
+### New Source Inputs
+- YouTube transcript brief: `docs/research/aws-events-20260305-build-agents-remember-agentic.md`
+- AWS blog: https://aws.amazon.com/blogs/database/build-persistent-memory-for-agentic-ai-applications-with-mem0-open-source-amazon-elasticache-for-valkey-and-amazon-neptune-analytics/
+- SeaweedFS wiki scrape: `docs/research/Welcome to the SeaweedFS wiki!.md`
+
+### Key Signals From the AWS Pattern
+1. Memory should be explicitly classified at write time (session vs user profile scope).
+2. Retrieval should return a small top-k memory bundle (example shown: top 5) to control token cost.
+3. Vector index tuning and filtering are as important as embeddings for relevance.
+4. Relationship traversal (graph) complements vector similarity for multi-hop context.
+5. Orchestration benefits from a memory layer that abstracts storage and retrieval mechanics.
+
+### Proposed PPA Memory Fabric (Integrated)
+Use a hybrid memory fabric with specialized stores and one policy router:
+
+1. Classifier/Policy Router
+- Input: event from orchestrator (goal, task, plan step, user/session metadata)
+- Output: memory class, retention class, retrieval profile, safety level
+- Classes:
+  - Session memory (short-term)
+  - User/project preference memory (long-term)
+  - Workflow memory (plan and execution outcomes)
+  - Code intelligence memory (symbols, blobs, diagnostics, run/test outcomes)
+
+2. Fast Metadata Plane (Thinking Fast)
+- Store one-line summaries and compact JSON descriptors per blob.
+- Index fields: repo, path, language, symbol list, tags, recency, usage count, dependency edges, risk score.
+- Retrieval objective: very low latency candidate generation and routing.
+
+3. Semantic Plane (Thinking Slow)
+- Store embeddings for summaries and code/document chunks.
+- Query mode: hybrid lexical + vector with re-ranking.
+- Retrieval objective: semantic matching when metadata is insufficient.
+
+4. Relationship Plane (Thinking Slow+)
+- Store graph edges: imports, calls, co-change, test coverage links, plan-step-to-artifact links, MCP-to-skill links.
+- Query mode: constrained graph expansion from seed candidates.
+- Retrieval objective: coherence across multi-step plans and dependency-aware retrieval.
+
+5. Blob/Object Plane (Source of Truth)
+- SeaweedFS as primary blob/object backend for code blobs, docs, artifacts, and snapshots.
+- Keep canonical files in SeaweedFS-backed object/file storage; keep pointers/hashes in fast planes.
+- Retrieval objective: fetch exact artifacts only after candidate narrowing.
+
+### How SeaweedFS Fits the Multi-Tier Memory
+SeaweedFS is well suited as the blob/object/file persistence layer behind PPA memory:
+
+1. O(1) style key->blob access supports fast materialization after metadata selection.
+2. Tiering support maps naturally to hot/warm/cold memory retention.
+3. Object + file interfaces help unify code files, docs, and generated artifacts.
+4. Horizontal scaling allows memory growth without changing retrieval contract.
+
+Practical mapping:
+- Hot: frequently accessed code/doc blobs for active plans.
+- Warm: recently used project artifacts and reusable skill outputs.
+- Cold: archived snapshots, historical completions, rollback points.
+
+### End-to-End Retrieval Flow for Plan Completion
+1. Plan step arrives (from plan.md or orchestrator intent).
+2. Classifier selects profile (coding, docs, MCP wiring, diagnostics, etc.).
+3. Fast retrieve: metadata index returns top N seed blobs.
+4. Expand: nearest-neighbor + graph neighbors (next 5-20 candidates).
+5. Rerank: hybrid semantic + policy filters (safety, scope, ownership).
+6. Materialize: fetch exact blobs from SeaweedFS for shortlisted set.
+7. Decide: LLM chooses candidate route and proposes completion.
+8. Validate: compile/test/lint/policy checks for coherence.
+9. Commit or rollback: if checks fail, revert to last known-good snapshot and choose alternate candidate route.
+
+### Minimal Descriptor JSON (for Fast Plane)
+```json
+{
+  "blob_id": "sha256:...",
+  "repo": "RoadTrip",
+  "path": "src/...",
+  "kind": "code|doc|mcp|skill|config|artifact",
+  "one_line": "purpose in one line",
+  "symbols": ["..."],
+  "tags": ["memory", "retrieval", "planner"],
+  "depends_on": ["blob_id"],
+  "used_by": ["blob_id"],
+  "plan_roles": ["discover", "decide", "validate"],
+  "safety_level": "low|medium|high",
+  "last_green": "git-sha",
+  "embedding_ref": "vec:...",
+  "blob_ref": "seaweedfs://volume/key",
+  "updated_at": "2026-03-16T00:00:00Z"
+}
+```
+
+### Why This Helps PPA Specifically
+1. Better route prediction: metadata + graph context approximates "next likely blob" selection.
+2. Lower latency: only fetch full blobs late in the pipeline.
+3. Better safety: validation and rollback are built into orchestration, not afterthoughts.
+4. Better completion rate: candidate branching allows fallback paths instead of single-shot failure.
+
+### Recommended Next Prototype Slice
+1. Implement write-time classifier with 4 memory classes.
+2. Build descriptor index for code/docs/skills/MCP manifests.
+3. Add top-k + neighbor expansion API for orchestrator.
+4. Store canonical artifact blobs in SeaweedFS with hash-addressed keys.
+5. Add validation gate and rollback pointer per completion attempt.

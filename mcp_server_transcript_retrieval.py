@@ -20,6 +20,9 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("transcript-retrieval")
 
+DEFAULT_TRANSCRIPTS_DIR = str((Path(__file__).resolve().parent / "analysis" / "Transcripts").resolve())
+DEFAULT_FRONTMATTER_INDEX = str((Path(DEFAULT_TRANSCRIPTS_DIR) / "_frontmatter_index.yaml").resolve())
+
 
 def _resolve_path(path_value: str) -> Path:
     return Path(path_value).resolve()
@@ -111,7 +114,7 @@ def read_transcript_frontmatter(file_path: str) -> dict[str, Any]:
 
 
 @mcp.tool()
-def list_transcript_frontmatter(directory: str = "analysis/Transcripts") -> dict[str, Any]:
+def list_transcript_frontmatter(directory: str = DEFAULT_TRANSCRIPTS_DIR) -> dict[str, Any]:
     """List transcript files and frontmatter for fast metadata-first retrieval."""
     base = _resolve_path(directory)
     if not base.exists():
@@ -145,8 +148,8 @@ def list_transcript_frontmatter(directory: str = "analysis/Transcripts") -> dict
 
 @mcp.tool()
 def build_transcript_frontmatter_index(
-    directory: str = "analysis/Transcripts",
-    output_file: str = "analysis/Transcripts/_frontmatter_index.yaml",
+    directory: str = DEFAULT_TRANSCRIPTS_DIR,
+    output_file: str = DEFAULT_FRONTMATTER_INDEX,
 ) -> dict[str, Any]:
     """Build a metadata index to support fast-thinking retrieval."""
     base = _resolve_path(directory)
@@ -193,7 +196,7 @@ def build_transcript_frontmatter_index(
 @mcp.tool()
 def rank_transcript_documents(
     query: str,
-    directory: str = "analysis/Transcripts",
+    directory: str = DEFAULT_TRANSCRIPTS_DIR,
     top_k: int = 5,
 ) -> dict[str, Any]:
     """Rank transcript docs using staged scoring: seed/frontmatter/summary/analysis.

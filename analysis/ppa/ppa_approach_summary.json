@@ -1,0 +1,433 @@
+{
+  "generated_at": "2026-03-14T05:25:45Z",
+  "event_count": 1085,
+  "source_file_count": 30,
+  "stances": {
+    "adopted-or-endorsed": 499,
+    "exploration": 440,
+    "rejected-or-deprioritized": 45,
+    "open-question": 101
+  },
+  "monthly_counts": {
+    "2026-02": 837,
+    "2026-03": 248
+  },
+  "approaches": [
+    {
+      "approach": "personal-assistant-product",
+      "event_count": 40,
+      "prompt_count": 21,
+      "response_count": 19,
+      "stances": {
+        "adopted-or-endorsed": 22,
+        "exploration": 15,
+        "rejected-or-deprioritized": 2,
+        "open-question": 1
+      },
+      "keywords": [
+        "you",
+        "memory",
+        "part",
+        "can",
+        "not",
+        "spec",
+        "are",
+        "agent",
+        "plan",
+        "agents"
+      ],
+      "first_seen": "2026-02-07 11:39:59",
+      "last_seen": "2026-03-06 13:11:29",
+      "example": "## Clarifications 1. I can absolutely guarantee that gpush skill will run into those enterprise deployment issues. My dream is to create an enterprise worthy personal assistant ala OpenClaw that is more than just the loop discussed in \" is just a loop.md\" 2. Option B: Operatin..."
+    },
+    {
+      "approach": "memory-and-retrieval",
+      "event_count": 383,
+      "prompt_count": 122,
+      "response_count": 261,
+      "stances": {
+        "adopted-or-endorsed": 215,
+        "rejected-or-deprioritized": 19,
+        "open-question": 13,
+        "exploration": 136
+      },
+      "keywords": [
+        "you",
+        "memory",
+        "can",
+        "agent",
+        "not",
+        "skill",
+        "phase",
+        "are",
+        "now",
+        "context"
+      ],
+      "first_seen": "2026-02-05 01:12:25",
+      "last_seen": "2026-03-13 20:58:51",
+      "example": "# Road Trip project 1. The transcript of our conversation tonight is in a - The file is not well formatted because I manually selected everthing from the M365 chat window. - However, you should be able to get the idea. and summarize the conversation and add the summary to the..."
+    },
+    {
+      "approach": "deterministic-execution-safety",
+      "event_count": 278,
+      "prompt_count": 72,
+      "response_count": 206,
+      "stances": {
+        "adopted-or-endorsed": 163,
+        "open-question": 14,
+        "exploration": 81,
+        "rejected-or-deprioritized": 20
+      },
+      "keywords": [
+        "you",
+        "can",
+        "agent",
+        "memory",
+        "phase",
+        "skill",
+        "not",
+        "are",
+        "tests",
+        "now"
+      ],
+      "first_seen": "2026-02-05 01:12:45",
+      "last_seen": "2026-03-13 20:47:05",
+      "example": "Yes please. Here is a Claude blog post on how to create Skills, that may be helpful to you. ## Clarifications needed 1. Do we need a separate repo for the skill? 2. I assume by \"Optional file/path exclusion patterns\" you mean something like a gitignore. 3. Optional commit mess..."
+    },
+    {
+      "approach": "identity-auth-governance",
+      "event_count": 264,
+      "prompt_count": 57,
+      "response_count": 207,
+      "stances": {
+        "rejected-or-deprioritized": 16,
+        "exploration": 80,
+        "adopted-or-endorsed": 158,
+        "open-question": 10
+      },
+      "keywords": [
+        "you",
+        "can",
+        "agent",
+        "skill",
+        "phase",
+        "not",
+        "git",
+        "memory",
+        "agents",
+        "now"
+      ],
+      "first_seen": "2026-02-05 12:03:25",
+      "last_seen": "2026-03-12 14:47:58",
+      "example": "Does the skill have a CLAUDE.md. I think so as it is more automatic that the SKILL.md. It guides the process rather than the functionality. I am trying to build a pattern here. BTW, our experince with QuestionManager and the use of the Aspire infra could help us out with Telem..."
+    },
+    {
+      "approach": "agent-orchestration",
+      "event_count": 590,
+      "prompt_count": 192,
+      "response_count": 398,
+      "stances": {
+        "adopted-or-endorsed": 355,
+        "exploration": 175,
+        "open-question": 31,
+        "rejected-or-deprioritized": 29
+      },
+      "keywords": [
+        "you",
+        "can",
+        "skill",
+        "memory",
+        "phase",
+        "agent",
+        "not",
+        "now",
+        "tests",
+        "are"
+      ],
+      "first_seen": "2026-02-05 01:12:45",
+      "last_seen": "2026-03-13 20:47:05",
+      "example": "Would it be worthwhile turning the gpush into a Claude Skill. That way it could be integrated into your workflow without having to worry about what is being saved to github."
+    },
+    {
+      "approach": "knowledge-ingestion",
+      "event_count": 215,
+      "prompt_count": 50,
+      "response_count": 165,
+      "stances": {
+        "adopted-or-endorsed": 136,
+        "rejected-or-deprioritized": 18,
+        "exploration": 58,
+        "open-question": 3
+      },
+      "keywords": [
+        "you",
+        "can",
+        "memory",
+        "skill",
+        "agent",
+        "now",
+        "phase",
+        "not",
+        "mcp",
+        "use"
+      ],
+      "first_seen": "2026-02-05 01:12:25",
+      "last_seen": "2026-03-13 20:47:50",
+      "example": "# Road Trip project 1. The transcript of our conversation tonight is in a - The file is not well formatted because I manually selected everthing from the M365 chat window. - However, you should be able to get the idea. and summarize the conversation and add the summary to the..."
+    },
+    {
+      "approach": "device-and-runtime",
+      "event_count": 171,
+      "prompt_count": 33,
+      "response_count": 138,
+      "stances": {
+        "adopted-or-endorsed": 106,
+        "rejected-or-deprioritized": 8,
+        "exploration": 52,
+        "open-question": 5
+      },
+      "keywords": [
+        "you",
+        "memory",
+        "can",
+        "agent",
+        "skill",
+        "phase",
+        "not",
+        "agents",
+        "are",
+        "context"
+      ],
+      "first_seen": "2026-02-05 01:12:45",
+      "last_seen": "2026-03-12 14:46:40",
+      "example": "Good news. I have not installed the Chrome extension. I am not sure why I would need it. Clarifications follow... Discussion This is the ideal configuration for testing whether Claude can recognize and work with the skills I've defined in your workspace. You can now: To get up..."
+    },
+    {
+      "approach": "developer-workflow",
+      "event_count": 539,
+      "prompt_count": 169,
+      "response_count": 370,
+      "stances": {
+        "adopted-or-endorsed": 330,
+        "exploration": 141,
+        "rejected-or-deprioritized": 31,
+        "open-question": 37
+      },
+      "keywords": [
+        "you",
+        "can",
+        "skill",
+        "phase",
+        "now",
+        "not",
+        "tests",
+        "agent",
+        "git",
+        "memory"
+      ],
+      "first_seen": "2026-02-05 01:12:45",
+      "last_seen": "2026-03-13 20:58:51",
+      "example": "Great! I think you can write a ps1 script that: 1. Stages the changes 2. writes a commit message 3. commits the changes, and 4. pushes the project to github. 5. writes to ps1 file to the ./scripts folder with a short descriptive title"
+    },
+    {
+      "approach": "general",
+      "event_count": 214,
+      "prompt_count": 189,
+      "response_count": 25,
+      "stances": {
+        "exploration": 122,
+        "adopted-or-endorsed": 45,
+        "open-question": 44,
+        "rejected-or-deprioritized": 3
+      },
+      "keywords": [
+        "you",
+        "not",
+        "can",
+        "are",
+        "out",
+        "want",
+        "please",
+        "name",
+        "now",
+        "target"
+      ],
+      "first_seen": "2026-02-05 12:00:48",
+      "last_seen": "2026-03-13 20:51:02",
+      "example": "I want to run [this file] (\" \") when the workspace opens to set the defaults for the project. Please add that to the"
+    }
+  ],
+  "principles": [
+    {
+      "principle": "agent systems need deterministic gates before execution",
+      "hits": 5
+    },
+    {
+      "principle": "zero-trust with explicit delegation",
+      "hits": 4
+    },
+    {
+      "principle": "retrieval should be grounded in your own artifacts",
+      "hits": 3
+    },
+    {
+      "principle": "deterministic code over model-side execution",
+      "hits": 2
+    },
+    {
+      "principle": "humans, agents, and code are first-class principals",
+      "hits": 1
+    }
+  ],
+  "rejected_examples": [
+    {
+      "source_file": "Session Log 20260205.md",
+      "timestamp": "2026-02-05 12:01:54",
+      "excerpt": "I'll update git_push.ps1 to stage changes first, generate a descriptive commit message from the staged changes when `$Message` is empty, then commit using a temp file for the message. Using \"Apply Patch\" Generating pa..."
+    },
+    {
+      "source_file": "Session Log 20260205.md",
+      "timestamp": "2026-02-05 12:03:25",
+      "excerpt": "Read ## Evaluation of git_push.ps1 ### **Errors & Critical Issues** 1. **Duplicate comment (Line 47)** \"# Check for any changes\" appears twice in succession. Minor\u2014remove one. 2. **Exit code inconsistency** - Exit cod..."
+    },
+    {
+      "source_file": "Session Log 20260206.md",
+      "timestamp": "2026-02-06 10:39:43",
+      "excerpt": "Good news. I have not installed the Chrome extension. I am not sure why I would need it. Clarifications follow... Discussion This is the ideal configuration for testing whether Claude can recognize and work with the s..."
+    },
+    {
+      "source_file": "Session Log 20260206.md",
+      "timestamp": "2026-02-06 13:14:11",
+      "excerpt": "Approach: Rules Engine First (Proof of Concept) Build the rules-engine specialist + its dependencies as a working proof of concept, then expand to remaining skills. Current Inventory SkillRoleDocsCodegit-push-autonomo..."
+    },
+    {
+      "source_file": "Session Log 20260206.md",
+      "timestamp": "2026-02-06 13:54:06",
+      "excerpt": "Option B is certainly easier. However, it deviates from our process. Are we going to use the git_push.ps1 again or was it just a prototype for dev purposes. You should consider this question deeply because: 1.) it is..."
+    },
+    {
+      "source_file": "Session Log 20260206.md",
+      "timestamp": "2026-02-06 13:54:18",
+      "excerpt": "## Vote: **FIX** \u2705 **My reasoning:** ### 1. **Process Integrity (Fundamental)** We just documented and enshrined a philosophy: \"deterministic code + probabilistic orchestration.\" The git_push.ps1 script *is* that phil..."
+    },
+    {
+      "source_file": "Session Log 20260207.md",
+      "timestamp": "2026-02-07 10:48:15",
+      "excerpt": "- Great! Our prototype has received a validation and is working according to our process. We now have the means to test our skills against a known prototype. (a signigificant finding). - I cannot find the original Cus..."
+    },
+    {
+      "source_file": "Session Log 20260209.md",
+      "timestamp": "2026-02-09 10:54:30",
+      "excerpt": "Great! Your blog is live. The deployment succeeded with auto-scaling and everything connected properly after the rename. Your blog is now accessible at that Vercel URL. If you want to set up a custom domain (like `roa..."
+    },
+    {
+      "source_file": "Session Log 20260209.md",
+      "timestamp": "2026-02-09 11:33:15",
+      "excerpt": "The rename did not work correctly. Without going into the <tl;dr> I deleted the vercel project, deleted the github repo, deleted the folder in I then use the vercel link to create a repo named roadtrip-blog which crea..."
+    },
+    {
+      "source_file": "Session Log 20260209.md",
+      "timestamp": "2026-02-09 14:19:08",
+      "excerpt": "I added a photo of ns.jpeg. I do not have a Team logo yet. \" \" we will see if it works when the repo gets pushed. Wow 10 more tests. That should be sufficient to flush out bugs. I assume that the tests will check the..."
+    },
+    {
+      "source_file": "Session Log 20260209.md",
+      "timestamp": "2026-02-09 14:32:07",
+      "excerpt": "Perfect! Let me commit Phase 4 completion and the test results, then prepare Phase 5: Ran terminal command: cd . ./PromptTracking/load-session-logging.ps1; $phase4_complete = @\" ## PHASE 4: TESTING COMPLETE \u2705 **Status..."
+    },
+    {
+      "source_file": "Session Log 20260210.md",
+      "timestamp": "2026-02-10 11:10:31",
+      "excerpt": "Yes, there are frameworks that explicitly bridge the \"Deterministic vs. Probabilistic\" divide. Your \"SKILLS\" model (probabilistic agents ending in deterministic artifacts) aligns perfectly with the emerging concept of..."
+    }
+  ],
+  "references": [
+    {
+      "title": "Unified Auth Spec v0.2",
+      "path": "G:\\repos\\AI\\RoadTrip\\analysis\\unified-auth\\ClaudeCode\\unified-auth-spec-v0.2.md",
+      "headings": [
+        "Unified Authentication & Authorization Specification",
+        "1. Purpose",
+        "2. Definitions",
+        "3. Design Principles",
+        "3.1 Every Actor Is a Security Principal",
+        "3.2 Zero Trust by Default",
+        "3.3 Least Privilege, Always",
+        "3.4 Deterministic Authorization",
+        "3.5 Human Governance at the Gate",
+        "3.6 Traceable Decisions",
+        "3.7 Code as a Trusted (or Untrusted) Principal",
+        "3.8 Cryptographic Accountability for High-Risk Actions"
+      ],
+      "principles": [
+        {
+          "principle": "deterministic code over model-side execution",
+          "hits": 2
+        },
+        {
+          "principle": "humans, agents, and code are first-class principals",
+          "hits": 2
+        },
+        {
+          "principle": "zero-trust with explicit delegation",
+          "hits": 4
+        },
+        {
+          "principle": "retrieval should be grounded in your own artifacts",
+          "hits": 2
+        },
+        {
+          "principle": "agent systems need deterministic gates before execution",
+          "hits": 5
+        }
+      ]
+    },
+    {
+      "title": "NotebookLM Note",
+      "path": "G:\\repos\\AI\\scratchpad\\Google NotebookLM.md",
+      "headings": [
+        "1. Setting Up Your \"Session Brain\"",
+        "2. Querying Your Logs (The \"Quasi-RAG\" Experience)",
+        "3. Creating \"Studio Notes\" from Trends",
+        "4. Optimization Tips for Your Workflow",
+        "Why this works better than a standard LLM"
+      ],
+      "principles": [
+        {
+          "principle": "retrieval should be grounded in your own artifacts",
+          "hits": 4
+        }
+      ]
+    },
+    {
+      "title": "Memory Substrate Spec v0.1",
+      "path": "G:\\repos\\AI\\RoadTrip\\analysis\\ppa\\memory-substrate-spec-v0.1.md",
+      "headings": [
+        "Memory Substrate Spec v0.1",
+        "1. Purpose",
+        "2. Design Goals",
+        "4. Memory Planes",
+        "5. Canonical Memory Record",
+        "6. Provider Interface (Plugin Contract)",
+        "7. Capture Workflow",
+        "8. Retrieval Workflow",
+        "9. Governance and Evaluate Jobs",
+        "10. Backend Mapping Options"
+      ],
+      "principles": [
+        {
+          "principle": "retrieval should be grounded in your own artifacts",
+          "hits": 3
+        },
+        {
+          "principle": "agent systems need deterministic gates before execution",
+          "hits": 2
+        },
+        {
+          "principle": "zero-trust with explicit delegation",
+          "hits": 1
+        }
+      ]
+    }
+  ]
+}

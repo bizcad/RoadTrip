@@ -1,8 +1,9 @@
 ---
 name: page-scraper
-version: specs-v1.0
-description: Quickly scrape a web page into markdown using the RoadTrip page scraper MCP helpers. Supports normal URL input and clipboard URL workflows. Use for prompts like "I want to scrape a page" and "I want to scrape a page from the clipboard".
+description: Quickly scrape a web page into markdown using the RoadTrip page scraper MCP helpers. Supports normal URL input and clipboard URL workflows. Use for prompts like "I want to scrape a page" and "I want to scrape a page from the clipboard". Skill version: specs-v1.0.
 license: Internal use. RoadTrip project.
+metadata:
+  skill-version: specs-v1.0
 ---
 
 # Page Scraper Skill

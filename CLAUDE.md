@@ -37,11 +37,37 @@ $env:GITHUB_TOKEN = (Get-Content "ProjectSecrets\PAT.txt" -Raw).Trim()
 
 **📚 Full Guide:** See [COMMON_MISTAKES.md](COMMON_MISTAKES.md) for complete troubleshooting and prevention systems.
 
+### ⚠️ #4: PPA is a separate app from RoadTrip
+```powershell
+# ✅ CORRECT - .NET commands for the agentic app target the separate PPA folder
+Push-Location G:\repos\AI\PPA
+dotnet build PPA.App.slnx
+Pop-Location
+
+# ❌ WRONG - Do not treat RoadTrip as the runtime host for the PPA app
+cd G:\repos\AI\RoadTrip
+dotnet run
+```
+
+**Why:** RoadTrip is the developer workspace and planning surface. The executable agentic application lives in `G:\repos\AI\PPA`. Runtime duties such as orchestration, execution, triage, evaluation, testing, and authorized agent creation belong to the separate PPA app.
+
+### ⚠️ #5: On this Windows 11 machine, .NET 10 uses `.slnx`
+```powershell
+# ✅ CORRECT
+dotnet build G:\repos\AI\PPA\PPA.App.slnx
+
+# ❌ WRONG - do not assume a legacy .sln file exists
+dotnet build G:\repos\AI\PPA\PPA.App.sln
+```
+
+**Why:** In this environment, .NET 10 scaffolding produced a `.slnx` solution file. When discovering project structure or issuing build/run/test commands, prefer `.slnx` instead of assuming `.sln`.
+
 ---
 
 ## Project Location
 - **Repository**: `G:\repos\AI\RoadTrip`
 - **GitHub**: https://github.com/bizcad/RoadTrip
+- **Separate PPA App**: `G:\repos\AI\PPA`
 
 ## GitHub Authentication
 

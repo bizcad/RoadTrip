@@ -1,0 +1,15 @@
+{
+  "created_at": "2026-03-14T07:17:01Z",
+  "question": "zzqv flarn krupton",
+  "attempted_modes": [
+    "fast",
+    "slow"
+  ],
+  "reason": "insufficient confidence after fast and slow passes",
+  "evidence": [],
+  "next_actions": [
+    "Run deeper research pass on referenced topics",
+    "Ask triage/expert agent with this packet",
+    "Request HITL clarification if decision is high risk"
+  ]
+}

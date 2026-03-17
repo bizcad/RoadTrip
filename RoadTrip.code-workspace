@@ -1,31 +1,28 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../scratchpad"
-		}
-	],
-	"settings": {
-		"github.copilot.chat.codeGeneration.instructions": [
-			{
-				"file": ".github/copilot-instructions.md"
-			}
-		],
-		"chat.tools.terminal.autoApprove": {
-			"code": true,
-			"Get-Command": true,
-			"where.exe": true,
-			"git push": true,
-			"py": true,
-			"ForEach-Object": true,
-			".\\scripts\\git_push.ps1": true,
-			".": true,
-			"gpush-dry": true,
-			"gpush": true,
-			"Get-Item": true
-		},
-		"powershell.cwd": "RoadTrip"
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "github.copilot.chat.codeGeneration.instructions": [
+      {
+        "file": ".github/copilot-instructions.md"
+      }
+    ],
+    "chat.tools.terminal.autoApprove": {
+      "code": true,
+      "Get-Command": true,
+      "where.exe": true,
+      "git push": true,
+      "py": true,
+      "ForEach-Object": true,
+      ".\\scripts\\git_push.ps1": true,
+      ".": true,
+      "gpush-dry": true,
+      "gpush": true,
+      "Get-Item": true
+    },
+    "powershell.cwd": "RoadTrip"
+  }
 }
