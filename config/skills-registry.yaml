@@ -1,185 +1,497 @@
-skills:
-  adaptive_executor:
-    version: unknown
-    description: Adaptive execution with registry-first lookup, bounded self-correction,
-      and metrics logging.
-    interface: (utility function)
-    status: discovered
-    file: adaptive_executor.py
-  auth_validator:
-    version: unknown
-    description: auth_validator.py
-    interface: (utility function)
-    status: discovered
-    file: auth_validator.py
-  auth_validator_models:
-    version: unknown
-    description: Data models for auth-validator skill.
-    interface: (utility function)
-    status: discovered
-    file: auth_validator_models.py
-  blog_publisher:
-    version: unknown
-    description: Blog Publisher Skill - Phase 3 Implementation
-    interface: (utility function)
-    status: discovered
-    file: blog_publisher.py
-  commit_message:
-    version: unknown
-    description: commit_message.py
-    interface: (utility function)
-    status: discovered
-    file: commit_message.py
-  commit_message_models:
-    version: unknown
-    description: Data models for commit-message skill.
-    interface: (utility function)
-    status: discovered
-    file: commit_message_models.py
-  config_loader:
-    version: unknown
-    description: Load and parse YAML configuration files for the skills framework.
-    interface: (utility function)
-    status: discovered
-    file: config_loader.py
-  episodic_index:
-    version: unknown
-    description: SQLite-based episodic index for telemetry retrieval.
-    interface: (utility function)
-    status: discovered
-    file: episodic_index.py
-  git_push_autonomous:
-    version: 1.2.0
-    description: git_push_autonomous.py - Git Push Skill
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: git_push_autonomous.py
-  git_push_autonomous_models:
-    version: unknown
-    description: git_push_autonomous_models.py
-    interface: (utility function)
-    status: discovered
-    file: git_push_autonomous_models.py
-  memory_loop_orchestrator:
-    version: unknown
-    description: WS-E integration orchestrator for self-improvement memory workflows.
-    interface: (utility function)
-    status: discovered
-    file: memory_loop_orchestrator.py
-  memory_store_transition:
-    version: unknown
-    description: 'Skill: transition memory entry folders between store types using
-      manifest rules.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: memory_store_transition.py
-  memory_tagger:
-    version: 0.1.0
-    description: 'MemoryTaggerSkill: Classifies and tags queries for targeted memory
-      retrieval.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: memory_tagger.py
-  mock_committer:
-    version: 0.1.0
-    description: Mock Committer Skill
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: mock_committer.py
-  mock_validator:
-    version: 0.1.0
-    description: Mock Validator Skill
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: mock_validator.py
-  models:
-    version: unknown
-    description: Shared data models for the RoadTrip Skills Framework.
-    interface: (utility function)
-    status: discovered
-    file: models.py
-  notebook_query:
-    version: 0.1.0
-    description: 'NotebookQuerySkill: Executes queries against specific NotebookLM
-      notebooks.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: notebook_query.py
-  registry_list:
-    version: unknown
-    description: 'Skill: list registered skills from config/skills-registry.yaml.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: registry_list.py
-  release_evidence_gate:
-    version: unknown
-    description: Release evidence collection and Go/No-Go gate evaluation.
-    interface: (utility function)
-    status: discovered
-    file: release_evidence_gate.py
-  rules_engine:
-    version: unknown
-    description: Rules Engine Skill - File safety validation.
-    interface: (needs wrapper)
-    status: discovered
-    file: rules_engine.py
-  session_bootstrap:
-    version: unknown
-    description: Session bootstrap for deterministic context loading.
-    interface: (utility function)
-    status: discovered
-    file: session_bootstrap.py
-  sensation_capture:
-    version: 0.1.0
-    description: 'SensationCaptureSkill: Captures raw insights into the Prospective Memory store.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: sensation_capture.py
-  skill_orchestrator:
-    version: unknown
-    description: skill_orchestrator.py
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: skill_orchestrator.py
-  skill_orchestrator_models:
-    version: unknown
-    description: Data models for skill_orchestrator.
-    interface: (utility function)
-    status: discovered
-    file: skill_orchestrator_models.py
-  telemetry_logger:
-    version: unknown
-    description: telemetry_logger.py
-    interface: (utility function)
-    status: discovered
-    file: telemetry_logger.py
-  telemetry_logger_models:
-    version: unknown
-    description: Data models for telemetry_logger skill.
-    interface: (utility function)
-    status: discovered
-    file: telemetry_logger_models.py
-  token_resolver:
-    version: unknown
-    description: token_resolver.py
-    interface: (needs wrapper)
-    status: discovered
-    file: token_resolver.py
-  trust_scorecard:
-    version: unknown
-    description: Trust scorecard engine for skills and MCP acquisition gating.
-    interface: (needs wrapper)
-    status: discovered
-    file: trust_scorecard.py
-  yaml_redirect_validator:
-    version: unknown
-    description: 'Skill: validate YAML redirect chains for corruption risks.'
-    interface: 'execute(input_data: dict) -> dict'
-    status: ready
-    file: yaml_redirect_validator.py
 metadata:
   last_scanned: '2026-03-05T03:31:56.077899Z'
   total_skills: 28
   ready_skills: 9
   discovered_skills: 19
   registry_version: '1.0'
+skills:
+  adaptive_executor:
+    version: 1.0.0
+    fingerprint: 14a898a86709cecc
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.583105'
+    updated: '2026-03-17T16:16:24.583107'
+    entry_point: src/skills/adaptive_executor.py
+    description: Adaptive execution with registry-first lookup, bounded self-correction,
+      and metrics logging.
+    source_files:
+    - src/skills/adaptive_executor.py
+    - src/skills/adaptive_executor_models.py
+    - tests/test_adaptive_executor.py
+  auth_validator:
+    version: 1.0.0
+    fingerprint: 84aa97d2faed8596
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.622585'
+    updated: '2026-03-17T16:16:24.622587'
+    entry_point: src/skills/auth_validator.py
+    description: auth_validator.py
+    source_files:
+    - src/skills/auth_validator.py
+    - src/skills/auth_validator_models.py
+    - tests/test_auth_validator.py
+  blog_publisher:
+    version: 1.0.0
+    fingerprint: b0ab276cf394d1e3
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.661345'
+    updated: '2026-03-17T16:16:24.661347'
+    entry_point: src/skills/blog_publisher.py
+    description: Blog Publisher Skill - Phase 3 Implementation
+    source_files:
+    - src/skills/blog_publisher.py
+    - src/skills/blog_publisher_models.py
+    - tests/test_blog_publisher.py
+  commit_message:
+    version: 1.0.0
+    fingerprint: c6dee9e3f9847499
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.700281'
+    updated: '2026-03-17T16:16:24.700283'
+    entry_point: src/skills/commit_message.py
+    description: commit_message.py
+    source_files:
+    - src/skills/commit_message.py
+    - src/skills/commit_message_models.py
+    - tests/test_commit_message.py
+  config_loader:
+    version: 1.0.0
+    fingerprint: 327a9167d7f6064c
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.739836'
+    updated: '2026-03-17T16:16:24.739838'
+    entry_point: src/skills/config_loader.py
+    description: Load and parse YAML configuration files for the skills framework.
+    source_files:
+    - src/skills/config_loader.py
+    - src/skills/config_loader_models.py
+    - tests/test_config_loader.py
+  episodic_index:
+    version: 1.0.0
+    fingerprint: 7f914336bad0038e
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.778900'
+    updated: '2026-03-17T16:16:24.778902'
+    entry_point: src/skills/episodic_index.py
+    description: SQLite-based episodic index for telemetry retrieval.
+    source_files:
+    - src/skills/episodic_index.py
+    - src/skills/episodic_index_models.py
+    - tests/test_episodic_index.py
+  git_push_autonomous:
+    version: 1.0.0
+    fingerprint: c74145152590cde5
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.860556'
+    updated: '2026-03-17T16:16:24.860558'
+    entry_point: src/skills/git_push_autonomous.py
+    description: git_push_autonomous.py - Git Push Skill
+    source_files:
+    - src/skills/git_push_autonomous.py
+    - src/skills/git_push_autonomous_models.py
+    - tests/test_git_push_autonomous.py
+  memory_loop_orchestrator:
+    version: 1.0.0
+    fingerprint: 9ff3278a605c1e16
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.901937'
+    updated: '2026-03-17T16:16:24.901939'
+    entry_point: src/skills/memory_loop_orchestrator.py
+    description: WS-E integration orchestrator for self-improvement memory workflows.
+    source_files:
+    - src/skills/memory_loop_orchestrator.py
+    - src/skills/memory_loop_orchestrator_models.py
+    - tests/test_memory_loop_orchestrator.py
+  memory_store_transition:
+    version: 1.0.0
+    fingerprint: 52108d38e746de2a
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.943638'
+    updated: '2026-03-17T16:16:24.943640'
+    entry_point: src/skills/memory_store_transition.py
+    description: 'Skill: transition memory entry folders between store types using
+      manifest rules.'
+    source_files:
+    - src/skills/memory_store_transition.py
+    - src/skills/memory_store_transition_models.py
+    - tests/test_memory_store_transition.py
+  memory_tagger:
+    version: 1.0.0
+    fingerprint: bb315e13c7a7cada
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.986556'
+    updated: '2026-03-17T16:16:24.986558'
+    entry_point: src/skills/memory_tagger.py
+    description: 'MemoryTaggerSkill: Classifies and tags queries for targeted memory
+      retrieval.'
+    source_files:
+    - src/skills/memory_tagger.py
+    - src/skills/memory_tagger_models.py
+    - tests/test_memory_tagger.py
+  mock_committer:
+    version: 1.0.0
+    fingerprint: 0fb70c2060d0cfab
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.028961'
+    updated: '2026-03-17T16:16:25.028963'
+    entry_point: src/skills/mock_committer.py
+    description: Mock Committer Skill
+    source_files:
+    - src/skills/mock_committer.py
+    - src/skills/mock_committer_models.py
+    - tests/test_mock_committer.py
+  mock_validator:
+    version: 1.0.0
+    fingerprint: 3af049ee3ad96bb7
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.071578'
+    updated: '2026-03-17T16:16:25.071580'
+    entry_point: src/skills/mock_validator.py
+    description: Mock Validator Skill
+    source_files:
+    - src/skills/mock_validator.py
+    - src/skills/mock_validator_models.py
+    - tests/test_mock_validator.py
+  models:
+    version: 1.0.0
+    fingerprint: 2fb5bb9bd53ebf81
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.114097'
+    updated: '2026-03-17T16:16:25.114099'
+    entry_point: src/skills/models.py
+    description: Shared data models for the RoadTrip Skills Framework.
+    source_files:
+    - src/skills/models.py
+    - src/skills/models_models.py
+    - tests/test_models.py
+  notebook_query:
+    version: 1.0.0
+    fingerprint: 5f958ab54a08e056
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.157459'
+    updated: '2026-03-17T16:16:25.157461'
+    entry_point: src/skills/notebook_query.py
+    description: 'NotebookQuerySkill: Executes queries against specific NotebookLM
+      notebooks.'
+    source_files:
+    - src/skills/notebook_query.py
+    - src/skills/notebook_query_models.py
+    - tests/test_notebook_query.py
+  release_evidence_gate:
+    version: 1.0.0
+    fingerprint: 5de9b91b95752bcc
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.246867'
+    updated: '2026-03-17T16:16:25.246869'
+    entry_point: src/skills/release_evidence_gate.py
+    description: Release evidence collection and Go/No-Go gate evaluation.
+    source_files:
+    - src/skills/release_evidence_gate.py
+    - src/skills/release_evidence_gate_models.py
+    - tests/test_release_evidence_gate.py
+  rules_engine:
+    version: 1.0.0
+    fingerprint: a09525ee93b21a1d
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.291909'
+    updated: '2026-03-17T16:16:25.291911'
+    entry_point: src/skills/rules_engine.py
+    description: Rules Engine Skill - File safety validation.
+    source_files:
+    - src/skills/rules_engine.py
+    - src/skills/rules_engine_models.py
+    - tests/test_rules_engine.py
+  session_bootstrap:
+    version: 1.0.0
+    fingerprint: 082ab9e39a1e416e
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.383815'
+    updated: '2026-03-17T16:16:25.383817'
+    entry_point: src/skills/session_bootstrap.py
+    description: Session bootstrap for deterministic context loading.
+    source_files:
+    - src/skills/session_bootstrap.py
+    - src/skills/session_bootstrap_models.py
+    - tests/test_session_bootstrap.py
+  sensation_capture:
+    version: 1.0.0
+    fingerprint: 2844ec85cc0d4fd8
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.338195'
+    updated: '2026-03-17T16:16:25.338197'
+    entry_point: src/skills/sensation_capture.py
+    description: 'Skill: capture raw ''sensations'' (ideas/problems) into Prospective
+      Memory.'
+    source_files:
+    - src/skills/sensation_capture.py
+    - src/skills/sensation_capture_models.py
+    - tests/test_sensation_capture.py
+  skill_orchestrator:
+    version: 1.0.0
+    fingerprint: c7ea8851eeb2200d
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.429902'
+    updated: '2026-03-17T16:16:25.429905'
+    entry_point: src/skills/skill_orchestrator.py
+    description: skill_orchestrator.py
+    source_files:
+    - src/skills/skill_orchestrator.py
+    - src/skills/skill_orchestrator_models.py
+    - tests/test_skill_orchestrator.py
+  telemetry_logger:
+    version: 1.0.0
+    fingerprint: e88ad789e2eabf11
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.524846'
+    updated: '2026-03-17T16:16:25.524848'
+    entry_point: src/skills/telemetry_logger.py
+    description: telemetry_logger.py
+    source_files:
+    - src/skills/telemetry_logger.py
+    - src/skills/telemetry_logger_models.py
+    - tests/test_telemetry_logger.py
+  token_resolver:
+    version: 1.0.0
+    fingerprint: 08a5edfd61e679c1
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.574323'
+    updated: '2026-03-17T16:16:25.574326'
+    entry_point: src/skills/token_resolver.py
+    description: token_resolver.py
+    source_files:
+    - src/skills/token_resolver.py
+    - src/skills/token_resolver_models.py
+    - tests/test_token_resolver.py
+  trust_scorecard:
+    version: 1.0.0
+    fingerprint: 07a37a714f2ebf6c
+    author: roadtrip_team
+    capabilities:
+    - name
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.623817'
+    updated: '2026-03-17T16:16:25.623820'
+    entry_point: src/skills/trust_scorecard.py
+    description: Trust scorecard engine for skills and MCP acquisition gating.
+    source_files:
+    - src/skills/trust_scorecard.py
+    - src/skills/trust_scorecard_models.py
+    - tests/test_trust_scorecard.py
+  yaml_redirect_validator:
+    version: 1.0.0
+    fingerprint: 7d43546b5ed3889d
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.674542'
+    updated: '2026-03-17T16:16:25.674544'
+    entry_point: src/skills/yaml_redirect_validator.py
+    description: 'Skill: validate YAML redirect chains for corruption risks.'
+    source_files:
+    - src/skills/yaml_redirect_validator.py
+    - src/skills/yaml_redirect_validator_models.py
+    - tests/test_yaml_redirect_validator.py
+  executor:
+    version: 1.0.0
+    fingerprint: c3191454f7788a21
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:24.819331'
+    updated: '2026-03-17T16:16:24.819333'
+    entry_point: src/skills/executor.py
+    description: executor.py
+    source_files:
+    - src/skills/executor.py
+    - src/skills/executor_models.py
+    - tests/test_executor.py
+  preflight:
+    version: 1.0.0
+    fingerprint: 57f2c8134391c773
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.202021'
+    updated: '2026-03-17T16:16:25.202023'
+    entry_point: src/skills/preflight.py
+    description: preflight.py
+    source_files:
+    - src/skills/preflight.py
+    - src/skills/preflight_models.py
+    - tests/test_preflight.py
+  skill_scanner:
+    version: 1.0.0
+    fingerprint: a26525c2dbe91200
+    author: roadtrip_team
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:25.476821'
+    updated: '2026-03-17T16:16:25.476823'
+    entry_point: src/skills/skill_scanner.py
+    description: skill_scanner.py - SKILL.md Metadata Scanner
+    source_files:
+    - src/skills/skill_scanner.py
+    - src/skills/skill_scanner_models.py
+    - tests/test_skill_scanner.py
+  test_new_skill:
+    version: 1.0.0
+    fingerprint: f035115bfd80b7bb
+    author: test_author
+    capabilities:
+    - test
+    - capability
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:37.789809'
+    updated: '2026-03-17T16:16:37.789811'
+    entry_point: src/skills/test_new_skill.py
+    description: Test skill for testing
+    source_files:
+    - src/skills/test_new_skill.py
+    - src/skills/test_new_skill_models.py
+    - tests/test_test_new_skill.py
+  tested_skill:
+    version: 2.0.0
+    fingerprint: 529f6eec0bde3e50
+    author: tester
+    capabilities:
+    - data
+    tests: 10
+    test_coverage: 85.5
+    status: active
+    created: '2026-03-17T16:16:37.866332'
+    updated: '2026-03-17T16:16:37.866335'
+    entry_point: src/skills/tested_skill.py
+    description: Well-tested skill
+    source_files:
+    - src/skills/tested_skill.py
+    - src/skills/tested_skill_models.py
+    - tests/test_tested_skill.py
+  flow_test_skill:
+    version: 1.0.0
+    fingerprint: 7bc16bf1302c7956
+    author: test_runner
+    capabilities:
+    - flow_test
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:38.087532'
+    updated: '2026-03-17T16:16:38.087534'
+    entry_point: src/skills/flow_test_skill.py
+    description: ''
+    source_files:
+    - src/skills/flow_test_skill.py
+    - src/skills/flow_test_skill_models.py
+    - tests/test_flow_test_skill.py
+  minimal_skill:
+    version: 0.1.0
+    fingerprint: 4b3ad7cdb2094486
+    author: test
+    capabilities: []
+    tests: 0
+    test_coverage: 0.0
+    status: active
+    created: '2026-03-17T16:16:38.259582'
+    updated: '2026-03-17T16:16:38.259585'
+    entry_point: src/skills/minimal_skill.py
+    description: ''
+    source_files:
+    - src/skills/minimal_skill.py
+    - src/skills/minimal_skill_models.py
+    - tests/test_minimal_skill.py

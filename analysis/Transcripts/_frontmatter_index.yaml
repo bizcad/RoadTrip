@@ -1,6 +1,6 @@
-generated_at_utc: '2026-03-15T17:07:35.602896+00:00'
+generated_at_utc: '2026-03-18T06:15:51.599723+00:00'
 source_directory: G:\repos\AI\RoadTrip\analysis\Transcripts
-count: 6
+count: 10
 items:
 - file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\ai-news-strategy-20260302-don-need-saas-system-replaced.md
   title: You Don't Need SaaS. The $0.10 System That Replaced My AI Workflow (45 Min
@@ -40,6 +40,40 @@ items:
   - right
   transcript_segment_count: 536
   retrieved_at_utc: '2026-03-15T17:07:35+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\crosstalk-soluti-20260312-created-offline-server-shtf-ha-transcript.md
+  title: I Created an Offline AI Server for When SHTF Happens
+  creator: Crosstalk Solutions
+  video_id: P_wt-2P-WBk
+  upload_date: '2026-03-12T09:00:43-07:00'
+  topics_detected: []
+  transcript_segment_count: 287
+  retrieved_at_utc: '2026-03-15T18:33:58+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\crosstalk-soluti-20260312-created-offline-server-shtf-ha.md
+  title: I Created an Offline AI Server for When SHTF Happens
+  creator: Crosstalk Solutions
+  video_id: P_wt-2P-WBk
+  upload_date: '2026-03-12T09:00:43-07:00'
+  topics_detected:
+  - can
+  - nomad
+  - right
+  - want
+  - going
+  - project
+  - all
+  - got
+  - now
+  - also
+  transcript_segment_count: 287
+  retrieved_at_utc: '2026-03-15T18:33:43+00:00'
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\roadtrip-six-unlocks-executive-summary-20260315.md
+  title: null
+  creator: null
+  video_id: null
+  upload_date: null
+  topics_detected: []
+  transcript_segment_count: null
+  retrieved_at_utc: null
 - file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\spine-ai-20260220-spine-swarm-agents-work.md
   title: 'Spine Swarm: Agents that work for you'
   creator: Spine AI
@@ -66,6 +100,24 @@ items:
   topics_detected: []
   transcript_segment_count: null
   retrieved_at_utc: null
+- file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\theo-t3-gg-20260306-finally-here.md
+  title: It's finally here.
+  creator: "Theo - t3\u2024gg"
+  video_id: hDn8-fK3XaU
+  upload_date: '2026-03-06T19:32:44-08:00'
+  topics_detected:
+  - code
+  - want
+  - all
+  - like
+  - app
+  - can
+  - things
+  - other
+  - open
+  - work
+  transcript_segment_count: 394
+  retrieved_at_utc: '2026-03-18T06:15:51+00:00'
 - file_path: G:\repos\AI\RoadTrip\analysis\Transcripts\Theo-t3-gg-gpt-5-4-is-really-really-good.md
   title: gpt-5.4 is really, really good
   creator: "Theo - t3\u2024gg"

@@ -65,7 +65,7 @@ def _check_commit_message(commit_message: str) -> PreflightCheck:
     return PreflightCheck(
         name=CheckName.COMMIT_MESSAGE,
         ok=ok,
-        reason="" if ok else "commit message is empty — Compose phase did not complete",
+        reason="" if ok else "commit message is empty -- Compose phase did not complete",
     )
 
 
@@ -75,7 +75,7 @@ def _check_token_set() -> PreflightCheck:
     return PreflightCheck(
         name=CheckName.TOKEN_SET,
         ok=ok,
-        reason="" if ok else "GITHUB_TOKEN not set — load from ProjectSecrets/PAT.txt",
+        reason="" if ok else "GITHUB_TOKEN not set -- load from ProjectSecrets/PAT.txt",
     )
 
 
@@ -109,7 +109,7 @@ def _check_remote_reachable(token: str, remote: str = "origin") -> PreflightChec
         reason = "" if ok else f"git ls-remote failed (exit {result.returncode}): {result.stderr.strip()}"
     except subprocess.TimeoutExpired:
         ok = False
-        reason = "git ls-remote timed out — network unreachable or slow"
+        reason = "git ls-remote timed out -- network unreachable or slow"
     except Exception as e:
         ok = False
         reason = f"remote reachability check failed: {e}"
@@ -135,7 +135,7 @@ def _check_branch_exists(branch: str, remote: str = "origin") -> PreflightCheck:
             timeout=10,
         )
         ok = bool(result.stdout.strip())
-        reason = "" if ok else f"branch '{branch}' not found on {remote} — first push needs: git push -u {remote} {branch}"
+        reason = "" if ok else f"branch '{branch}' not found on {remote} -- first push needs: git push -u {remote} {branch}"
     except subprocess.TimeoutExpired:
         ok = False
         reason = "branch existence check timed out"
@@ -164,7 +164,7 @@ def _check_fast_forward(branch: str, remote: str = "origin") -> PreflightCheck:
             return PreflightCheck(
                 name=CheckName.FAST_FORWARD,
                 ok=True,
-                reason="remote ref not in local index — skipping divergence check",
+                reason="remote ref not in local index -- skipping divergence check",
             )
 
         behind = subprocess.run(
@@ -176,7 +176,7 @@ def _check_fast_forward(branch: str, remote: str = "origin") -> PreflightCheck:
         behind_count = int(behind.stdout.strip()) if behind.returncode == 0 else 0
         ok = behind_count == 0
         reason = "" if ok else (
-            f"remote {remote}/{branch} is {behind_count} commit(s) ahead of local — "
+            f"remote {remote}/{branch} is {behind_count} commit(s) ahead of local -- "
             f"pull or rebase before pushing"
         )
     except Exception as e:

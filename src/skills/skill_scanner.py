@@ -140,7 +140,7 @@ def scan_skills(skills_root: str | Path = "skills") -> ScanResult:
                 )
 
             if not examples:
-                result.warnings.append(f"{skill_dir}: no examples — discovery will be lexical-only")
+                result.warnings.append(f"{skill_dir}: no examples -- discovery will be lexical-only")
 
             skill = ScannedSkill(
                 name=name,
@@ -219,4 +219,4 @@ if __name__ == "__main__":
     print(f"\nSkills ({len(result.skills)}):")
     for s in result.skills:
         fp_status = "OK" if s.fingerprint_ok else "STALE"
-        print(f"  [{fp_status}] {s.name} v{s.version} ({s.runtime}) — {len(s.examples)} examples")
+        print(f"  [{fp_status}] {s.name} v{s.version} ({s.runtime}) -- {len(s.examples)} examples")

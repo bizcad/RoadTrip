@@ -79,6 +79,7 @@ No exceptions. Humans, agents, skills, scripts, and pipelines all carry identity
 - Code artifacts carry provenance (who made them, signed or not, test status).
 - Unsigned or unattested code is untrusted by default.
 - Supply chain trust: TDD, SOLID, reproducible results, fingerprinting (principle #7).
+- Enhancement note: this section is enhanced with replacement text at docs/Code_Attestation/Unified_Auth_Spec_v0.2_Section_3.7_and_4.4_Replacement.md.
 
 ### 3.8 Cryptographic Accountability for High-Risk Actions
 - Critical authorization outcomes produce signed decision receipts.
@@ -146,6 +147,8 @@ metadata:
 ```
 
 ### 4.4 Code-Specific Attributes
+
+Enhancement note: this section is enhanced with replacement text at docs/Code_Attestation/Unified_Auth_Spec_v0.2_Section_3.7_and_4.4_Replacement.md.
 
 ```yaml
 metadata:
